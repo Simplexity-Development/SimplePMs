@@ -1,0 +1,16 @@
+name: SimplePMs
+version: 'dev'
+main: adhdmc.simplepms.SimplePMs
+api-version: 1.19
+authors: [ Rhythmic, Peashooter101 ]
+description: Plugin focused on simple private messaging.
+commands:
+  msg:
+    description: "Allows the user to send a private message to someone."
+    aliases: [dm, m, pm]
+    usage: "Usage: /msg <recipient> <message>"
+    permission: simplepms.send
+permissions:
+  simplepms.send:
+    description: "Allows the user to send a private message."
+    default: true
