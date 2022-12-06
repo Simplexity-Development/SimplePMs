@@ -1,5 +1,10 @@
 package adhdmc.simplepms.commands;
 
+import adhdmc.simplepms.SimplePMs;
+import adhdmc.simplepms.utils.Message;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,30 +20,47 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PrivateMessage implements CommandExecutor, TabCompleter {
+
+    MiniMessage miniMessage = SimplePMs.getMiniMessage();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
-            sender.sendMessage("[Placeholder] You need to tell me who to send it to.");
+            sender.sendMessage(miniMessage.deserialize(Message.ERROR_NO_RECIPIENT_PROVIDED.getMessage(),
+                    Placeholder.parsed("prefix", Message.PLUGIN_PREFIX.getMessage())));
             return true;
         }
         if (args.length == 1) {
-            sender.sendMessage("[Placeholder] You need to tell the player something.");
+            sender.sendMessage(miniMessage.deserialize(Message.ERROR_BLANK_MESSAGE.getMessage(),
+                    Placeholder.parsed("prefix", Message.PLUGIN_PREFIX.getMessage())));
             return true;
         }
         Player recipient = Bukkit.getPlayer(args[0]);
         if (recipient == null) {
-            sender.sendMessage("[Placeholder] This person is not online right now.");
+            sender.sendMessage(miniMessage.deserialize(Message.ERROR_RECIPIENT_OFFLINE.getMessage(),
+                    Placeholder.parsed("prefix", Message.PLUGIN_PREFIX.getMessage()),
+                    Placeholder.parsed("receiver", args[0])));
             return true;
         }
         // TODO: Implement ignore-list checker.
         if (false) {
-            sender.sendMessage("[Placeholder] This person is not available right now.");
+            sender.sendMessage(miniMessage.deserialize(Message.ERROR_RECIPIENT_BLOCKED.getMessage(),
+                    Placeholder.parsed("prefix", Message.PLUGIN_PREFIX.getMessage())));
             return true;
+        }
+        Component senderName;
+        if (sender instanceof Player player){
+            senderName = player.displayName();
+        } else {
+            senderName = miniMessage.deserialize(Message.CONSOLE_FORMAT.getMessage());
         }
         String message = String.join(" ", Arrays.stream(args).skip(1).collect(Collectors.joining(" ")));
         // TODO: Implement message event in place of this.
-        sender.sendMessage("[To " + recipient.getName() + "] " + message);
-        recipient.sendMessage("[From " + sender.getName() + "] " + message);
+        sender.sendMessage(miniMessage.deserialize(Message.SENDING_FORMAT.getMessage(),
+                Placeholder.component("receiver", recipient.displayName()),
+                Placeholder.parsed("message", message)));
+        recipient.sendMessage(miniMessage.deserialize(Message.RECEIVING_FORMAT.getMessage(),
+                Placeholder.component("sender", senderName),
+                Placeholder.parsed("message", message)));
         return true;
     }
 
