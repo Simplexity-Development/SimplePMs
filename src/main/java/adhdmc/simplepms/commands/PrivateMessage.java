@@ -2,15 +2,18 @@ package adhdmc.simplepms.commands;
 
 import adhdmc.simplepms.SimplePMs;
 import adhdmc.simplepms.utils.Message;
+import adhdmc.simplepms.utils.Util;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +23,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PrivateMessage implements CommandExecutor, TabCompleter {
+    private final NamespacedKey lastMessaged = Util.lastMessaged;
+    private final String console = Util.console;
 
     MiniMessage miniMessage = SimplePMs.getMiniMessage();
     @Override
@@ -49,8 +54,11 @@ public class PrivateMessage implements CommandExecutor, TabCompleter {
         }
         Component senderName;
         if (sender instanceof Player player){
+            player.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, recipient.getName());
+            recipient.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, player.getName());
             senderName = player.displayName();
         } else {
+            recipient.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, console);
             senderName = miniMessage.deserialize(Message.CONSOLE_FORMAT.getMessage());
         }
         String message = String.join(" ", Arrays.stream(args).skip(1).collect(Collectors.joining(" ")));

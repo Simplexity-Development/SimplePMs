@@ -14,6 +14,7 @@ public enum Message {
     //basic
     SENDING_FORMAT("<gray>[<yellow>You</yellow> <gold>→</gold> <green><receiver></green>]</gray><reset> <message>"),
     RECEIVING_FORMAT("<gray>[<green><sender></green> <gold>→</gold> <yellow>You</yellow>]</gray><reset> <message>"),
+    NO_USER_TO_REPLY("<red>There is nobody to reply to, sorry. Try <gray>/msg [name]</gray> instead"),
     //socialspy
     SPY_FORMAT("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <#989898><sender> → <receiver> <dark_gray>»</dark_gray>"),
     SPY_ENABLED("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <green>PM Spy has been enabled"),
