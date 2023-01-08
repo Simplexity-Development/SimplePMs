@@ -65,10 +65,10 @@ public class PrivateMessage implements CommandExecutor, TabCompleter {
         // TODO: Implement message event in place of this.
         sender.sendMessage(miniMessage.deserialize(Message.SENDING_FORMAT.getMessage(),
                 Placeholder.component("receiver", recipient.displayName()),
-                Placeholder.parsed("message", message)));
+                Placeholder.unparsed("message", message)));
         recipient.sendMessage(miniMessage.deserialize(Message.RECEIVING_FORMAT.getMessage(),
                 Placeholder.component("sender", senderName),
-                Placeholder.parsed("message", message)));
+                Placeholder.unparsed("message", message)));
         return true;
     }
 
