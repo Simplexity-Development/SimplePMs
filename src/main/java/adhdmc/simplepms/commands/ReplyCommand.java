@@ -65,12 +65,12 @@ public class ReplyCommand implements CommandExecutor, TabCompleter {
             Audience console = server.getConsoleSender();
             console.sendMessage(miniMessage.deserialize(Message.RECEIVING_FORMAT.getMessage(),
                     Placeholder.component("sender", player.displayName()),
-                    Placeholder.parsed("message", message)));
+                    Placeholder.unparsed("message", message)));
             return true;
         }
         recipient.sendMessage(miniMessage.deserialize(Message.RECEIVING_FORMAT.getMessage(),
                 Placeholder.component("sender", player.displayName()),
-                Placeholder.parsed("message", message)));
+                Placeholder.unparsed("message", message)));
         return true;
     }
 
