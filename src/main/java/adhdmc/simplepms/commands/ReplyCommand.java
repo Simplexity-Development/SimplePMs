@@ -19,6 +19,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,50 +31,51 @@ public class ReplyCommand implements CommandExecutor, TabCompleter {
     private final MiniMessage miniMessage = SimplePMs.getMiniMessage();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player player) {
-            PersistentDataContainer playerPDC = player.getPersistentDataContainer();
-            String lastUserMessaged = playerPDC.get(lastMessaged, PersistentDataType.STRING);
-            if (lastUserMessaged == null) {
-                player.sendRichMessage(Message.NO_USER_TO_REPLY.getMessage());
-                return false;
-            }
-            Player recipient = server.getPlayer(lastUserMessaged);
-            if ((recipient == null) && !lastUserMessaged.equals(console)) {
-               player.sendRichMessage(Message.NO_USER_TO_REPLY.getMessage());
-               return false;
-            }
-            Component recipientName;
-            if (lastUserMessaged.equals(console)){
-                recipientName = miniMessage.deserialize(Message.CONSOLE_FORMAT.getMessage());
-                playerPDC.set(lastMessaged, PersistentDataType.STRING, console);
-            } else {
-                recipientName = recipient.displayName();
-                playerPDC.set(lastMessaged, PersistentDataType.STRING, recipient.getName());
-                recipient.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, player.getName());
-            }
-            String message = String.join(" ", Arrays.stream(args).skip(0).collect(Collectors.joining(" ")));
-            // TODO: Implement message event in place of this.
-            sender.sendMessage(miniMessage.deserialize(Message.SENDING_FORMAT.getMessage(),
-                    Placeholder.component("receiver", recipientName),
-                    Placeholder.parsed("message", message)));
-            if (recipient == null) {
-                Audience console = server.getConsoleSender();
-                console.sendMessage(miniMessage.deserialize(Message.RECEIVING_FORMAT.getMessage(),
-                        Placeholder.component("sender", player.displayName()),
-                        Placeholder.unparsed("message", message)));
-            }
-            recipient.sendMessage(miniMessage.deserialize(Message.RECEIVING_FORMAT.getMessage(),
-                    Placeholder.component("sender", player.displayName()),
-                    Placeholder.unparsed("message", message)));
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(miniMessage.deserialize(Message.ERROR_PLAYER_COMMAND.getMessage(),
+                    Placeholder.parsed("prefix", Message.PLUGIN_PREFIX.getMessage())));
             return true;
         }
-
-
+        PersistentDataContainer playerPDC = player.getPersistentDataContainer();
+        String lastUserMessaged = playerPDC.get(lastMessaged, PersistentDataType.STRING);
+        if (lastUserMessaged == null) {
+            player.sendRichMessage(Message.NO_USER_TO_REPLY.getMessage());
+            return false;
+        }
+        Player recipient = server.getPlayer(lastUserMessaged);
+        if ((recipient == null) && !lastUserMessaged.equals(console)) {
+           player.sendRichMessage(Message.NO_USER_TO_REPLY.getMessage());
+           return false;
+        }
+        Component recipientName;
+        if (lastUserMessaged.equals(console)){
+            recipientName = miniMessage.deserialize(Message.CONSOLE_FORMAT.getMessage());
+            playerPDC.set(lastMessaged, PersistentDataType.STRING, console);
+        } else {
+            recipientName = recipient.displayName();
+            playerPDC.set(lastMessaged, PersistentDataType.STRING, recipient.getName());
+            recipient.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, player.getName());
+        }
+        String message = String.join(" ", Arrays.stream(args).skip(0).collect(Collectors.joining(" ")));
+        // TODO: Implement message event in place of this.
+        sender.sendMessage(miniMessage.deserialize(Message.SENDING_FORMAT.getMessage(),
+                Placeholder.component("receiver", recipientName),
+                Placeholder.parsed("message", message)));
+        if (recipient == null) {
+            Audience console = server.getConsoleSender();
+            console.sendMessage(miniMessage.deserialize(Message.RECEIVING_FORMAT.getMessage(),
+                    Placeholder.component("sender", player.displayName()),
+                    Placeholder.parsed("message", message)));
+            return true;
+        }
+        recipient.sendMessage(miniMessage.deserialize(Message.RECEIVING_FORMAT.getMessage(),
+                Placeholder.component("sender", player.displayName()),
+                Placeholder.parsed("message", message)));
         return true;
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        return null;
+        return new ArrayList<>();
     }
 }
