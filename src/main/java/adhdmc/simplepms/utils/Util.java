@@ -1,10 +1,14 @@
 package adhdmc.simplepms.utils;
 
-import adhdmc.simplepms.SimplePMs;
-import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
+
+import java.util.HashSet;
 
 public class Util {
-    public static final NamespacedKey ignoreList = new NamespacedKey(SimplePMs.getInstance(), "ignorelist");
-    public static final NamespacedKey lastMessaged = new NamespacedKey(SimplePMs.getInstance(), "lastmessaged");
     public static final String console = "CONSOLE";
+    private static final HashSet<Player> spyingPlayers = new HashSet<>();
+
+    public static HashSet<Player> getSpyingPlayers() {
+        return spyingPlayers;
+    }
 }

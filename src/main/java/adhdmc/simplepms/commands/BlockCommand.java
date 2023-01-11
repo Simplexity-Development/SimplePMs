@@ -12,6 +12,7 @@ import java.util.List;
 public class BlockCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+
         return false;
     }
 

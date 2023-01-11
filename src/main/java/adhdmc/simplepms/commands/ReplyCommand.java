@@ -1,7 +1,8 @@
 package adhdmc.simplepms.commands;
 
 import adhdmc.simplepms.SimplePMs;
-import adhdmc.simplepms.utils.Message;
+import adhdmc.simplepms.utils.SPMKey;
+import adhdmc.simplepms.utils.SPMMessage;
 import adhdmc.simplepms.utils.Util;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -21,54 +22,68 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReplyCommand implements CommandExecutor, TabCompleter {
-    private final NamespacedKey lastMessaged = Util.lastMessaged;
+    private final HashSet<Player> spyingPlayers = Util.getSpyingPlayers();
+    private final NamespacedKey lastMessaged = SPMKey.LAST_MESSAGED.getKey();
     private final String console = Util.console;
     private final Server server = SimplePMs.getInstance().getServer();
     private final MiniMessage miniMessage = SimplePMs.getMiniMessage();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(miniMessage.deserialize(Message.ERROR_PLAYER_COMMAND.getMessage(),
-                    Placeholder.parsed("prefix", Message.PLUGIN_PREFIX.getMessage())));
+            sender.sendMessage(miniMessage.deserialize(SPMMessage.ERROR_PLAYER_COMMAND.getMessage(),
+                    Placeholder.parsed("prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
             return true;
         }
         PersistentDataContainer playerPDC = player.getPersistentDataContainer();
         String lastUserMessaged = playerPDC.get(lastMessaged, PersistentDataType.STRING);
         if (lastUserMessaged == null) {
-            player.sendRichMessage(Message.NO_USER_TO_REPLY.getMessage());
+            player.sendRichMessage(SPMMessage.NO_USER_TO_REPLY.getMessage());
             return false;
         }
         Player recipient = server.getPlayer(lastUserMessaged);
         if ((recipient == null) && !lastUserMessaged.equals(console)) {
-           player.sendRichMessage(Message.NO_USER_TO_REPLY.getMessage());
+           player.sendRichMessage(SPMMessage.NO_USER_TO_REPLY.getMessage());
            return false;
         }
         Component recipientName;
+        Component senderSpyName;
+        Component recieverSpyName = miniMessage.deserialize("<gray>" + recipient.getName());
         if (lastUserMessaged.equals(console)){
-            recipientName = miniMessage.deserialize(Message.CONSOLE_FORMAT.getMessage());
+            recipientName = miniMessage.deserialize(SPMMessage.CONSOLE_FORMAT.getMessage());
             playerPDC.set(lastMessaged, PersistentDataType.STRING, console);
+            senderSpyName = miniMessage.deserialize(SPMMessage.CONSOLE_FORMAT_SPY.getMessage());
         } else {
             recipientName = recipient.displayName();
             playerPDC.set(lastMessaged, PersistentDataType.STRING, recipient.getName());
             recipient.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, player.getName());
+            senderSpyName = miniMessage.deserialize("<gray>" + player.getName());
         }
         String message = String.join(" ", Arrays.stream(args).skip(0).collect(Collectors.joining(" ")));
         // TODO: Implement message event in place of this.
-        sender.sendMessage(miniMessage.deserialize(Message.SENDING_FORMAT.getMessage(),
+        for (Player spy : spyingPlayers) {
+            if (!spy.isOnline()) continue;
+            if (spy.equals(sender) || spy.equals(recipient)) continue;
+            spy.sendMessage(miniMessage.deserialize(SPMMessage.SPY_FORMAT.getMessage(),
+                    Placeholder.component("sender", senderSpyName),
+                    Placeholder.component("receiver", recieverSpyName),
+                    Placeholder.unparsed("message", message)));
+        }
+        sender.sendMessage(miniMessage.deserialize(SPMMessage.SENDING_FORMAT.getMessage(),
                 Placeholder.component("receiver", recipientName),
                 Placeholder.parsed("message", message)));
         if (recipient == null) {
             Audience console = server.getConsoleSender();
-            console.sendMessage(miniMessage.deserialize(Message.RECEIVING_FORMAT.getMessage(),
+            console.sendMessage(miniMessage.deserialize(SPMMessage.RECEIVING_FORMAT.getMessage(),
                     Placeholder.component("sender", player.displayName()),
                     Placeholder.unparsed("message", message)));
             return true;
         }
-        recipient.sendMessage(miniMessage.deserialize(Message.RECEIVING_FORMAT.getMessage(),
+        recipient.sendMessage(miniMessage.deserialize(SPMMessage.RECEIVING_FORMAT.getMessage(),
                 Placeholder.component("sender", player.displayName()),
                 Placeholder.unparsed("message", message)));
         return true;

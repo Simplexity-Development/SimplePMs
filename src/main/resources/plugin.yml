@@ -9,13 +9,14 @@ commands:
     description: "Allows the user to send a private message to someone."
     aliases: [dm, m, pm]
     usage: "Usage: /msg <recipient> <message>"
-    permission: simplepms.send
   reply:
     description: "allows the user to reply to a private message"
     aliases: [r, re]
     usage: "Usage: /r <message>"
-    permission: simplepms.send
+  socialspy:
+    description: "toggles socialspy"
+    aliases: [ss, spy, sspy]
 permissions:
-  simplepms.send:
-    description: "Allows the user to send a private message."
-    default: true
+  spm.socialspy.toggle:
+    description: "Allows a user to read other people's PMs"
+    default: op
