@@ -36,7 +36,7 @@ public class ReplyCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(miniMessage.deserialize(SPMMessage.ERROR_PLAYER_COMMAND.getMessage(),
-                    Placeholder.parsed("prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
+                    Placeholder.parsed("plugin_prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
             return true;
         }
         PersistentDataContainer playerPDC = player.getPersistentDataContainer();

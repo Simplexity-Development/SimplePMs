@@ -33,13 +33,13 @@ public class SocialSpyCommand implements CommandExecutor, TabCompleter {
         //Check permissions
         if (!sender.hasPermission(SPMPerm.SOCIAL_SPY_TOGGLE.getPerm())) {
             sender.sendMessage(miniMessage.deserialize(SPMMessage.ERROR_NO_PERMISSION.getMessage(),
-                    Placeholder.parsed("prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
+                    Placeholder.parsed("plugin_prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
             return false;
         }
         //Console cannot toggle social spy
         if (!(sender instanceof Player player)) {
             sender.sendMessage(miniMessage.deserialize(SPMMessage.ERROR_PLAYER_COMMAND.getMessage(),
-                    Placeholder.parsed("prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
+                    Placeholder.parsed("plugin_prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
             return false;
         }
         PersistentDataContainer playerPDC = player.getPersistentDataContainer();

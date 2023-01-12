@@ -9,14 +9,26 @@ commands:
     description: "Allows the user to send a private message to someone."
     aliases: [dm, m, pm]
     usage: "Usage: /msg <recipient> <message>"
+    permission: spm.send
   reply:
     description: "allows the user to reply to a private message"
     aliases: [r, re]
     usage: "Usage: /r <message>"
+    permission: spm.send
   socialspy:
     description: "toggles socialspy"
     aliases: [ss, spy, sspy]
+    permission: spm.socialspy.toggle
+  spmreload:
+    description: "reloads SimplePMs"
+    permission: spm.reload
 permissions:
   spm.socialspy.toggle:
     description: "Allows a user to read other people's PMs"
     default: op
+  spm.reload:
+    description: "Allows  the player to reload the configuration"
+    default: op
+  spm.send:
+    description: "Allows a player to send direct messages with /msg and /r"
+    default: true

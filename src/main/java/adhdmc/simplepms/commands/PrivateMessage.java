@@ -3,6 +3,7 @@ package adhdmc.simplepms.commands;
 import adhdmc.simplepms.SimplePMs;
 import adhdmc.simplepms.utils.SPMKey;
 import adhdmc.simplepms.utils.SPMMessage;
+import adhdmc.simplepms.utils.SPMPerm;
 import adhdmc.simplepms.utils.Util;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -34,25 +35,30 @@ public class PrivateMessage implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
             sender.sendMessage(miniMessage.deserialize(SPMMessage.ERROR_NO_RECIPIENT_PROVIDED.getMessage(),
-                    Placeholder.parsed("prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
+                    Placeholder.parsed("plugin_prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
             return true;
         }
         if (args.length == 1) {
             sender.sendMessage(miniMessage.deserialize(SPMMessage.ERROR_BLANK_MESSAGE.getMessage(),
-                    Placeholder.parsed("prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
+                    Placeholder.parsed("plugin_prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
             return true;
+        }
+        if (!sender.hasPermission(SPMPerm.SEND_MESSAGE.getPerm())) {
+            sender.sendMessage(miniMessage.deserialize(SPMMessage.ERROR_NO_PERMISSION.getMessage(),
+                    Placeholder.parsed("plugin_prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
+            return false;
         }
         Player recipient = Bukkit.getPlayer(args[0]);
         if (recipient == null) {
             sender.sendMessage(miniMessage.deserialize(SPMMessage.ERROR_RECIPIENT_OFFLINE.getMessage(),
-                    Placeholder.parsed("prefix", SPMMessage.PLUGIN_PREFIX.getMessage()),
+                    Placeholder.parsed("plugin_prefix", SPMMessage.PLUGIN_PREFIX.getMessage()),
                     Placeholder.parsed("receiver", args[0])));
             return true;
         }
         // TODO: Implement ignore-list checker.
         if (false) {
             sender.sendMessage(miniMessage.deserialize(SPMMessage.ERROR_RECIPIENT_BLOCKED.getMessage(),
-                    Placeholder.parsed("prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
+                    Placeholder.parsed("plugin_prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
             return true;
         }
         Component senderName;

@@ -6,7 +6,7 @@
 
     <groupId>ADHDMC</groupId>
     <artifactId>SimplePMs</artifactId>
-    <version>dev</version>
+    <version>0.1</version>
     <packaging>jar</packaging>
 
     <name>SimplePMs</name>
