@@ -12,6 +12,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class SimplePMs extends JavaPlugin {
+    //todo: Add placeholderAPI support
+    //todo: Add message event
 
     private static Plugin instance;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -32,11 +34,6 @@ public final class SimplePMs extends JavaPlugin {
 
     public static Plugin getInstance() {
         return instance;
-    }
-
-    @Override
-    public void onDisable() {
-
     }
 
     private void registerCommands() {
