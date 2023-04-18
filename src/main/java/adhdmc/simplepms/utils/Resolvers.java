@@ -11,8 +11,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-
 public class Resolvers {
     private static Resolvers instance;
     private Resolvers(){}
@@ -41,7 +39,7 @@ public class Resolvers {
         });
     }
 
-    public Component parseMessagePlayerDisplayName(String message, Player initiator, Player target, String messageContent){
+    public Component parseMessagePlayerToPlayer(String message, Player initiator, Player target, String messageContent){
         return miniMessage.deserialize(message,
                 Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage()),
                 Placeholder.component("target", target.displayName()),
@@ -51,17 +49,7 @@ public class Resolvers {
                 papiTag(target));
     }
 
-    public Component parseMessagePlayerUsername(String message, Player initiator, Player target, String messageContent){
-        return miniMessage.deserialize(message,
-                Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage()),
-                Placeholder.parsed("target", target.getName()),
-                Placeholder.parsed("initiator", initiator.getName()),
-                Placeholder.unparsed("message", messageContent),
-                papiTag(initiator),
-                papiTag(target));
-    }
-
-    public Component parseMessageConsolePlayerDisplayName(String message, Component initiator, Player target, String messageContent){
+    public Component parseMessageConsoleToPlayer(String message, Component initiator, Player target, String messageContent){
         return miniMessage.deserialize(message,
                 Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage()),
                 Placeholder.component("target", target.displayName()),
@@ -70,14 +58,15 @@ public class Resolvers {
                 papiTag(target));
     }
 
-    public Component parseMessageConsolePlayerUsername(String message, Component initiator, Player target, String messageContent){
+    public Component parseMessagePlayerToConsole(String message, Player initiator, Component target, String messageContent){
         return miniMessage.deserialize(message,
                 Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage()),
-                Placeholder.parsed("target", target.getName()),
-                Placeholder.component("initiator", initiator),
+                Placeholder.component("target", target),
+                Placeholder.component("initiator", initiator.displayName()),
                 Placeholder.unparsed("message", messageContent),
-                papiTag(target));
+                papiTag(initiator));
     }
+
 
     public Component parsePluginPrefix(String message) {
         return miniMessage.deserialize(message,
