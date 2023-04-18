@@ -2,7 +2,7 @@ package adhdmc.simplepms.commands;
 
 import adhdmc.simplepms.SimplePMs;
 import adhdmc.simplepms.utils.SPMKey;
-import adhdmc.simplepms.utils.SPMMessage;
+import adhdmc.simplepms.utils.Message;
 import adhdmc.simplepms.utils.Util;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -35,28 +35,28 @@ public class ReplyCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(miniMessage.deserialize(SPMMessage.ERROR_PLAYER_COMMAND.getMessage(),
-                    Placeholder.parsed("plugin_prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
+            sender.sendMessage(miniMessage.deserialize(Message.ERROR_PLAYER_COMMAND.getMessage(),
+                    Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage())));
             return true;
         }
         PersistentDataContainer playerPDC = player.getPersistentDataContainer();
         String lastUserMessaged = playerPDC.get(lastMessaged, PersistentDataType.STRING);
         if (lastUserMessaged == null) {
-            player.sendRichMessage(SPMMessage.NO_USER_TO_REPLY.getMessage());
+            player.sendRichMessage(Message.NO_USER_TO_REPLY.getMessage());
             return false;
         }
         Player recipient = server.getPlayer(lastUserMessaged);
         if ((recipient == null) && !lastUserMessaged.equals(console)) {
-           player.sendRichMessage(SPMMessage.NO_USER_TO_REPLY.getMessage());
+           player.sendRichMessage(Message.NO_USER_TO_REPLY.getMessage());
            return false;
         }
         Component recipientName;
         Component senderSpyName;
         Component recieverSpyName = miniMessage.deserialize("<gray>" + recipient.getName());
         if (lastUserMessaged.equals(console)){
-            recipientName = miniMessage.deserialize(SPMMessage.CONSOLE_FORMAT.getMessage());
+            recipientName = miniMessage.deserialize(Message.CONSOLE_FORMAT.getMessage());
             playerPDC.set(lastMessaged, PersistentDataType.STRING, console);
-            senderSpyName = miniMessage.deserialize(SPMMessage.CONSOLE_FORMAT_SPY.getMessage());
+            senderSpyName = miniMessage.deserialize(Message.CONSOLE_FORMAT_SPY.getMessage());
         } else {
             recipientName = recipient.displayName();
             playerPDC.set(lastMessaged, PersistentDataType.STRING, recipient.getName());
@@ -68,22 +68,22 @@ public class ReplyCommand implements CommandExecutor, TabCompleter {
         for (Player spy : spyingPlayers) {
             if (!spy.isOnline()) continue;
             if (spy.equals(sender) || spy.equals(recipient)) continue;
-            spy.sendMessage(miniMessage.deserialize(SPMMessage.SPY_FORMAT.getMessage(),
+            spy.sendMessage(miniMessage.deserialize(Message.SPY_FORMAT.getMessage(),
                     Placeholder.component("sender", senderSpyName),
                     Placeholder.component("receiver", recieverSpyName),
                     Placeholder.unparsed("message", message)));
         }
-        sender.sendMessage(miniMessage.deserialize(SPMMessage.SENDING_FORMAT.getMessage(),
+        sender.sendMessage(miniMessage.deserialize(Message.SENDING_FORMAT.getMessage(),
                 Placeholder.component("receiver", recipientName),
                 Placeholder.parsed("message", message)));
         if (recipient == null) {
             Audience console = server.getConsoleSender();
-            console.sendMessage(miniMessage.deserialize(SPMMessage.RECEIVING_FORMAT.getMessage(),
+            console.sendMessage(miniMessage.deserialize(Message.RECEIVING_FORMAT.getMessage(),
                     Placeholder.component("sender", player.displayName()),
                     Placeholder.unparsed("message", message)));
             return true;
         }
-        recipient.sendMessage(miniMessage.deserialize(SPMMessage.RECEIVING_FORMAT.getMessage(),
+        recipient.sendMessage(miniMessage.deserialize(Message.RECEIVING_FORMAT.getMessage(),
                 Placeholder.component("sender", player.displayName()),
                 Placeholder.unparsed("message", message)));
         return true;

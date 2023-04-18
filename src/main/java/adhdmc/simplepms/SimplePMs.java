@@ -4,9 +4,8 @@ import adhdmc.simplepms.commands.PrivateMessage;
 import adhdmc.simplepms.commands.ReloadCommand;
 import adhdmc.simplepms.commands.ReplyCommand;
 import adhdmc.simplepms.commands.SocialSpyCommand;
-import adhdmc.simplepms.config.Defaults;
 import adhdmc.simplepms.listeners.LoginListener;
-import adhdmc.simplepms.utils.SPMMessage;
+import adhdmc.simplepms.utils.Message;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,15 +16,20 @@ public final class SimplePMs extends JavaPlugin {
 
     private static Plugin instance;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private boolean papiEnabled = false;
 
     @Override
     public void onEnable() {
         instance = this;
         registerCommands();
         this.getServer().getPluginManager().registerEvents(new LoginListener(), this);
-        Defaults.setDefaults();
+        if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            papiEnabled = true;
+        } else {
+            this.getLogger().info("You do not have PlaceholderAPI loaded on your server. Any PlaceholderAPI placeholders used in this plugin's messages, will not work.");
+        }
         this.saveDefaultConfig();
-        SPMMessage.reloadMessages();
+        Message.reloadMessages();
     }
 
     public static MiniMessage getMiniMessage() {

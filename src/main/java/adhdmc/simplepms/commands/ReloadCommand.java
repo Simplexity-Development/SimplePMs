@@ -1,7 +1,7 @@
 package adhdmc.simplepms.commands;
 
 import adhdmc.simplepms.SimplePMs;
-import adhdmc.simplepms.utils.SPMMessage;
+import adhdmc.simplepms.utils.Message;
 import adhdmc.simplepms.utils.SPMPerm;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -20,14 +20,14 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission(SPMPerm.RELOAD_CONFIG.getPerm())) {
-            sender.sendMessage(miniMessage.deserialize(SPMMessage.ERROR_NO_PERMISSION.getMessage(),
-                    Placeholder.parsed("plugin_prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
+            sender.sendMessage(miniMessage.deserialize(Message.ERROR_NO_PERMISSION.getMessage(),
+                    Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage())));
             return false;
         }
         SimplePMs.getInstance().reloadConfig();
-        SPMMessage.reloadMessages();
-        sender.sendMessage(miniMessage.deserialize(SPMMessage.CONFIG_RELOADED.getMessage(),
-                Placeholder.parsed("plugin_prefix", SPMMessage.PLUGIN_PREFIX.getMessage())));
+        Message.reloadMessages();
+        sender.sendMessage(miniMessage.deserialize(Message.CONFIG_RELOADED.getMessage(),
+                Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage())));
         return false;
     }
 

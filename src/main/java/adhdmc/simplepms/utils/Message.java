@@ -3,7 +3,7 @@ package adhdmc.simplepms.utils;
 import adhdmc.simplepms.SimplePMs;
 import org.bukkit.configuration.file.FileConfiguration;
 
-public enum SPMMessage {
+public enum Message {
     //plugin
     PLUGIN_PREFIX("<yellow>SimplePM<white> »"),
     CONSOLE_FORMAT("<dark_red>[<red>Server</red>]</dark_red>"),
@@ -23,11 +23,12 @@ public enum SPMMessage {
     //socialspy
     SPY_FORMAT("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <#989898><sender> → <receiver> <dark_gray>»</dark_gray> <gray><message>"),
     SPY_ENABLED("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <green>PM Spy has been enabled"),
-    SPY_DISABLED("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <gray>PM Spy has been disabled");
+    SPY_DISABLED("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <gray>PM Spy has been disabled"),
+    LOGGER_INVALID_LOCALE_KEY("Invalid locale key found: ");
 
     String message;
 
-    SPMMessage(String message) {
+    Message(String message) {
         this.message = message;
     }
 
@@ -35,7 +36,7 @@ public enum SPMMessage {
         return this.message;
     }
 
-    private void setMessage(String message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 
