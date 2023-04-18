@@ -7,8 +7,11 @@ import adhdmc.simplepms.commands.SocialSpyCommand;
 import adhdmc.simplepms.listeners.LoginListener;
 import adhdmc.simplepms.utils.Message;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.HashSet;
 
 public final class SimplePMs extends JavaPlugin {
     //todo: Add placeholderAPI support
@@ -40,11 +43,21 @@ public final class SimplePMs extends JavaPlugin {
         return instance;
     }
 
+    public boolean isPapiEnabled() {
+        return papiEnabled;
+    }
+
     private void registerCommands() {
         this.getCommand("msg").setExecutor(new PrivateMessage());
         this.getCommand("reply").setExecutor(new ReplyCommand());
         this.getCommand("socialspy").setExecutor(new SocialSpyCommand());
         this.getCommand("spmreload").setExecutor(new ReloadCommand());
+    }
+
+    private static final HashSet<Player> spyingPlayers = new HashSet<>();
+
+    public static HashSet<Player> getSpyingPlayers() {
+        return spyingPlayers;
     }
 
 }

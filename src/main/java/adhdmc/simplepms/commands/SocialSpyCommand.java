@@ -3,8 +3,8 @@ package adhdmc.simplepms.commands;
 import adhdmc.simplepms.SimplePMs;
 import adhdmc.simplepms.utils.SPMKey;
 import adhdmc.simplepms.utils.Message;
-import adhdmc.simplepms.utils.SPMPerm;
-import adhdmc.simplepms.utils.Util;
+import adhdmc.simplepms.utils.Perms;
+import adhdmc.simplepms.utils.Resolvers;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.NamespacedKey;
@@ -23,7 +23,7 @@ import java.util.List;
 
 public class SocialSpyCommand implements CommandExecutor, TabCompleter {
 
-    private final HashSet<Player> spyingPlayers = Util.getSpyingPlayers();
+    private final HashSet<Player> spyingPlayers = SimplePMs.getSpyingPlayers();
     private final NamespacedKey spyToggle = SPMKey.SPY_TOGGLE.getKey();
     private final MiniMessage miniMessage = SimplePMs.getMiniMessage();
 
@@ -31,7 +31,7 @@ public class SocialSpyCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         //Check permissions
-        if (!sender.hasPermission(SPMPerm.SOCIAL_SPY_TOGGLE.getPerm())) {
+        if (!sender.hasPermission(Perms.SOCIAL_SPY_TOGGLE.getPerm())) {
             sender.sendMessage(miniMessage.deserialize(Message.ERROR_NO_PERMISSION.getMessage(),
                     Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage())));
             return false;

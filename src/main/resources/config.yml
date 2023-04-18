@@ -1,5 +1,6 @@
 #Config
 
 messages-use-displayname: true
-do-not-spy-own-messages: true
+spy-own-messages: false
 persistent-social-spy: true
+can-reply-to-console: true

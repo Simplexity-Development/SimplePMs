@@ -16,6 +16,7 @@ public enum Message {
     ERROR_BLANK_MESSAGE("<plugin_prefix> You cannot send someone a blank message"),
     ERROR_RECIPIENT_BLOCKED("<plugin_prefix> Looks like <receiver> isn't accepting PMs from you at this time"),
     ERROR_PLAYER_COMMAND("<plugin_prefix> <red>You must be a player to execute this command."),
+    ERROR_PAPI_NEEDS_ARGUMENT("papi tag requires an argument"),
     //basic
     SENDING_FORMAT("<gray>[<yellow>You</yellow> <gold>→</gold> <green><receiver></green>]</gray><reset> <message>"),
     RECEIVING_FORMAT("<gray>[<green><sender></green> <gold>→</gold> <yellow>You</yellow>]</gray><reset> <message>"),
@@ -24,7 +25,9 @@ public enum Message {
     SPY_FORMAT("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <#989898><sender> → <receiver> <dark_gray>»</dark_gray> <gray><message>"),
     SPY_ENABLED("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <green>PM Spy has been enabled"),
     SPY_DISABLED("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <gray>PM Spy has been disabled"),
-    LOGGER_INVALID_LOCALE_KEY("Invalid locale key found: ");
+    LOGGER_INVALID_LOCALE_KEY("Invalid locale key found: "),
+    //internal use only - don't add to locale
+    PDC_CONSOLE("console");
 
     String message;
 

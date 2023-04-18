@@ -2,7 +2,7 @@ package adhdmc.simplepms.commands;
 
 import adhdmc.simplepms.SimplePMs;
 import adhdmc.simplepms.utils.Message;
-import adhdmc.simplepms.utils.SPMPerm;
+import adhdmc.simplepms.utils.Perms;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.Command;
@@ -19,7 +19,7 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.hasPermission(SPMPerm.RELOAD_CONFIG.getPerm())) {
+        if (!sender.hasPermission(Perms.RELOAD_CONFIG.getPerm())) {
             sender.sendMessage(miniMessage.deserialize(Message.ERROR_NO_PERMISSION.getMessage(),
                     Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage())));
             return false;
