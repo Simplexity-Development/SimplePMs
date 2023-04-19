@@ -31,7 +31,7 @@ public class PrivateMessage implements TabExecutor {
             sender.sendMessage(Resolvers.getInstance().parsePluginPrefix(Message.ERROR_BLANK_MESSAGE.getMessage()));
             return true;
         }
-        if (!sender.hasPermission(Perms.SEND_MESSAGE.getPerm())) {
+        if (!sender.hasPermission(Perm.SEND_MESSAGE.getPerm())) {
             sender.sendMessage(Resolvers.getInstance().parsePluginPrefix(Message.ERROR_NO_PERMISSION.getMessage()));
             return false;
         }
@@ -43,6 +43,10 @@ public class PrivateMessage implements TabExecutor {
         Player recipient = Bukkit.getPlayer(args[0]);
         if (recipient == null) {
             sender.sendMessage(Resolvers.getInstance().parsePluginPrefixAndString(Message.ERROR_RECIPIENT_OFFLINE.getMessage(), "receiver", args[0]));
+            return false;
+        }
+        if (!recipient.hasPermission(Perm.RECEIVE_MESSAGE.getPerm()) && !sender.hasPermission(Perm.RECEIVE_BYPASS.getPerm())) {
+            sender.sendMessage(Resolvers.getInstance().parsePluginPrefix(Message.ERROR_RECIPIENT_NO_PERMS.getMessage()));
             return false;
         }
         if (sender instanceof Player player){

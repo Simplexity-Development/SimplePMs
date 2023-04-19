@@ -1,9 +1,10 @@
 package adhdmc.simplepms.commands;
 
 import adhdmc.simplepms.SimplePMs;
+import adhdmc.simplepms.handling.Resolvers;
 import adhdmc.simplepms.utils.SPMKey;
 import adhdmc.simplepms.utils.Message;
-import adhdmc.simplepms.utils.Perms;
+import adhdmc.simplepms.utils.Perm;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.NamespacedKey;
@@ -24,21 +25,13 @@ public class SocialSpyCommand implements CommandExecutor, TabCompleter {
 
     private final HashSet<Player> spyingPlayers = SimplePMs.getSpyingPlayers();
     private final NamespacedKey spyToggle = SPMKey.SPY_TOGGLE.getKey();
-    private final MiniMessage miniMessage = SimplePMs.getMiniMessage();
 
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        //Check permissions
-        if (!sender.hasPermission(Perms.SOCIAL_SPY_TOGGLE.getPerm())) {
-            sender.sendMessage(miniMessage.deserialize(Message.ERROR_NO_PERMISSION.getMessage(),
-                    Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage())));
-            return false;
-        }
         //Console cannot toggle social spy
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(miniMessage.deserialize(Message.ERROR_PLAYER_COMMAND.getMessage(),
-                    Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage())));
+            sender.sendMessage(Resolvers.
             return false;
         }
         PersistentDataContainer playerPDC = player.getPersistentDataContainer();

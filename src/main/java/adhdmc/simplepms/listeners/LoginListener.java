@@ -2,7 +2,7 @@ package adhdmc.simplepms.listeners;
 
 import adhdmc.simplepms.SimplePMs;
 import adhdmc.simplepms.utils.SPMKey;
-import adhdmc.simplepms.utils.Perms;
+import adhdmc.simplepms.utils.Perm;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ public class LoginListener implements Listener {
             Player player = loginEvent.getPlayer();
             PersistentDataContainer playerPDC = player.getPersistentDataContainer();
             if ((playerPDC.getOrDefault(spyToggle, PersistentDataType.BYTE, (byte)0) == (byte)1) &&
-                    player.hasPermission(Perms.SOCIAL_SPY_TOGGLE.getPerm())) {
+                    player.hasPermission(Perm.SOCIAL_SPY_TOGGLE.getPerm())) {
                 spyingPlayers.add(player);
             }
         },4);

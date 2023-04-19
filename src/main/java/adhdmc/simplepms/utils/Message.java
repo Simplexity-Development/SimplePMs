@@ -14,7 +14,7 @@ public enum Message {
     ERROR_NO_RECIPIENT_PROVIDED("<plugin_prefix> <red>You must provide a valid recipient for your message"),
     ERROR_RECIPIENT_OFFLINE("<plugin_prefix> There are no players online by the name of <target>"),
     ERROR_BLANK_MESSAGE("<plugin_prefix> You cannot send someone a blank message"),
-    ERROR_RECIPIENT_BLOCKED("<plugin_prefix> Looks like <target> isn't accepting PMs from you at this time"),
+    ERROR_RECIPIENT_NO_PERMS("<plugin_prefix> Sorry, looks like that player cannot receive messages right now"),
     ERROR_PLAYER_COMMAND("<plugin_prefix> <red>You must be a player to execute this command."),
     ERROR_PAPI_NEEDS_ARGUMENT("papi tag requires an argument"),
     //basic
@@ -43,23 +43,4 @@ public enum Message {
         this.message = message;
     }
 
-    public static void reloadMessages(){
-        FileConfiguration config = SimplePMs.getInstance().getConfig();
-        PLUGIN_PREFIX.setMessage(config.getString("plugin-prefix"));
-        CONSOLE_FORMAT.setMessage(config.getString("console-format"));
-        CONSOLE_FORMAT_SPY.setMessage(config.getString("console-format-spy"));
-        CONFIG_RELOADED.setMessage(config.getString("config-reloaded"));
-        ERROR_NO_PERMISSION.setMessage(config.getString("error-no-permission"));
-        ERROR_NO_RECIPIENT_PROVIDED.setMessage(config.getString("error-no-recipient-provided"));
-        ERROR_RECIPIENT_OFFLINE.setMessage(config.getString("error-recipient-offline"));
-        ERROR_BLANK_MESSAGE.setMessage(config.getString("error-blank-message"));
-        ERROR_RECIPIENT_BLOCKED.setMessage(config.getString("error-recipient-blocked"));
-        ERROR_PLAYER_COMMAND.setMessage(config.getString("error-player-command"));
-        SENDING_FORMAT.setMessage(config.getString("sending-format"));
-        RECEIVING_FORMAT.setMessage(config.getString("receiving-format"));
-        NO_USER_TO_REPLY.setMessage(config.getString("no-user-to-reply"));
-        SPY_FORMAT.setMessage(config.getString("spy-format"));
-        SPY_ENABLED.setMessage(config.getString("spy-enabled"));
-        SPY_DISABLED.setMessage(config.getString("spy-disabled"));
-    }
 }
