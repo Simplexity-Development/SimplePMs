@@ -19,7 +19,7 @@ public final class SimplePMs extends JavaPlugin {
 
     private static Plugin instance;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
-    private boolean papiEnabled = false;
+    private static boolean papiEnabled = false;
 
     @Override
     public void onEnable() {
@@ -31,8 +31,6 @@ public final class SimplePMs extends JavaPlugin {
         } else {
             this.getLogger().info("You do not have PlaceholderAPI loaded on your server. Any PlaceholderAPI placeholders used in this plugin's messages, will not work.");
         }
-        this.saveDefaultConfig();
-        Message.reloadMessages();
     }
 
     public static MiniMessage getMiniMessage() {
@@ -43,7 +41,7 @@ public final class SimplePMs extends JavaPlugin {
         return instance;
     }
 
-    public boolean isPapiEnabled() {
+    public static boolean isPapiEnabled() {
         return papiEnabled;
     }
 

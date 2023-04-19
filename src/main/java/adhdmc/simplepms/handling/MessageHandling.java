@@ -4,7 +4,6 @@ import adhdmc.simplepms.SimplePMs;
 import adhdmc.simplepms.events.PrivateMessageEvent;
 import adhdmc.simplepms.utils.Message;
 import adhdmc.simplepms.utils.Perms;
-import adhdmc.simplepms.utils.Resolvers;
 import adhdmc.simplepms.utils.SPMKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -42,7 +41,7 @@ public class MessageHandling {
         }
     }
 
-    public void consoleSender(CommandSender initiator, Player recipient, String messageContent) {
+    public void consoleSenderPlayerReceiver(CommandSender initiator, Player recipient, String messageContent) {
         // Call Event
         PrivateMessageEvent event = new PrivateMessageEvent(initiator, recipient, messageContent, spyingPlayers);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -58,7 +57,7 @@ public class MessageHandling {
     }
 
 
-    public void consoleReceiver(CommandSender initiator, String messageContent) {
+    public void playerSenderConsoleReceiver(CommandSender initiator, String messageContent) {
         if (!(initiator instanceof Player initiatingPlayer)){
             initiator.sendMessage(Resolvers.getInstance().parsePluginPrefix(Message.ERROR_PLAYER_COMMAND.getMessage()));
             return;

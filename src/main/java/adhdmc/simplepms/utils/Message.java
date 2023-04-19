@@ -12,17 +12,17 @@ public enum Message {
     //Errors
     ERROR_NO_PERMISSION("<plugin_prefix> <red>You do not have permission to do this"),
     ERROR_NO_RECIPIENT_PROVIDED("<plugin_prefix> <red>You must provide a valid recipient for your message"),
-    ERROR_RECIPIENT_OFFLINE("<plugin_prefix> There are no players online by the name of <receiver>"),
+    ERROR_RECIPIENT_OFFLINE("<plugin_prefix> There are no players online by the name of <target>"),
     ERROR_BLANK_MESSAGE("<plugin_prefix> You cannot send someone a blank message"),
-    ERROR_RECIPIENT_BLOCKED("<plugin_prefix> Looks like <receiver> isn't accepting PMs from you at this time"),
+    ERROR_RECIPIENT_BLOCKED("<plugin_prefix> Looks like <target> isn't accepting PMs from you at this time"),
     ERROR_PLAYER_COMMAND("<plugin_prefix> <red>You must be a player to execute this command."),
     ERROR_PAPI_NEEDS_ARGUMENT("papi tag requires an argument"),
     //basic
-    SENDING_FORMAT("<gray>[<yellow>You</yellow> <gold>→</gold> <green><receiver></green>]</gray><reset> <message>"),
-    RECEIVING_FORMAT("<gray>[<green><sender></green> <gold>→</gold> <yellow>You</yellow>]</gray><reset> <message>"),
+    SENDING_FORMAT("<gray>[<yellow>You</yellow> <gold>→</gold> <green><target></green>]</gray><reset> <message>"),
+    RECEIVING_FORMAT("<gray>[<green><initiator></green> <gold>→</gold> <yellow>You</yellow>]</gray><reset> <message>"),
     NO_USER_TO_REPLY("<red>There is nobody to reply to, sorry. Try <gray>/msg [name]</gray> instead"),
     //socialspy
-    SPY_FORMAT("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <#989898><sender> → <receiver> <dark_gray>»</dark_gray> <gray><message>"),
+    SPY_FORMAT("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <#989898><initiator> → <target> <dark_gray>»</dark_gray> <gray><message>"),
     SPY_ENABLED("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <green>PM Spy has been enabled"),
     SPY_DISABLED("<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <gray>PM Spy has been disabled"),
     LOGGER_INVALID_LOCALE_KEY("Invalid locale key found: "),

@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 
 public class PrivateMessageEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
     public PrivateMessageEvent(CommandSender initiator, CommandSender recipient, String messageContent, HashSet<Player> spyingPlayers) {
         this.initiator = initiator;
         this.recipient = recipient;
@@ -18,7 +19,7 @@ public class PrivateMessageEvent extends Event {
 
     @Override
     public @NotNull HandlerList getHandlers() {
-        return null;
+        return handlers;
     }
 
     private CommandSender initiator;

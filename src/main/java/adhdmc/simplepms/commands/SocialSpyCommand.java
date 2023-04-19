@@ -4,7 +4,6 @@ import adhdmc.simplepms.SimplePMs;
 import adhdmc.simplepms.utils.SPMKey;
 import adhdmc.simplepms.utils.Message;
 import adhdmc.simplepms.utils.Perms;
-import adhdmc.simplepms.utils.Resolvers;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.NamespacedKey;

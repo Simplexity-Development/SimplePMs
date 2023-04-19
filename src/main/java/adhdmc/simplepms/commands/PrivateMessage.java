@@ -1,12 +1,10 @@
 package adhdmc.simplepms.commands;
 
 import adhdmc.simplepms.handling.MessageHandling;
+import adhdmc.simplepms.handling.Resolvers;
 import adhdmc.simplepms.utils.*;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PrivateMessage implements CommandExecutor, TabCompleter {
+public class PrivateMessage implements TabExecutor {
     private static PrivateMessage instance;
 
     public static PrivateMessage getInstance() {
@@ -39,7 +37,7 @@ public class PrivateMessage implements CommandExecutor, TabCompleter {
         }
         String message = String.join(" ", Arrays.stream(args).skip(1).collect(Collectors.joining(" ")));
         if (args[0].equalsIgnoreCase(Message.PDC_CONSOLE.getMessage())) {
-            MessageHandling.getInstance().consoleReceiver(sender, message);
+            MessageHandling.getInstance().playerSenderConsoleReceiver(sender, message);
             return true;
         }
         Player recipient = Bukkit.getPlayer(args[0]);
@@ -50,7 +48,7 @@ public class PrivateMessage implements CommandExecutor, TabCompleter {
         if (sender instanceof Player player){
             MessageHandling.getInstance().playerSenderAndReceiver(player, recipient, message);
         } else {
-            MessageHandling.getInstance().consoleSender(sender, recipient, message);
+            MessageHandling.getInstance().consoleSenderPlayerReceiver(sender, recipient, message);
         }
         return true;
     }

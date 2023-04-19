@@ -3,7 +3,6 @@ package adhdmc.simplepms.listeners;
 import adhdmc.simplepms.SimplePMs;
 import adhdmc.simplepms.utils.SPMKey;
 import adhdmc.simplepms.utils.Perms;
-import adhdmc.simplepms.utils.Resolvers;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
