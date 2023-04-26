@@ -24,7 +24,7 @@ public class LoginListener implements Listener {
             Player player = loginEvent.getPlayer();
             PersistentDataContainer playerPDC = player.getPersistentDataContainer();
             if ((playerPDC.getOrDefault(spyToggle, PersistentDataType.BYTE, (byte)0) == (byte)1) &&
-                    player.hasPermission(Perm.SOCIAL_SPY_TOGGLE.getPerm())) {
+                    player.hasPermission(Perm.SOCIAL_SPY.getPerm())) {
                 spyingPlayers.add(player);
             }
         },4);

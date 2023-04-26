@@ -15,12 +15,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PrivateMessage implements TabExecutor {
-    private static PrivateMessage instance;
 
-    public static PrivateMessage getInstance() {
-        return instance;
-    }
-
+    public static final ArrayList<String> blankList = new ArrayList<>();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
@@ -45,7 +41,7 @@ public class PrivateMessage implements TabExecutor {
             sender.sendMessage(Resolvers.getInstance().parsePluginPrefixAndString(Message.ERROR_RECIPIENT_OFFLINE.getMessage(), "receiver", args[0]));
             return false;
         }
-        if (!recipient.hasPermission(Perm.RECEIVE_MESSAGE.getPerm()) && !sender.hasPermission(Perm.RECEIVE_BYPASS.getPerm())) {
+        if (!recipient.hasPermission(Perm.RECEIVE_MESSAGE.getPerm()) && !sender.hasPermission(Perm.RECEIVE_OVERRIDE.getPerm())) {
             sender.sendMessage(Resolvers.getInstance().parsePluginPrefix(Message.ERROR_RECIPIENT_NO_PERMS.getMessage()));
             return false;
         }
@@ -61,7 +57,7 @@ public class PrivateMessage implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (args.length > 1) return new ArrayList<>();
+        if (args.length > 1) return blankList;
         return null;
     }
 }

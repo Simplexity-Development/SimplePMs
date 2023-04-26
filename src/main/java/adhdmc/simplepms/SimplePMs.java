@@ -4,8 +4,8 @@ import adhdmc.simplepms.commands.PrivateMessage;
 import adhdmc.simplepms.commands.ReloadCommand;
 import adhdmc.simplepms.commands.ReplyCommand;
 import adhdmc.simplepms.commands.SocialSpyCommand;
+import adhdmc.simplepms.config.LocaleConfig;
 import adhdmc.simplepms.listeners.LoginListener;
-import adhdmc.simplepms.utils.Message;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -14,8 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashSet;
 
 public final class SimplePMs extends JavaPlugin {
-    //todo: Add placeholderAPI support
-    //todo: Add message event
 
     private static Plugin instance;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -31,6 +29,7 @@ public final class SimplePMs extends JavaPlugin {
         } else {
             this.getLogger().info("You do not have PlaceholderAPI loaded on your server. Any PlaceholderAPI placeholders used in this plugin's messages, will not work.");
         }
+        LocaleConfig.getInstance().reloadLocale();
     }
 
     public static MiniMessage getMiniMessage() {

@@ -1,8 +1,5 @@
 package adhdmc.simplepms.utils;
 
-import adhdmc.simplepms.SimplePMs;
-import org.bukkit.configuration.file.FileConfiguration;
-
 public enum Message {
     //plugin
     PLUGIN_PREFIX("<yellow>SimplePM<white> »"),
