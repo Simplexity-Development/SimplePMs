@@ -35,7 +35,7 @@ A simple plugin that allows for players to send private messages to one another,
 - `spm.recipient.override`
    <br> Allows a player to send players a direct message whether they have the `receive` permission or not. Useful for staff.
    <br> Default: `op`
-  - `spm.consolespy:`
+- `spm.consolespy:`
    <br> Allows a player to read messages being sent from the console directly to players
    <br> Default: op
 - `spm.reload`: 
