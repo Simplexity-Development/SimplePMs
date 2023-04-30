@@ -41,6 +41,20 @@ public class Resolvers {
         });
     }
 
+
+    /**
+     * Parses a message between 2 players. Will parse PAPI placeholders if placeholderAPI is on the server
+     * Uses the default placeholders:
+     * <ul><li>{@code <plugin_prefix>}
+     * <li>{@code <target>}
+     * <li>{@code <initiator>}
+     * <li>{@code <message>}</ul>
+     * @param message String
+     * @param initiator Player
+     * @param target Player
+     * @param messageContent String
+     * @return Component
+     */
     public Component parseMessagePlayerToPlayer(String message, Player initiator, Player target, String messageContent){
         if (papiEnabled) {
             return miniMessage.deserialize(message,
@@ -59,6 +73,20 @@ public class Resolvers {
         }
     }
 
+    /**
+     * Parses a message from the console to a player. Will parse PAPI placeholders if placeholderAPI is on the server
+     * Uses the default placeholders:
+     * <ul><li>{@code <plugin_prefix>}
+     * <li>{@code <target>}
+     * <li>{@code <initiator>}
+     * <li>{@code <message>}</ul>
+     * @param message String
+     * @param initiator Component
+     * @param target Player
+     * @param messageContent String
+     * @return Component
+     */
+
     public Component parseMessageConsoleToPlayer(String message, Component initiator, Player target, String messageContent){
         if (papiEnabled) {
             return miniMessage.deserialize(message,
@@ -75,6 +103,20 @@ public class Resolvers {
                     Placeholder.unparsed("message", messageContent));
         }
     }
+
+    /**
+     * Parses a message from a Player to the Console. Will parse PAPI placeholders if placeholderAPI is on the server
+     * Uses the default placeholders:
+     * <ul><li>{@code <plugin_prefix>}
+     * <li>{@code <target>}
+     * <li>{@code <initiator>}
+     * <li>{@code <message>}</ul>
+     * @param message String
+     * @param initiator Player
+     * @param target Component
+     * @param messageContent String
+     * @return Component
+     */
 
     public Component parseMessagePlayerToConsole(String message, Player initiator, Component target, String messageContent){
         if(papiEnabled) {
@@ -93,12 +135,27 @@ public class Resolvers {
         }
     }
 
-
+    /**
+     * Parses the placeholder for the plugin prefix from the given message
+     * Uses the default placeholders:
+     * <ul><li>{@code <plugin_prefix>}</ul>
+     * @param message String
+     * @return Component
+     */
     public Component parsePluginPrefix(String message) {
         return miniMessage.deserialize(message,
                 Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage()));
     }
 
+    /**
+     * Parses the plugin prefix and an additional placeholder, using the provided 'placeholderName' and 'string'
+     * Uses the default placeholders:
+     * <ul><li>{@code <plugin_prefix>}</ul>
+     * @param message String
+     * @param placeholderName String
+     * @param string String
+     * @return Component
+     */
     public Component parsePluginPrefixAndString(String message,String placeholderName, String string) {
         return miniMessage.deserialize(message,
                 Placeholder.parsed("plugin_prefix", Message.PLUGIN_PREFIX.getMessage()),

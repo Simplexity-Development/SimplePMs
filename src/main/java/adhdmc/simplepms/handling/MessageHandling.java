@@ -26,10 +26,23 @@ public class MessageHandling {
     NamespacedKey lastMessaged = SPMKey.LAST_MESSAGED.getKey();
     Component consoleChatComponent = SimplePMs.getMiniMessage().deserialize(Message.CONSOLE_FORMAT.getMessage());
     Component consoleSpyComponent = SimplePMs.getMiniMessage().deserialize(Message.CONSOLE_FORMAT_SPY.getMessage());
+
+    /**
+     * Calls the message event and handles socialspy for a message between 2 players.
+     * <br>Sends messageContent to Resolvers.
+     * <br>Uses Message keys:
+     * <ul><li>RECEIVING_FORMAT
+     * <li>SENDING_FORMAT
+     * <li>SPY_FORMAT</ul>
+     * @param initiator Player
+     * @param recipient Player
+     * @param messageContent String
+     */
     public void playerSenderAndReceiver(Player initiator, Player recipient, String messageContent) {
         // Calls private message event so other plugins can interact with this
         PrivateMessageEvent event = new PrivateMessageEvent(initiator, recipient, messageContent, spyingPlayers);
         Bukkit.getServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
         initiator.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, recipient.getName());
         recipient.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, initiator.getName());
         initiator.sendMessage(Resolvers.getInstance().parseMessagePlayerToPlayer(Message.SENDING_FORMAT.getMessage(), initiator, recipient, messageContent));
@@ -41,10 +54,24 @@ public class MessageHandling {
         }
     }
 
+    /**
+     * Calls the message event and handles socialspy for a message sent by the console, and received by a player
+     * <br>Sends messageContent to Resolvers.
+     * <br>Uses Message keys:
+     * <ul><li>RECEIVING_FORMAT
+     * <li>SENDING_FORMAT
+     * <li>CONSOLE_FORMAT
+     * <li>SPY_FORMAT
+     * <li>CONSOLE_FORMAT_SPY</ul>
+     * @param initiator CommandSender
+     * @param recipient Player
+     * @param messageContent String
+     */
     public void consoleSenderPlayerReceiver(CommandSender initiator, Player recipient, String messageContent) {
         // Call Event
         PrivateMessageEvent event = new PrivateMessageEvent(initiator, recipient, messageContent, spyingPlayers);
         Bukkit.getServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
         recipient.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, Message.PDC_CONSOLE.getMessage());
         recipient.sendMessage(Resolvers.getInstance().parseMessageConsoleToPlayer(Message.RECEIVING_FORMAT.getMessage(), consoleChatComponent, recipient, messageContent));
         initiator.sendMessage(Resolvers.getInstance().parseMessageConsoleToPlayer(Message.SENDING_FORMAT.getMessage(), consoleChatComponent, recipient, messageContent));
@@ -57,6 +84,19 @@ public class MessageHandling {
     }
 
 
+    /**
+     * Calls the message event and handles socialspy for a message sent by a player to the console.
+     * <br>Sends messageContent to Resolvers.
+     * <br>Uses Message keys:
+     * <ul><li>ERROR_PLAYER_COMMAND
+     * <li>SENDING_FORMAT
+     * <li>CONSOLE_FORMAT
+     * <li>SPY_FORMAT
+     * <li>CONSOLE_FORMAT_SPY</ul>
+     * @param initiator CommandSender
+     * @param messageContent String
+     */
+
     public void playerSenderConsoleReceiver(CommandSender initiator, String messageContent) {
         if (!(initiator instanceof Player initiatingPlayer)){
             initiator.sendMessage(Resolvers.getInstance().parsePluginPrefix(Message.ERROR_PLAYER_COMMAND.getMessage()));
@@ -65,6 +105,7 @@ public class MessageHandling {
         // Call Event
         PrivateMessageEvent event = new PrivateMessageEvent(initiator, Bukkit.getConsoleSender(), messageContent, spyingPlayers);
         Bukkit.getServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
         initiatingPlayer.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, Message.PDC_CONSOLE.getMessage());
         initiatingPlayer.sendMessage(Resolvers.getInstance().parseMessagePlayerToConsole(Message.SENDING_FORMAT.getMessage(), initiatingPlayer, consoleChatComponent, messageContent));
         for (Player spy : spyingPlayers) {

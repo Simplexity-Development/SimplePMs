@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 public final class SimplePMs extends JavaPlugin {
 
@@ -45,11 +46,12 @@ public final class SimplePMs extends JavaPlugin {
     }
 
     private void registerCommands() {
-        this.getCommand("msg").setExecutor(new PrivateMessage());
-        this.getCommand("reply").setExecutor(new ReplyCommand());
-        this.getCommand("socialspy").setExecutor(new SocialSpyCommand());
-        this.getCommand("spmreload").setExecutor(new ReloadCommand());
+        Objects.requireNonNull(this.getCommand("msg")).setExecutor(new PrivateMessage());
+        Objects.requireNonNull(this.getCommand("reply")).setExecutor(new ReplyCommand());
+        Objects.requireNonNull(this.getCommand("socialspy")).setExecutor(new SocialSpyCommand());
+        Objects.requireNonNull(this.getCommand("spmreload")).setExecutor(new ReloadCommand());
     }
+
 
     private static final HashSet<Player> spyingPlayers = new HashSet<>();
 

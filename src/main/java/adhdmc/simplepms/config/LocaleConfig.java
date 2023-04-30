@@ -23,11 +23,19 @@ public class LocaleConfig {
         reloadLocale();
     }
 
+    /**
+     * Gets the LocaleConfig instance, instantiates it if it has not been already
+     * @return LocaleConfig
+     */
     public static LocaleConfig getInstance() {
         if (instance == null) instance = new LocaleConfig();
         return instance;
     }
 
+    /**
+     * gets the Locale config
+     * @return FileConfiguration
+     */
     public FileConfiguration getLocale() { return localeConfig; }
 
     /**
