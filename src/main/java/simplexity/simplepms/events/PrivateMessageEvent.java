@@ -15,11 +15,10 @@ import java.util.Set;
  */
 @SuppressWarnings("unused")
 public class PrivateMessageEvent extends Event implements Cancellable {
-
-    private CommandSender initiator;
-    private CommandSender recipient;
-    private String messageContent;
-    private final Set<Player> spyingPlayers;
+    private final CommandSender initiator;
+    private final CommandSender recipient;
+    private final String messageContent;
+    private final HashSet<Player> spyingPlayers;
     private boolean cancelled;
     private static final HandlerList handlers = new HandlerList();
 
@@ -79,17 +78,6 @@ public class PrivateMessageEvent extends Event implements Cancellable {
      */
     public String getMessageContent() {
         return messageContent;
-    }
-
-    /**
-     * Sets the message that will be sent from this event.
-     * Note that this only affects the actual message content and not the way the message is formatted
-     *
-     * @param messageContent String
-     */
-
-    public void setMessageContent(String messageContent) {
-        this.messageContent = messageContent;
     }
 
     /**
