@@ -45,12 +45,12 @@ public class MessageHandling {
         if (event.isCancelled()) return;
         initiator.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, recipient.getName());
         recipient.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, initiator.getName());
-        initiator.sendMessage(Resolvers.getInstance().parseMessagePlayerToPlayer(Message.SENDING_FORMAT.getMessage(), initiator, recipient, messageContent));
-        recipient.sendMessage(Resolvers.getInstance().parseMessagePlayerToPlayer(Message.RECEIVING_FORMAT.getMessage(), initiator, recipient, messageContent));
+        initiator.sendMessage(Resolvers.getInstance().parseMessagePlayerToPlayer(Message.SENDING_FORMAT.getMessage(), initiator, recipient, event.getMessageContent()));
+        recipient.sendMessage(Resolvers.getInstance().parseMessagePlayerToPlayer(Message.RECEIVING_FORMAT.getMessage(), initiator, recipient, event.getMessageContent()));
         for (Player spy : spyingPlayers) {
             if (!spy.isOnline()) continue;
             if (spy.equals(initiator) || spy.equals(recipient)) continue;
-            spy.sendMessage(Resolvers.getInstance().parseMessagePlayerToPlayer(Message.SPY_FORMAT.getMessage(), initiator, recipient, messageContent));
+            spy.sendMessage(Resolvers.getInstance().parseMessagePlayerToPlayer(Message.SPY_FORMAT.getMessage(), initiator, recipient, event.getMessageContent()));
         }
     }
 
@@ -73,13 +73,13 @@ public class MessageHandling {
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) return;
         recipient.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, Message.PDC_CONSOLE.getMessage());
-        recipient.sendMessage(Resolvers.getInstance().parseMessageConsoleToPlayer(Message.RECEIVING_FORMAT.getMessage(), consoleChatComponent, recipient, messageContent));
-        initiator.sendMessage(Resolvers.getInstance().parseMessageConsoleToPlayer(Message.SENDING_FORMAT.getMessage(), consoleChatComponent, recipient, messageContent));
+        recipient.sendMessage(Resolvers.getInstance().parseMessageConsoleToPlayer(Message.RECEIVING_FORMAT.getMessage(), consoleChatComponent, recipient, event.getMessageContent()));
+        initiator.sendMessage(Resolvers.getInstance().parseMessageConsoleToPlayer(Message.SENDING_FORMAT.getMessage(), consoleChatComponent, recipient, event.getMessageContent()));
         for (Player spy : spyingPlayers) {
             if (!spy.isOnline()) continue;
             if (spy.equals(initiator) || spy.equals(recipient)) continue;
             if (!spy.hasPermission(Perm.CONSOLE_MESSAGE_SPY.getPerm())) continue;
-            spy.sendMessage(Resolvers.getInstance().parseMessageConsoleToPlayer(Message.SPY_FORMAT.getMessage(), consoleSpyComponent, recipient, messageContent));
+            spy.sendMessage(Resolvers.getInstance().parseMessageConsoleToPlayer(Message.SPY_FORMAT.getMessage(), consoleSpyComponent, recipient, event.getMessageContent()));
         }
     }
 
@@ -107,12 +107,12 @@ public class MessageHandling {
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) return;
         initiatingPlayer.getPersistentDataContainer().set(lastMessaged, PersistentDataType.STRING, Message.PDC_CONSOLE.getMessage());
-        initiatingPlayer.sendMessage(Resolvers.getInstance().parseMessagePlayerToConsole(Message.SENDING_FORMAT.getMessage(), initiatingPlayer, consoleChatComponent, messageContent));
+        initiatingPlayer.sendMessage(Resolvers.getInstance().parseMessagePlayerToConsole(Message.SENDING_FORMAT.getMessage(), initiatingPlayer, consoleChatComponent, event.getMessageContent()));
         for (Player spy : spyingPlayers) {
             if (!spy.isOnline()) continue;
             if (spy.equals(initiator)) continue;
             if (!spy.hasPermission(Perm.CONSOLE_MESSAGE_SPY.getPerm())) continue;
-            spy.sendMessage(Resolvers.getInstance().parseMessagePlayerToConsole(Message.SPY_FORMAT.getMessage(),initiatingPlayer, consoleSpyComponent, messageContent));
+            spy.sendMessage(Resolvers.getInstance().parseMessagePlayerToConsole(Message.SPY_FORMAT.getMessage(),initiatingPlayer, consoleSpyComponent, event.getMessageContent()));
         }
     }
 }

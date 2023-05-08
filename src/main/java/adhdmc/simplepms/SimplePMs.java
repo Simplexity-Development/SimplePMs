@@ -6,6 +6,8 @@ import adhdmc.simplepms.commands.ReplyCommand;
 import adhdmc.simplepms.commands.SocialSpyCommand;
 import adhdmc.simplepms.config.LocaleConfig;
 import adhdmc.simplepms.listeners.LoginListener;
+import adhdmc.simplepms.listeners.MessageRegexListener;
+import adhdmc.simplepms.listeners.QuitListener;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -25,6 +27,8 @@ public final class SimplePMs extends JavaPlugin {
         instance = this;
         registerCommands();
         this.getServer().getPluginManager().registerEvents(new LoginListener(), this);
+        this.getServer().getPluginManager().registerEvents(new QuitListener(), this);
+        this.getServer().getPluginManager().registerEvents(new MessageRegexListener(), this);
         if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             papiEnabled = true;
         } else {
