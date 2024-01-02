@@ -1,5 +1,5 @@
 # SimplePMs
-
+## Releases available on [Modrinth](https://modrinth.com/plugin/simplepms)
 A simple plugin that allows for players to send private messages to one another, and reply to the last person who they messaged or received a message from.
 <br>This plugin also has 'social spy' which allows for moderation of these messages.
 
