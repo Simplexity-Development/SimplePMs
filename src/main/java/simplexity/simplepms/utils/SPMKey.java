@@ -1,7 +1,7 @@
-package adhdmc.simplepms.utils;
+package simplexity.simplepms.utils;
 
-import adhdmc.simplepms.SimplePMs;
 import org.bukkit.NamespacedKey;
+import simplexity.simplepms.SimplePMs;
 
 public enum SPMKey {
     /**

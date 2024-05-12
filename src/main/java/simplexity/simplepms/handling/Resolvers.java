@@ -1,7 +1,5 @@
-package adhdmc.simplepms.handling;
+package simplexity.simplepms.handling;
 
-import adhdmc.simplepms.SimplePMs;
-import adhdmc.simplepms.utils.Message;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -11,6 +9,8 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import simplexity.simplepms.SimplePMs;
+import simplexity.simplepms.utils.Message;
 
 public class Resolvers {
     private static Resolvers instance;

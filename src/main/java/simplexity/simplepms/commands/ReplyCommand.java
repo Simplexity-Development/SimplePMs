@@ -1,18 +1,20 @@
-package adhdmc.simplepms.commands;
+package simplexity.simplepms.commands;
 
-import adhdmc.simplepms.handling.MessageHandling;
-import adhdmc.simplepms.utils.Perm;
-import adhdmc.simplepms.utils.SPMKey;
-import adhdmc.simplepms.utils.Message;
-import adhdmc.simplepms.handling.Resolvers;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import simplexity.simplepms.handling.MessageHandling;
+import simplexity.simplepms.handling.Resolvers;
+import simplexity.simplepms.utils.Message;
+import simplexity.simplepms.utils.Perm;
+import simplexity.simplepms.utils.SPMKey;
 
 import java.util.List;
 

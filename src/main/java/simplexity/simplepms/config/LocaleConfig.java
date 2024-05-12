@@ -1,10 +1,10 @@
-package adhdmc.simplepms.config;
+package simplexity.simplepms.config;
 
-import adhdmc.simplepms.SimplePMs;
-import adhdmc.simplepms.utils.Message;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import simplexity.simplepms.SimplePMs;
+import simplexity.simplepms.utils.Message;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,15 +1,15 @@
-package adhdmc.simplepms;
+package simplexity.simplepms;
 
-import adhdmc.simplepms.commands.PrivateMessage;
-import adhdmc.simplepms.commands.ReloadCommand;
-import adhdmc.simplepms.commands.ReplyCommand;
-import adhdmc.simplepms.commands.SocialSpyCommand;
-import adhdmc.simplepms.config.LocaleConfig;
-import adhdmc.simplepms.listeners.LoginListener;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import simplexity.simplepms.commands.PrivateMessage;
+import simplexity.simplepms.commands.ReloadCommand;
+import simplexity.simplepms.commands.ReplyCommand;
+import simplexity.simplepms.commands.SocialSpyCommand;
+import simplexity.simplepms.config.LocaleConfig;
+import simplexity.simplepms.listeners.LoginListener;
 
 import java.util.HashSet;
 import java.util.Objects;

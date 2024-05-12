@@ -1,8 +1,5 @@
-package adhdmc.simplepms.listeners;
+package simplexity.simplepms.listeners;
 
-import adhdmc.simplepms.SimplePMs;
-import adhdmc.simplepms.utils.SPMKey;
-import adhdmc.simplepms.utils.Perm;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -12,6 +9,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import simplexity.simplepms.SimplePMs;
+import simplexity.simplepms.utils.Perm;
+import simplexity.simplepms.utils.SPMKey;
 
 import java.util.HashSet;
 

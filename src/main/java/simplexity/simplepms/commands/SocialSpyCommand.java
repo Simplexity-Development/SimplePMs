@@ -1,9 +1,5 @@
-package adhdmc.simplepms.commands;
+package simplexity.simplepms.commands;
 
-import adhdmc.simplepms.SimplePMs;
-import adhdmc.simplepms.handling.Resolvers;
-import adhdmc.simplepms.utils.SPMKey;
-import adhdmc.simplepms.utils.Message;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,6 +8,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import simplexity.simplepms.SimplePMs;
+import simplexity.simplepms.handling.Resolvers;
+import simplexity.simplepms.utils.Message;
+import simplexity.simplepms.utils.SPMKey;
 
 import java.util.HashSet;
 

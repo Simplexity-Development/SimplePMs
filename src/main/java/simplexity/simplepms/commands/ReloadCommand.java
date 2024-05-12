@@ -1,15 +1,15 @@
-package adhdmc.simplepms.commands;
+package simplexity.simplepms.commands;
 
-import adhdmc.simplepms.SimplePMs;
-import adhdmc.simplepms.config.LocaleConfig;
-import adhdmc.simplepms.utils.Message;
-import adhdmc.simplepms.utils.Perm;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import simplexity.simplepms.SimplePMs;
+import simplexity.simplepms.config.LocaleConfig;
+import simplexity.simplepms.utils.Message;
+import simplexity.simplepms.utils.Perm;
 
 public class ReloadCommand implements CommandExecutor {
     MiniMessage miniMessage = SimplePMs.getMiniMessage();

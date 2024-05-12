@@ -1,7 +1,7 @@
 name: SimplePMs
 version: '${project.version}'
-main: adhdmc.simplepms.SimplePMs
-api-version: 1.19
+main: simplexity.simplepms.SimplePMs
+api-version: 1.18
 authors: [ Rhythmic, Peashooter101 ]
 description: Plugin focused on simple private messaging.
 softdepend:

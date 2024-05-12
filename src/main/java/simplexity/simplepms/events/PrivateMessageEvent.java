@@ -1,4 +1,4 @@
-package adhdmc.simplepms.events;
+package simplexity.simplepms.events;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

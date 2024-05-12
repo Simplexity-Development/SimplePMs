@@ -1,16 +1,16 @@
-package adhdmc.simplepms.handling;
+package simplexity.simplepms.handling;
 
-import adhdmc.simplepms.SimplePMs;
-import adhdmc.simplepms.events.PrivateMessageEvent;
-import adhdmc.simplepms.utils.Message;
-import adhdmc.simplepms.utils.Perm;
-import adhdmc.simplepms.utils.SPMKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
+import simplexity.simplepms.SimplePMs;
+import simplexity.simplepms.events.PrivateMessageEvent;
+import simplexity.simplepms.utils.Message;
+import simplexity.simplepms.utils.Perm;
+import simplexity.simplepms.utils.SPMKey;
 
 import java.util.HashSet;
 

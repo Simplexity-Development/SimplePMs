@@ -1,4 +1,4 @@
-package adhdmc.simplepms.utils;
+package simplexity.simplepms.utils;
 
 import org.bukkit.permissions.Permission;
 
