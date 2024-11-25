@@ -1,7 +1,7 @@
 name: SimplePMs
 version: '${project.version}'
 main: simplexity.simplepms.SimplePMs
-api-version: 1.18
+api-version: 1.19
 authors: [ Rhythmic, Peashooter101 ]
 description: Plugin focused on simple private messaging.
 softdepend:
@@ -10,12 +10,10 @@ commands:
   msg:
     description: "Allows the user to send a private message to someone."
     aliases: [dm, m, pm, tell, t]
-    usage: "Usage: /msg <recipient> <message>"
     permission: spm.message.send
   reply:
     description: "allows the user to reply to a private message"
     aliases: [r, re]
-    usage: "Usage: /r <message>"
     permission: spm.message.send
   socialspy:
     description: "toggles socialspy"
@@ -25,28 +23,3 @@ commands:
     description: "reloads SimplePMs"
     permission: spm.reload
 permissions:
-  spm.socialspy:
-    description: "Allows a user to read other people's PMs"
-    default: op
-    children: ["spm.socialspy.toggle"]
-  spm.socialspy.toggle:
-    description: "Allows a user to read other people's PMs"
-    default: op
-  spm.consolespy:
-    description: "Allows a user to read messages being sent from the console directly to players"
-    default: op
-  spm.reload:
-    description: "Allows  the player to reload the configuration"
-    default: op
-  spm.recipient.override:
-    description: "Allows the player to send messages to someone who does not have the 'receive' permission"
-    default: op
-  spm.message.*:
-    description: "Allows a player to send and receive direct messages with /msg and /r"
-    default: op
-  spm.message.send:
-    description: "Allows a player to send direct messages with /msg and /r"
-    default: true
-  spm.message.receive:
-    description: "Allows a player to receive direct messages from /msg and /r"
-    default: true

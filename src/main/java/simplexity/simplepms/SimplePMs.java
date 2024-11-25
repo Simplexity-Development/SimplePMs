@@ -8,7 +8,7 @@ import simplexity.simplepms.commands.PrivateMessage;
 import simplexity.simplepms.commands.ReloadCommand;
 import simplexity.simplepms.commands.ReplyCommand;
 import simplexity.simplepms.commands.SocialSpyCommand;
-import simplexity.simplepms.config.LocaleConfig;
+import simplexity.simplepms.config.LocaleHandler;
 import simplexity.simplepms.listeners.LoginListener;
 
 import java.util.HashSet;
@@ -30,7 +30,7 @@ public final class SimplePMs extends JavaPlugin {
         } else {
             this.getLogger().info("You do not have PlaceholderAPI loaded on your server. Any PlaceholderAPI placeholders used in this plugin's messages, will not work.");
         }
-        LocaleConfig.getInstance().reloadLocale();
+        LocaleHandler.getInstance().reloadLocale();
     }
 
     public static MiniMessage getMiniMessage() {

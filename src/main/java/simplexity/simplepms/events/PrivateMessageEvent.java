@@ -21,6 +21,7 @@ public class PrivateMessageEvent extends Event implements Cancellable {
     private final HashSet<Player> spyingPlayers;
     private boolean cancelled;
     private static final HandlerList handlers = new HandlerList();
+
     public PrivateMessageEvent(CommandSender initiator, CommandSender recipient, String messageContent, HashSet<Player> spyingPlayers) {
         this.initiator = initiator;
         this.recipient = recipient;
