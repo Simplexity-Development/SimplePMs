@@ -1,5 +1,6 @@
 package simplexity.simplepms.config;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -7,152 +8,124 @@ import simplexity.simplepms.SimplePMs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class LocaleHandler {
 
+    public enum Message {
+        RELOADED("plugin.reloaded", "<prefix> <gold>SimplePM Config has been reloaded"),
+        BLOCKED_PLAYER("plugin.blocked-player", "<gray>You will no longer receive messages from <target></gray>"),
+        CONSOLE_SENDER_NAME("console.name", "<dark_red>[<red>Server</red>]</dark_red>"),
+        CONSOLE_NAME_SOCIAL_SPY("console.social-spy-name", "[Server]"),
+        MESSAGE_SENT("message.sent", "<gray>[<yellow>You</yellow> <gold>→</gold> <green><target></green>]</gray><reset> <message>"),
+        MESSAGE_RECEIVED("message.received", "<gray>[<green><initiator></green> <gold>→</gold> <yellow>You</yellow>]</gray><reset> <message>"),
+        MESSAGES_ENABLED("message.toggle-enabled", "<green>You are now allowing direct messages</green>"),
+        MESSAGES_DISABLED("message.toggle-disabled", "<red>You are no longer allowing direct messages</red>"),
+        SOCIAL_SPY_FORMAT("social-spy.format", "<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <#989898><initiator> → <target></#989898> <dark_gray>»</dark_gray> <gray><message>"),
+        SOCIAL_SPY_ENABLED("social-spy.enabled", "<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <green>PM Spy has been enabled</green>"),
+        SOCIAL_SPY_DISABLED("social-spy.disabled", "<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <gray>PM Spy has been disabled</green>"),
+        NO_PERMISSION("error.no-permission", "<red>You do not have permission to do this"),
+        NO_RECIPIENT_PROVIDED("error.no-recipient-provided", "<red>You must provide a valid recipient for your message"),
+        RECIPIENT_NOT_EXIST("error.recipient-not-exist", "<red>The user <yellow><name></yellow> either does not exist, or is not online</red>"),
+        BLANK_MESSAGE("error.blank-message", "You cannot send someone a blank message"),
+        TARGET_CANNOT_RECIEVE_MESSAGE("error.cannot-receive-message", "<red>Sorry, looks like that player cannot receive messages right now</red>"),
+        CANNOT_REPLY("error.cannot-reply", "<red>There is nobody to reply to, sorry. Try <gray>/msg [name]</gray> instead"),
+        YOUR_MESSAGES_CURRENTLY_DISABLED("error.your-messages-currently-disabled", "<red>Sorry, you cannot send a message to someone while your messages are disabled.</red>"),
+        CANNOT_MESSAGE_SOMEONE_YOU_BLOCKED("error.cannot-message-someone-you-blocked", "<red>Sorry, you cannot message someone you currently have blocked.</red>"),
+        ONLY_PLAYER("error.only-player", "<red>You must be a player to execute this command.");
+
+        private final String path;
+        private String message;
+
+        Message(String path, String message) {
+            this.path = path;
+            this.message = message;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+    }
+
     private static LocaleHandler instance;
     private final String fileName = "locale.yml";
-    private final File localeFile = new File(SimplePMs.getInstance().getDataFolder(), fileName);
-    private final FileConfiguration localeConfig = new YamlConfiguration();
-    private String pluginPrefix, pluginReloaded, pluginBlockedPlayer, consoleMessagePrefix, consoleSocialSpyPrefix, messageSent,
-            messageReceived, socialSpyFormat, socialSpyEnabled, socialSpyDisabled, errorNoPermission,
-            errorNoRecipientProvided, errorRecipientOffline, errorBlankMessage, errorRecipientDoesNotHavePerms,
-            errorRecipientNotAcceptingPMs, errorOnlyPlayer, errorNoUserToReplyTo, toggleEnabled, toggleDisabled;
-
+    private final File dataFile = new File(SimplePMs.getInstance().getDataFolder(), fileName);
+    private FileConfiguration locale = new YamlConfiguration();
 
     private LocaleHandler() {
-        if (!localeFile.exists()) SimplePMs.getInstance().saveResource(fileName, false);
+        try {
+            dataFile.getParentFile().mkdirs();
+            dataFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         reloadLocale();
     }
 
-    /**
-     * Gets the LocaleConfig instance, instantiates it if it has not been already
-     *
-     * @return LocaleConfig
-     */
     public static LocaleHandler getInstance() {
-        if (instance == null) instance = new LocaleHandler();
+        if (instance == null) {
+            instance = new LocaleHandler();
+        }
         return instance;
     }
 
-    /**
-     * gets the Locale config
-     *
-     * @return FileConfiguration
-     */
-    public FileConfiguration getLocale() {
-        return localeConfig;
-    }
-
-    /**
-     * Reloads all locale messages. Logs errors to console if any are found
-     */
     public void reloadLocale() {
         try {
-            localeConfig.load(localeFile);
+            locale.load(dataFile);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
-        pluginPrefix = localeConfig.getString("plugin.prefix", "<yellow>SimplePM<white> »");
-        pluginReloaded = localeConfig.getString("plugin.reloaded", "<prefix> <gold>SimplePM Config has been reloaded");
-        pluginBlockedPlayer = localeConfig.getString("plugin.blocked-player", "<prefix> <gray>You will no longer receive messages from <target></gray>");
-        consoleMessagePrefix = localeConfig.getString("console.message-prefix", "<dark_red>[<red>Server</red>]</dark_red>");
-        consoleSocialSpyPrefix = localeConfig.getString("console.social-spy-prefix", "<dark_gray>[Server]</dark_gray>");
-        messageSent = localeConfig.getString("message.sent", "<gray>[<yellow>You</yellow> <gold>→</gold> <green><target></green>]</gray><reset> <message>");
-        messageReceived = localeConfig.getString("message.received", "<gray>[<green><initiator></green> <gold>→</gold> <yellow>You</yellow>]</gray><reset> <message>");
-        socialSpyFormat = localeConfig.getString("social-spy.format", "<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <#989898><initiator> → <target></#989898> <dark_gray>»</dark_gray> <gray><message>");
-        socialSpyEnabled = localeConfig.getString("social-spy.enabled", "<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <green>PM Spy has been enabled");
-        socialSpyDisabled = localeConfig.getString("social-spy.disabled", "<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <gray>PM Spy has been disabled");
-        errorNoPermission = localeConfig.getString("error.no-permission", "<prefix> <red>You do not have permission to do this</red>");
-        errorNoRecipientProvided = localeConfig.getString("error.no-recipient-provided", "<prefix> <red>You must provide a valid recipient for your message</red>");
-        errorRecipientOffline = localeConfig.getString("error.recipient-offline", "<prefix> There are no players online by the name of <target>");
-        errorBlankMessage = localeConfig.getString("error.blank-message", "<prefix> <red>You cannot send someone a blank message</red>");
-        errorRecipientDoesNotHavePerms = localeConfig.getString("error.recipient-does-not-have-perms", "<prefix> <gray>Sorry, looks like that player cannot receive messages right now</gray>");
-        errorRecipientNotAcceptingPMs = localeConfig.getString("error.recipient-not-accepting-pms", "<prefix> <gray>Sorry, looks like that player isn't accepting messages right now</gray>");
-        errorOnlyPlayer = localeConfig.getString("error.only-player", "<prefix> <red>You must be a player to use this command</red>");
-        errorNoUserToReplyTo = localeConfig.getString("error.no-user-to-reply-to", "<prefix> <red>There is nobody to reply to, sorry. Try <gray>/msg [name]</gray> instead");
-        toggleEnabled = localeConfig.getString("toggle.enabled", "<prefix> <green>You are now allowing direct messages</green>");
-        toggleDisabled = localeConfig.getString("toggle.disabled", "<prefix> <red>You are no longer allowing direct messages</red>");
+        populateLocale();
+        sortLocale();
+        saveLocale();
+    }
+
+
+    private void populateLocale() {
+        Set<Message> missing = new HashSet<>(Arrays.asList(Message.values()));
+        for (Message message : Message.values()) {
+            if (locale.contains(message.getPath())) {
+                message.setMessage(locale.getString(message.getPath()));
+                missing.remove(message);
+            }
+        }
+
+        for (Message message : missing) {
+            locale.set(message.getPath(), message.getMessage());
+        }
+
 
     }
 
-    public String getPluginPrefix() {
-        return pluginPrefix;
+    private void sortLocale() {
+        Map<String, Object> sortedMap = new TreeMap<>();
+        for (String key : locale.getKeys(true)) {
+            sortedMap.put(key, locale.get(key));
+        }
+
+        // Clear and rewrite the keys in sorted order
+        sortedMap.forEach(locale::set);
     }
 
-    public String getPluginReloaded() {
-        return pluginReloaded;
+    private void saveLocale() {
+        try {
+            locale.save(dataFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public String getPluginBlockedPlayer() {
-        return pluginBlockedPlayer;
-    }
-
-    public String getConsoleMessagePrefix() {
-        return consoleMessagePrefix;
-    }
-
-    public String getConsoleSocialSpyPrefix() {
-        return consoleSocialSpyPrefix;
-    }
-
-    public String getMessageSent() {
-        return messageSent;
-    }
-
-    public String getMessageReceived() {
-        return messageReceived;
-    }
-
-    public String getSocialSpyFormat() {
-        return socialSpyFormat;
-    }
-
-    public String getSocialSpyEnabled() {
-        return socialSpyEnabled;
-    }
-
-    public String getSocialSpyDisabled() {
-        return socialSpyDisabled;
-    }
-
-    public String getErrorNoPermission() {
-        return errorNoPermission;
-    }
-
-    public String getErrorNoRecipientProvided() {
-        return errorNoRecipientProvided;
-    }
-
-    public String getErrorRecipientOffline() {
-        return errorRecipientOffline;
-    }
-
-    public String getErrorBlankMessage() {
-        return errorBlankMessage;
-    }
-
-    public String getErrorRecipientDoesNotHavePerms() {
-        return errorRecipientDoesNotHavePerms;
-    }
-
-    public String getErrorRecipientNotAcceptingPMs() {
-        return errorRecipientNotAcceptingPMs;
-    }
-
-    public String getErrorOnlyPlayer() {
-        return errorOnlyPlayer;
-    }
-
-    public String getErrorNoUserToReplyTo() {
-        return errorNoUserToReplyTo;
-    }
-
-    public String getToggleEnabled() {
-        return toggleEnabled;
-    }
-
-    public String getToggleDisabled() {
-        return toggleDisabled;
-    }
 }

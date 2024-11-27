@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,11 +19,11 @@ public class PrivateMessageEvent extends Event implements Cancellable {
     private final CommandSender initiator;
     private final CommandSender recipient;
     private final String messageContent;
-    private final HashSet<Player> spyingPlayers;
+    private final List<Player> spyingPlayers;
     private boolean cancelled;
     private static final HandlerList handlers = new HandlerList();
 
-    public PrivateMessageEvent(CommandSender initiator, CommandSender recipient, String messageContent, HashSet<Player> spyingPlayers) {
+    public PrivateMessageEvent(CommandSender initiator, CommandSender recipient, String messageContent, List<Player> spyingPlayers) {
         this.initiator = initiator;
         this.recipient = recipient;
         this.messageContent = messageContent;
@@ -69,8 +70,8 @@ public class PrivateMessageEvent extends Event implements Cancellable {
      * Gets the list of players who currently have SocialSpy toggled on
      * @return {@code Set<Player>}
      */
-    public Set<Player> getSpyingPlayers() {
-        return Collections.unmodifiableSet(spyingPlayers);
+    public List<Player> getSpyingPlayers() {
+        return spyingPlayers;
     }
 
     /**

@@ -34,7 +34,6 @@ public class Util {
         }
         if (SimplePMs.isPapiEnabled()) {
             return miniMessage.deserialize(message,
-                    Placeholder.parsed("prefix", LocaleHandler.getInstance().getPluginPrefix()),
                     Placeholder.component("initiator", senderName),
                     Placeholder.component("target", otherSenderName),
                     Placeholder.parsed("value", value),
@@ -42,7 +41,6 @@ public class Util {
                     papiTag(otherPlayerSender));
         } else {
             return miniMessage.deserialize(message,
-                    Placeholder.parsed("prefix", LocaleHandler.getInstance().getPluginPrefix()),
                     Placeholder.component("initiator", senderName),
                     Placeholder.component("target", otherSenderName),
                     Placeholder.parsed("value", value));
@@ -59,6 +57,17 @@ public class Util {
     }
 
     public static Player getPlayer(String name) {
-        return SimplePMs.getInstance().getServer().getPlayer(name);
+        Player player;
+        player = SimplePMs.getInstance().getServer().getPlayer(name);
+        if (player != null) {
+            return player;
+        }
+        for (Player listedPlayer : SimplePMs.getPlayers()) {
+            //noinspection deprecation
+            if (listedPlayer.getDisplayName().equalsIgnoreCase(name)) {
+                return listedPlayer;
+            }
+        }
+        return null;
     }
 }

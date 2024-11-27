@@ -11,7 +11,10 @@ import simplexity.simplepms.commands.SocialSpyCommand;
 import simplexity.simplepms.config.LocaleHandler;
 import simplexity.simplepms.listeners.LoginListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 
 public final class SimplePMs extends JavaPlugin {
@@ -19,6 +22,16 @@ public final class SimplePMs extends JavaPlugin {
     private static Plugin instance;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
     private static boolean papiEnabled = false;
+    private static final List<Player> players = new ArrayList<>();
+    private static final List<Player> spyingPlayers = new ArrayList<>();
+
+    public static List<Player> getPlayers() {
+        return players;
+    }
+    public static List<Player> getSpyingPlayers() {
+        return spyingPlayers;
+    }
+
 
     @Override
     public void onEnable() {
@@ -50,13 +63,6 @@ public final class SimplePMs extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("reply")).setExecutor(new ReplyCommand());
         Objects.requireNonNull(this.getCommand("socialspy")).setExecutor(new SocialSpyCommand());
         Objects.requireNonNull(this.getCommand("spmreload")).setExecutor(new ReloadCommand());
-    }
-
-
-    private static final HashSet<Player> spyingPlayers = new HashSet<>();
-
-    public static HashSet<Player> getSpyingPlayers() {
-        return spyingPlayers;
     }
 
 }
