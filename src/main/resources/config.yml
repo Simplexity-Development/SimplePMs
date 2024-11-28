@@ -5,3 +5,9 @@ mysql:
   name: homes
   username: username1
   password: badpassword!
+allow-messaging:
+  hidden-players: false
+  console: true
+valid-console-names:
+  - server
+  - console

@@ -9,42 +9,48 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.LocaleHandler;
 
 public class Util {
     private static final MiniMessage miniMessage = SimplePMs.getMiniMessage();
 
-    public static Component parseMessage(String message, CommandSender sender, CommandSender otherSender, String value) {
-        Component senderName;
-        Component otherSenderName;
-        Player playerSender = null;
-        Player otherPlayerSender = null;
-        if (sender instanceof Player) {
-            playerSender = (Player) sender;
-            senderName = playerSender.displayName();
-        } else {
-            senderName = Component.text(sender.getName());
-        }
-        if (otherSender instanceof Player) {
-            otherPlayerSender = (Player) otherSender;
-            otherSenderName = otherPlayerSender.displayName();
-        } else {
-            otherSenderName = Component.text(otherSender.getName());
-        }
+    public static Component parseMessage(String localeMessage, @NotNull CommandSender sender,
+                                         @NotNull CommandSender otherSender, String messageContent,
+                                         boolean socialSpy) {
+        Component senderName = getCommmandSenderComponent(sender, socialSpy);
+        Component otherSenderName = getCommmandSenderComponent(otherSender, socialSpy);
+        Player sendingPlayer = getPlayerFromCommandSender(sender);
+        Player otherSendingPlayer = getPlayerFromCommandSender(otherSender);
         if (SimplePMs.isPapiEnabled()) {
-            return miniMessage.deserialize(message,
+            return miniMessage.deserialize(localeMessage,
                     Placeholder.component("initiator", senderName),
                     Placeholder.component("target", otherSenderName),
-                    Placeholder.parsed("value", value),
-                    papiTag(playerSender),
-                    papiTag(otherPlayerSender));
+                    Placeholder.unparsed("message", messageContent),
+                    papiTag(sendingPlayer),
+                    papiTag(otherSendingPlayer));
         } else {
-            return miniMessage.deserialize(message,
+            return miniMessage.deserialize(localeMessage,
                     Placeholder.component("initiator", senderName),
                     Placeholder.component("target", otherSenderName),
-                    Placeholder.parsed("value", value));
+                    Placeholder.unparsed("message", messageContent));
         }
+    }
+
+    private static Component getCommmandSenderComponent(CommandSender sender, boolean socialSpy) {
+        if (!(sender instanceof Player player)) {
+            if (socialSpy) return miniMessage.deserialize(LocaleHandler.Message.CONSOLE_NAME_SOCIAL_SPY.getMessage());
+            return miniMessage.deserialize(LocaleHandler.Message.CONSOLE_SENDER_NAME.getMessage());
+        }
+        return player.displayName();
+    }
+
+    public static Player getPlayerFromCommandSender(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            return null;
+        }
+        return player;
     }
 
     public static TagResolver papiTag(final Player player) {

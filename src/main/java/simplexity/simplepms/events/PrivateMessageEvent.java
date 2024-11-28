@@ -19,11 +19,11 @@ public class PrivateMessageEvent extends Event implements Cancellable {
     private final CommandSender initiator;
     private final CommandSender recipient;
     private final String messageContent;
-    private final List<Player> spyingPlayers;
+    private final Set<Player> spyingPlayers;
     private boolean cancelled;
     private static final HandlerList handlers = new HandlerList();
 
-    public PrivateMessageEvent(CommandSender initiator, CommandSender recipient, String messageContent, List<Player> spyingPlayers) {
+    public PrivateMessageEvent(CommandSender initiator, CommandSender recipient, String messageContent, Set<Player> spyingPlayers) {
         this.initiator = initiator;
         this.recipient = recipient;
         this.messageContent = messageContent;
@@ -70,8 +70,8 @@ public class PrivateMessageEvent extends Event implements Cancellable {
      * Gets the list of players who currently have SocialSpy toggled on
      * @return {@code Set<Player>}
      */
-    public List<Player> getSpyingPlayers() {
-        return spyingPlayers;
+    public Set<Player> getSpyingPlayers() {
+        return Collections.unmodifiableSet(spyingPlayers);
     }
 
     /**
