@@ -23,6 +23,7 @@ public class ConfigHandler {
         SimplePMs.getInstance().reloadConfig();
         FileConfiguration config = SimplePMs.getInstance().getConfig();
         SQLHandler.getInstance().init();
+        LocaleHandler.getInstance().reloadLocale();
         validNamesForConsole.clear();
         mysqlEnabled = config.getBoolean("mysql.enabled");
         mysqlIp = config.getString("mysql.ip");

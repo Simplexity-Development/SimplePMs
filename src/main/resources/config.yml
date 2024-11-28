@@ -1,4 +1,6 @@
 #
+
+#
 mysql:
   enabled: false
   ip: "localhost:3306"
@@ -11,3 +13,6 @@ allow-messaging:
 valid-console-names:
   - server
   - console
+# This sends a specific message to console with the same socialspy format.
+# Useful for searching logs, but also may cause clutter
+console-has-social-spy: true

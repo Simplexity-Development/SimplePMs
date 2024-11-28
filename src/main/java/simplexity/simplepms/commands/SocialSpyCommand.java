@@ -23,13 +23,7 @@ public class SocialSpyCommand implements CommandExecutor {
         }
         UUID uuid = player.getUniqueId();
         PlayerSettings settings = SQLHandler.getInstance().getSettings(uuid);
-        if (settings == null) {
-            SQLHandler.getInstance().setSocialSpyEnabled(uuid, false);
-            sender.sendRichMessage(LocaleHandler.Message.SOCIAL_SPY_DISABLED.getMessage());
-            SimplePMs.getSpyingPlayers().remove(player);
-            return true;
-        }
-        if (settings.socialSpyEnabled()) {
+        if (settings == null || settings.socialSpyEnabled()) {
             SQLHandler.getInstance().setSocialSpyEnabled(uuid, false);
             sender.sendRichMessage(LocaleHandler.Message.SOCIAL_SPY_DISABLED.getMessage());
             SimplePMs.getSpyingPlayers().remove(player);

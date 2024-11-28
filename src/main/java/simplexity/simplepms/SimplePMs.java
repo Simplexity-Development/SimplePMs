@@ -50,7 +50,6 @@ public final class SimplePMs extends JavaPlugin {
         consoleSender = this.getServer().getConsoleSender();
         this.saveDefaultConfig();
         ConfigHandler.getInstance().loadConfigValues();
-        LocaleHandler.getInstance().reloadLocale();
     }
 
     public static MiniMessage getMiniMessage() {

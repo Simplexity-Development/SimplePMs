@@ -1,6 +1,5 @@
 package simplexity.simplepms.commands;
 
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -22,7 +21,7 @@ public class ReplyCommand implements TabExecutor {
             sender.sendRichMessage(LocaleHandler.Message.CANNOT_REPLY.getMessage());
             return false;
         }
-        if (!MessageHandling.getInstance().canMessageTarget(sender, recipient)) {
+        if (MessageHandling.getInstance().messagingBlocked(sender, recipient)) {
             return false;
         }
         String message = String.join(" ", args);

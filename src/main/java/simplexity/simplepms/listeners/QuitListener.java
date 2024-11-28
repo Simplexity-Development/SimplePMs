@@ -8,7 +8,8 @@ import simplexity.simplepms.SimplePMs;
 public class QuitListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        SimplePMs.getPlayers().remove(e.getPlayer().getName());
+        SimplePMs.getSpyingPlayers().remove(e.getPlayer());
+        SimplePMs.getPlayers().remove(e.getPlayer());
     }
 
 }

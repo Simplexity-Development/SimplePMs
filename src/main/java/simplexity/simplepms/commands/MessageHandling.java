@@ -13,11 +13,13 @@ import simplexity.simplepms.saving.SQLHandler;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MessageHandling {
     private static MessageHandling instance;
     private static final String RECEIVE_PERMISSION = "message.basic.receive";
     private static final String ADMIN_OVERRIDE = "message.admin.override";
+    private static final Logger logger = SimplePMs.getInstance().getLogger();
     public static final HashMap<CommandSender, CommandSender> lastMessaged = new HashMap<>();
 
 
@@ -37,36 +39,51 @@ public class MessageHandling {
         return Util.getPlayer(targetString);
     }
 
-    public boolean canMessageTarget(CommandSender sender, CommandSender recipient) {
+    public boolean messagingBlocked(CommandSender sender, CommandSender recipient) {
         if (sender.hasPermission(ADMIN_OVERRIDE)) {
-            return true;
+            return false;
         }
         if (!(recipient instanceof Player target)) {
-            if (!recipient.equals(SimplePMs.getPMConsoleSender())) return false;
-            return ConfigHandler.getInstance().canPlayersSendToConsole();
+            return !canSendToNonPlayer(sender, recipient);
         }
         if (!(sender instanceof Player initiator)) {
-            sender.sendRichMessage("Somehow, you do not have the permission message.admin.override and are also not a player. This should not happen.");
-            return false;
+            logger.info("[ERROR] There was an attempt to send a message from a non-player that is not the console. Info: ");
+            logger.info("Sender: " + sender.getName() + " [" + sender + "]");
+            logger.info("Recipient: " + recipient.getName() + " [" + recipient + "]");
+            sender.sendRichMessage(LocaleHandler.Message.SOMETHING_WENT_WRONG.getMessage());
+            return true;
         }
-        if (!initiator.canSee(target)) {
+        if (!initiator.canSee(target) && !ConfigHandler.getInstance().canPlayersSendToHiddenPlayers()) {
             initiator.sendRichMessage(LocaleHandler.Message.RECIPIENT_NOT_EXIST.getMessage(),
                     Placeholder.unparsed("name", target.getName()));
-            return false;
+            return true;
         }
         if (messagesDisabled(initiator)) {
             initiator.sendRichMessage(LocaleHandler.Message.YOUR_MESSAGES_CURRENTLY_DISABLED.getMessage());
-            return false;
+            return true;
         }
         if (messagesDisabled(target) || !target.hasPermission(RECEIVE_PERMISSION) || userBlocked(target, initiator)) {
             initiator.sendRichMessage(LocaleHandler.Message.TARGET_CANNOT_RECIEVE_MESSAGE.getMessage());
-            return false;
+            return true;
         }
         if (userBlocked(initiator, target)) {
             initiator.sendRichMessage(LocaleHandler.Message.CANNOT_MESSAGE_SOMEONE_YOU_BLOCKED.getMessage());
-            return false;
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    private boolean canSendToNonPlayer(CommandSender sender, CommandSender recipient) {
+        if (!recipient.equals(SimplePMs.getPMConsoleSender())) {
+            logger.info("[ERROR] There was an attempt to send a message to a non-player that is not the console. Info: ");
+            logger.info("Sender: " + sender.getName() + " [" + sender + "]");
+            logger.info("Recipient: " + recipient.getName() + " [" + recipient + "]");
+            sender.sendRichMessage(LocaleHandler.Message.SOMETHING_WENT_WRONG.getMessage());
+            return true;
+        }
+        if (ConfigHandler.getInstance().canPlayersSendToConsole()) return true;
+        sender.sendRichMessage(LocaleHandler.Message.CANNOT_MESSAGE_CONSOLE.getMessage());
+        return false;
     }
 
     public boolean messagesDisabled(Player player) {
@@ -74,7 +91,7 @@ public class MessageHandling {
         if (playerSettings == null) {
             return false;
         }
-        return !playerSettings.messagesEnabled();
+        return playerSettings.messagesDisabled();
     }
 
     public boolean userBlocked(Player player1, Player player2) {

@@ -53,7 +53,7 @@ public class SQLHandler {
                         CREATE TABLE IF NOT EXISTS settings (
                             player_uuid VARCHAR (36) NOT NULL PRIMARY KEY,
                             socialspy_enabled BOOLEAN NOT NULL,
-                            messages_enabled BOOLEAN NOT NULL
+                            messages_disabled BOOLEAN NOT NULL
                         );
                         """);
             }
@@ -129,14 +129,14 @@ public class SQLHandler {
         updateCachedSocialSpySettings(playerUUID, socialSpyEnabled);
     }
 
-    public void setMessagesEnabled(UUID playerUUID, boolean messagesEnabled) {
+    public void setMessagesDisabled(UUID playerUUID, boolean messagesDisabled) {
         String query = """
                 UPDATE settings
-                SET messages_enabled = ?
+                SET messages_disabled = ?
                 WHERE player_uuid = ?;
                 """;
         try (PreparedStatement statement = connection.prepareStatement(query)){
-            statement.setBoolean(1, messagesEnabled);
+            statement.setBoolean(1, messagesDisabled);
             statement.setString(2, String.valueOf(playerUUID));
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -144,7 +144,7 @@ public class SQLHandler {
             e.printStackTrace();
             return;
         }
-        updateCachedMessageSettings(playerUUID, messagesEnabled);
+        updateCachedMessageSettings(playerUUID, messagesDisabled);
     }
 
     private void addBlockListToCache(UUID playerUuid) {
@@ -172,15 +172,15 @@ public class SQLHandler {
 
     private void addSettingsToCache(UUID playerUuid) {
         String query = """
-                SELECT socialspy_enabled, messages_enabled
+                SELECT socialspy_enabled, messages_disabled
                 from settings where player_uuid = ?;
                 """;
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, String.valueOf(playerUuid));
             try (ResultSet resultSet = statement.executeQuery()) {
                 boolean socialSpyEnabled = resultSet.getBoolean("socialspy_enabled");
-                boolean messagesEnabled = resultSet.getBoolean("messages_enabled");
-                playerSettings.put(playerUuid, new PlayerSettings(playerUuid, socialSpyEnabled, messagesEnabled));
+                boolean messagesDisabled = resultSet.getBoolean("messages_disabled");
+                playerSettings.put(playerUuid, new PlayerSettings(playerUuid, socialSpyEnabled, messagesDisabled));
             }
         } catch (SQLException e) {
             logger.severe("Failed to add settings to cache: " + e.getMessage());
@@ -217,14 +217,14 @@ public class SQLHandler {
         playerSettings.put(playerUUID, settings);
     }
 
-    private void updateCachedMessageSettings(UUID playerUUID, boolean messagesEnabled) {
+    private void updateCachedMessageSettings(UUID playerUUID, boolean messagesDisabled) {
         PlayerSettings settings = playerSettings.get(playerUUID);
         if (settings == null) {
-            settings = new PlayerSettings(playerUUID, false, messagesEnabled);
+            settings = new PlayerSettings(playerUUID, false, messagesDisabled);
             playerSettings.put(playerUUID, settings);
             return;
         }
-        settings.setMessagesEnabled(messagesEnabled);
+        settings.setMessagesDisabled(messagesDisabled);
         playerSettings.put(playerUUID, settings);
     }
 
@@ -233,7 +233,7 @@ public class SQLHandler {
         if (ConfigHandler.getInstance().isMysqlEnabled()) {
             return DriverManager.getConnection("jdbc:mysql://" + ConfigHandler.getInstance().getMysqlIp() + "/" + ConfigHandler.getInstance().getMysqlName(), ConfigHandler.getInstance().getMysqlUsername(), ConfigHandler.getInstance().getMysqlPassword());
         } else {
-            return DriverManager.getConnection("jdbc:sqlite:" + SimplePMs.getInstance().getDataFolder() + "/homes.db");
+            return DriverManager.getConnection("jdbc:sqlite:" + SimplePMs.getInstance().getDataFolder() + "/simple-pms.db");
         }
     }
 }

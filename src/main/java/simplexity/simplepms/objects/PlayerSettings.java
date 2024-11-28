@@ -1,23 +1,22 @@
 package simplexity.simplepms.objects;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public final class PlayerSettings {
     private final UUID playerUUID;
     private boolean socialSpyEnabled;
-    private boolean messagesEnabled;
+    private boolean messagesDisabled;
 
-    public PlayerSettings(UUID playerUUID, boolean socialSpyEnabled, boolean messagesEnabled) {
+    public PlayerSettings(UUID playerUUID, boolean socialSpyEnabled, boolean messagesDisabled) {
         this.playerUUID = playerUUID;
         this.socialSpyEnabled = socialSpyEnabled;
-        this.messagesEnabled = messagesEnabled;
+        this.messagesDisabled = messagesDisabled;
     }
 
     public String toString() {
         return "Player UUID: " + playerUUID.toString()
                 + "\nSocial Spy Enabled: " + socialSpyEnabled
-                + "\nMessages Enabled: " + messagesEnabled;
+                + "\nMessages Enabled: " + messagesDisabled;
     }
 
     public UUID playerUUID() {
@@ -28,16 +27,16 @@ public final class PlayerSettings {
         return socialSpyEnabled;
     }
 
-    public boolean messagesEnabled() {
-        return messagesEnabled;
+    public boolean messagesDisabled() {
+        return messagesDisabled;
     }
 
     public void setSocialSpyEnabled(boolean socialSpyEnabled) {
         this.socialSpyEnabled = socialSpyEnabled;
     }
 
-    public void setMessagesEnabled(boolean messagesEnabled) {
-        this.messagesEnabled = messagesEnabled;
+    public void setMessagesDisabled(boolean messagesDisabled) {
+        this.messagesDisabled = messagesDisabled;
     }
 
 }
