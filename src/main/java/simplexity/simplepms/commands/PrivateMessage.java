@@ -24,7 +24,7 @@ public class PrivateMessage implements TabExecutor {
             sender.sendRichMessage(LocaleHandler.Message.BLANK_MESSAGE.getMessage());
             return false;
         }
-        CommandSender target = MessageHandling.getInstance().getTarget(sender, args);
+        CommandSender target = MessageHandling.getInstance().getTarget(args);
         if (target == null) {
             sender.sendRichMessage(LocaleHandler.Message.RECIPIENT_NOT_EXIST.getMessage(),
                     Placeholder.unparsed("name", args[0]));
@@ -37,8 +37,6 @@ public class PrivateMessage implements TabExecutor {
         MessageHandling.getInstance().callPMEvent(sender, target, message);
         return true;
     }
-
-
 
 
     @Override

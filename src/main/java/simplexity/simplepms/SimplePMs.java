@@ -1,7 +1,7 @@
 package simplexity.simplepms;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,8 +15,6 @@ import simplexity.simplepms.listeners.LoginListener;
 import simplexity.simplepms.listeners.PrivateMessageListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +27,7 @@ public final class SimplePMs extends JavaPlugin {
     private static boolean papiEnabled = false;
     private static final List<Player> players = new ArrayList<>();
     private static final HashSet<Player> spyingPlayers = new HashSet<>();
+    private static ConsoleCommandSender consoleSender;
 
     public static List<Player> getPlayers() {
         return players;
@@ -36,7 +35,6 @@ public final class SimplePMs extends JavaPlugin {
     public static Set<Player> getSpyingPlayers() {
         return spyingPlayers;
     }
-
 
     @Override
     public void onEnable() {
@@ -49,6 +47,7 @@ public final class SimplePMs extends JavaPlugin {
         } else {
             this.getLogger().info("You do not have PlaceholderAPI loaded on your server. Any PlaceholderAPI placeholders used in this plugin's messages, will not work.");
         }
+        consoleSender = this.getServer().getConsoleSender();
         this.saveDefaultConfig();
         ConfigHandler.getInstance().loadConfigValues();
         LocaleHandler.getInstance().reloadLocale();
@@ -64,6 +63,10 @@ public final class SimplePMs extends JavaPlugin {
 
     public static boolean isPapiEnabled() {
         return papiEnabled;
+    }
+
+    public static ConsoleCommandSender getPMConsoleSender() {
+        return consoleSender;
     }
 
     private void registerCommands() {

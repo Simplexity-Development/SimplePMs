@@ -53,7 +53,7 @@ public class SQLHandler {
                         CREATE TABLE IF NOT EXISTS settings (
                             player_uuid VARCHAR (36) NOT NULL PRIMARY KEY,
                             socialspy_enabled BOOLEAN NOT NULL,
-                            messages_enabled BOOLEAN NOT NULL,
+                            messages_enabled BOOLEAN NOT NULL
                         );
                         """);
             }
@@ -109,6 +109,42 @@ public class SQLHandler {
             return;
         }
         removeBlockedPlayerFromList(playerUUID, blockedPlayerUUID);
+    }
+
+    public void setSocialSpyEnabled(UUID playerUUID, boolean socialSpyEnabled) {
+        String query = """
+                UPDATE settings
+                SET socialspy_enabled = ?
+                WHERE player_uuid = ?;
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(query)){
+            statement.setBoolean(1, socialSpyEnabled);
+            statement.setString(2, String.valueOf(playerUUID));
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.severe("Failed to update social spy settings: " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+        updateCachedSocialSpySettings(playerUUID, socialSpyEnabled);
+    }
+
+    public void setMessagesEnabled(UUID playerUUID, boolean messagesEnabled) {
+        String query = """
+                UPDATE settings
+                SET messages_enabled = ?
+                WHERE player_uuid = ?;
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(query)){
+            statement.setBoolean(1, messagesEnabled);
+            statement.setString(2, String.valueOf(playerUUID));
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.severe("Failed to update message settings: " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+        updateCachedMessageSettings(playerUUID, messagesEnabled);
     }
 
     private void addBlockListToCache(UUID playerUuid) {
@@ -170,14 +206,24 @@ public class SQLHandler {
         blockList.put(playerUUID, blockedPlayers);
     }
 
-    private void updateSettings(UUID playerUUID, boolean socialSpyEnabled, boolean messagesEnabled) {
+    private void updateCachedSocialSpySettings(UUID playerUUID, boolean socialSpyEnabled) {
         PlayerSettings settings = playerSettings.get(playerUUID);
         if (settings == null) {
-            settings = new PlayerSettings(playerUUID, socialSpyEnabled, messagesEnabled);
+            settings = new PlayerSettings(playerUUID, socialSpyEnabled, true);
             playerSettings.put(playerUUID, settings);
             return;
         }
         settings.setSocialSpyEnabled(socialSpyEnabled);
+        playerSettings.put(playerUUID, settings);
+    }
+
+    private void updateCachedMessageSettings(UUID playerUUID, boolean messagesEnabled) {
+        PlayerSettings settings = playerSettings.get(playerUUID);
+        if (settings == null) {
+            settings = new PlayerSettings(playerUUID, false, messagesEnabled);
+            playerSettings.put(playerUUID, settings);
+            return;
+        }
         settings.setMessagesEnabled(messagesEnabled);
         playerSettings.put(playerUUID, settings);
     }

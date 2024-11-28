@@ -9,7 +9,7 @@ public class LoginListener implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        SimplePMs.getPlayers().add(event.getPlayer());
+
     }
 
 }

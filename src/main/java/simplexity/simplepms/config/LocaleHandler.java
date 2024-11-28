@@ -27,7 +27,7 @@ public class LocaleHandler {
         MESSAGES_DISABLED("message.toggle-disabled", "<red>You are no longer allowing direct messages</red>"),
         SOCIAL_SPY_FORMAT("social-spy.format", "<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <#989898><initiator> → <target></#989898> <dark_gray>»</dark_gray> <gray><message>"),
         SOCIAL_SPY_ENABLED("social-spy.enabled", "<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <green>PM Spy has been enabled</green>"),
-        SOCIAL_SPY_DISABLED("social-spy.disabled", "<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <gray>PM Spy has been disabled</green>"),
+        SOCIAL_SPY_DISABLED("social-spy.disabled", "<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <gray>PM Spy has been disabled</gray>"),
         NO_PERMISSION("error.no-permission", "<red>You do not have permission to do this"),
         NO_RECIPIENT_PROVIDED("error.no-recipient-provided", "<red>You must provide a valid recipient for your message"),
         RECIPIENT_NOT_EXIST("error.recipient-not-exist", "<red>The user <yellow><name></yellow> either does not exist, or is not online</red>"),

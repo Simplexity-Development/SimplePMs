@@ -2,6 +2,7 @@ package simplexity.simplepms.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import simplexity.simplepms.SimplePMs;
+import simplexity.simplepms.saving.SQLHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class ConfigHandler {
     public void loadConfigValues() {
         SimplePMs.getInstance().reloadConfig();
         FileConfiguration config = SimplePMs.getInstance().getConfig();
+        SQLHandler.getInstance().init();
         validNamesForConsole.clear();
         mysqlEnabled = config.getBoolean("mysql.enabled");
         mysqlIp = config.getString("mysql.ip");

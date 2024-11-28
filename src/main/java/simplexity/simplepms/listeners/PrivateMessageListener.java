@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import simplexity.simplepms.SimplePMs;
+import simplexity.simplepms.commands.MessageHandling;
 import simplexity.simplepms.commands.Util;
 import simplexity.simplepms.config.LocaleHandler;
 import simplexity.simplepms.events.PrivateMessageEvent;
@@ -24,6 +25,8 @@ public class PrivateMessageListener implements Listener {
                 LocaleHandler.Message.MESSAGE_RECEIVED.getMessage(),
                 initiator, target, messageContent, false));
         handleSocialSpy(initiator, target, messageContent);
+        MessageHandling.lastMessaged.put(initiator, target);
+        MessageHandling.lastMessaged.put(target, initiator);
     }
 
     public void handleSocialSpy(CommandSender initiator, CommandSender target, String messageContent) {

@@ -11,12 +11,14 @@ import simplexity.simplepms.objects.PlayerBlock;
 import simplexity.simplepms.objects.PlayerSettings;
 import simplexity.simplepms.saving.SQLHandler;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class MessageHandling {
     private static MessageHandling instance;
     private static final String RECEIVE_PERMISSION = "message.basic.receive";
     private static final String ADMIN_OVERRIDE = "message.admin.override";
+    public static final HashMap<CommandSender, CommandSender> lastMessaged = new HashMap<>();
 
 
     private MessageHandling() {
@@ -27,10 +29,10 @@ public class MessageHandling {
         return instance;
     }
 
-    public CommandSender getTarget(CommandSender sender, String[] args) {
+    public CommandSender getTarget(String[] args) {
         String targetString = args[0];
         if (ConfigHandler.getInstance().getValidNamesForConsole().contains(targetString)) {
-            return SimplePMs.getInstance().getServer().getConsoleSender();
+            return SimplePMs.getPMConsoleSender();
         }
         return Util.getPlayer(targetString);
     }
@@ -40,6 +42,7 @@ public class MessageHandling {
             return true;
         }
         if (!(recipient instanceof Player target)) {
+            if (!recipient.equals(SimplePMs.getPMConsoleSender())) return false;
             return ConfigHandler.getInstance().canPlayersSendToConsole();
         }
         if (!(sender instanceof Player initiator)) {
@@ -87,17 +90,9 @@ public class MessageHandling {
         return false;
     }
 
-    public PrivateMessageEvent callPMEvent(CommandSender initiator, CommandSender target, String messageContent){
+    public void callPMEvent(CommandSender initiator, CommandSender target, String messageContent) {
         PrivateMessageEvent messageEvent = new PrivateMessageEvent(initiator, target, messageContent, SimplePMs.getSpyingPlayers());
         SimplePMs.getInstance().getServer().getPluginManager().callEvent(messageEvent);
-        if (messageEvent.isCancelled()) {
-            return null;
-        }
-        return messageEvent;
-    }
-
-    public void sendMessage(CommandSender sender, CommandSender target, String message) {
-
     }
 
 }
