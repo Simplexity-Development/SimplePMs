@@ -18,6 +18,12 @@ commands:
   block:
     description: "Blocks a user from direct-messaging you"
     permission: message.basic.block
+  unblock:
+    description: "Unblocks a user you have blocked"
+    permission: message.basic.block
+  blocklist:
+    description: "Lists the players you have blocked and the reasons"
+    permission: message.basic.block
   socialspy:
     description: "toggles socialspy"
     aliases: [ss, spy, sspy]

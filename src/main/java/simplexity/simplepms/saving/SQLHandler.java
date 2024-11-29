@@ -1,5 +1,6 @@
 package simplexity.simplepms.saving;
 
+import org.bukkit.Bukkit;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.objects.PlayerBlock;
@@ -160,7 +161,8 @@ public class SQLHandler {
                 while (resultSet.next()) {
                     String blockReason = resultSet.getString("block_reason");
                     UUID blockedPlayerUuid = UUID.fromString(resultSet.getString("blocked_player_uuid"));
-                    playerBlocks.add(new PlayerBlock(playerUuid, blockedPlayerUuid, blockReason));
+                    String playerName = Bukkit.getOfflinePlayer(blockedPlayerUuid).getName();
+                    playerBlocks.add(new PlayerBlock(playerUuid, playerName, blockedPlayerUuid, blockReason));
                 }
                 blockList.put(playerUuid, playerBlocks);
             }
@@ -193,7 +195,8 @@ public class SQLHandler {
         if (blockedPlayers == null) {
             blockedPlayers = new ArrayList<>();
         }
-        blockedPlayers.add(new PlayerBlock(playerUUID, blockedPlayerUUID, reason));
+        String playerName = Bukkit.getOfflinePlayer(blockedPlayerUUID).getName();
+        blockedPlayers.add(new PlayerBlock(playerUUID, playerName, blockedPlayerUUID, reason));
         blockList.put(playerUUID, blockedPlayers);
     }
 

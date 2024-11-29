@@ -12,7 +12,7 @@ import simplexity.simplepms.saving.SQLHandler;
 
 import java.util.UUID;
 
-public class SocialSpyCommand implements CommandExecutor {
+public class SocialSpy implements CommandExecutor {
 
 
     @Override

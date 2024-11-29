@@ -3,6 +3,7 @@ package simplexity.simplepms.listeners;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.objects.PlayerSettings;
@@ -20,6 +21,11 @@ public class LoginListener implements Listener {
         SimplePMs.getPlayers().add(player);
 
 
+    }
+
+    @EventHandler
+    public void onChatEvent(AsyncPlayerChatEvent event) {
+        SimplePMs.getInstance().getLogger().info(event.getMessage());
     }
 
 }

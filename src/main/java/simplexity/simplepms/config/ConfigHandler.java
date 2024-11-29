@@ -15,8 +15,9 @@ public class ConfigHandler {
         return instance;
     }
 
-    private boolean mysqlEnabled, playersSendToConsole, playersSendToHiddenPlayers;
-    private String mysqlIp, mysqlName, mysqlUsername, mysqlPassword;
+    private boolean mysqlEnabled, playersSendToConsole, playersSendToHiddenPlayers, consoleHasSocialSpy;
+    private String mysqlIp, mysqlName, mysqlUsername, mysqlPassword, sentMessageFormat, receivedMessageFormat,
+            socialSpyFormat;
     private List<String> validNamesForConsole = new ArrayList<>();
 
     public void loadConfigValues() {
@@ -25,14 +26,18 @@ public class ConfigHandler {
         SQLHandler.getInstance().init();
         LocaleHandler.getInstance().reloadLocale();
         validNamesForConsole.clear();
-        mysqlEnabled = config.getBoolean("mysql.enabled");
-        mysqlIp = config.getString("mysql.ip");
-        mysqlName = config.getString("mysql.name");
-        mysqlUsername = config.getString("mysql.username");
-        mysqlPassword = config.getString("mysql.password");
+        sentMessageFormat = config.getString("format.sent", "<gray>[<yellow>You</yellow> <gold>→</gold> <green><target></green>]</gray><reset> <message>");
+        receivedMessageFormat = config.getString("format.received", "<gray>[<green><initiator></green> <gold>→</gold> <yellow>You</yellow>]</gray><reset> <message>");
+        socialSpyFormat = config.getString("format.social-spy", "<dark_gray>[<gray>Spy</gray>]</dark_gray> <gray><initiator> → <target></gray> <dark_gray>»</dark_gray> <gray><message></gray>");
+        mysqlEnabled = config.getBoolean("mysql.enabled", false);
+        mysqlIp = config.getString("mysql.ip", "localhost:3306");
+        mysqlName = config.getString("mysql.name", "homes");
+        mysqlUsername = config.getString("mysql.username", "username1");
+        mysqlPassword = config.getString("mysql.password", "badpassword!");
         playersSendToConsole = config.getBoolean("allow-messaging.console", true);
         playersSendToHiddenPlayers = config.getBoolean("allow-messaging.hidden-players", false);
         validNamesForConsole = config.getStringList("valid-console-names");
+        consoleHasSocialSpy = config.getBoolean("console-has-social-spy", true);
     }
 
     public boolean isMysqlEnabled() {
@@ -65,5 +70,21 @@ public class ConfigHandler {
 
     public List<String> getValidNamesForConsole() {
         return validNamesForConsole;
+    }
+
+    public String getSentMessageFormat() {
+        return sentMessageFormat;
+    }
+
+    public String getReceivedMessageFormat() {
+        return receivedMessageFormat;
+    }
+
+    public String getSocialSpyFormat() {
+        return socialSpyFormat;
+    }
+
+    public boolean doesConsoleHaveSocialSpy() {
+        return consoleHasSocialSpy;
     }
 }

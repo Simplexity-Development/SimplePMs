@@ -2,10 +2,11 @@ package simplexity.simplepms.objects;
 
 import java.util.UUID;
 
-public record PlayerBlock(UUID blockingPlayerUUID, UUID blockedPlayerUUID, String blockReason) {
+public record PlayerBlock(UUID blockingPlayerUUID, String blockedPlayerName, UUID blockedPlayerUUID, String blockReason) {
 
     public String toString() {
         return "PlayerBlock [" + "blockingPlayerUUID=" + blockingPlayerUUID
+                + ", blockedPlayerName=" + blockedPlayerName
                 + "blockedPlayerUUID=" + blockedPlayerUUID
                 + ", blockReason=" + blockReason + "]";
     }

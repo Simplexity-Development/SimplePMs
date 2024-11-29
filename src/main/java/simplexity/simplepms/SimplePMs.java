@@ -5,12 +5,14 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import simplexity.simplepms.commands.Block;
+import simplexity.simplepms.commands.Blocklist;
 import simplexity.simplepms.commands.PrivateMessage;
-import simplexity.simplepms.commands.ReloadCommand;
-import simplexity.simplepms.commands.ReplyCommand;
-import simplexity.simplepms.commands.SocialSpyCommand;
+import simplexity.simplepms.commands.Reload;
+import simplexity.simplepms.commands.Reply;
+import simplexity.simplepms.commands.SocialSpy;
+import simplexity.simplepms.commands.Unblock;
 import simplexity.simplepms.config.ConfigHandler;
-import simplexity.simplepms.config.LocaleHandler;
 import simplexity.simplepms.listeners.LoginListener;
 import simplexity.simplepms.listeners.PrivateMessageListener;
 
@@ -70,9 +72,12 @@ public final class SimplePMs extends JavaPlugin {
 
     private void registerCommands() {
         Objects.requireNonNull(this.getCommand("msg")).setExecutor(new PrivateMessage());
-        Objects.requireNonNull(this.getCommand("reply")).setExecutor(new ReplyCommand());
-        Objects.requireNonNull(this.getCommand("socialspy")).setExecutor(new SocialSpyCommand());
-        Objects.requireNonNull(this.getCommand("spmreload")).setExecutor(new ReloadCommand());
+        Objects.requireNonNull(this.getCommand("reply")).setExecutor(new Reply());
+        Objects.requireNonNull(this.getCommand("socialspy")).setExecutor(new SocialSpy());
+        Objects.requireNonNull(this.getCommand("spmreload")).setExecutor(new Reload());
+        Objects.requireNonNull(this.getCommand("block")).setExecutor(new Block());
+        Objects.requireNonNull(this.getCommand("unblock")).setExecutor(new Unblock());
+        Objects.requireNonNull(this.getCommand("blocklist")).setExecutor(new Blocklist());
     }
 
 }

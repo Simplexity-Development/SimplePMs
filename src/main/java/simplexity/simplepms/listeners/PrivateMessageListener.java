@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.commands.MessageHandling;
 import simplexity.simplepms.commands.Util;
+import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.config.LocaleHandler;
 import simplexity.simplepms.events.PrivateMessageEvent;
 
@@ -19,10 +20,10 @@ public class PrivateMessageListener implements Listener {
         CommandSender target = messageEvent.getRecipient();
         String messageContent = messageEvent.getMessageContent();
         initiator.sendMessage(Util.parseMessage(
-                LocaleHandler.Message.MESSAGE_SENT.getMessage(),
+                ConfigHandler.getInstance().getSentMessageFormat(),
                 initiator, target, messageContent, false));
         target.sendMessage(Util.parseMessage(
-                LocaleHandler.Message.MESSAGE_RECEIVED.getMessage(),
+                ConfigHandler.getInstance().getReceivedMessageFormat(),
                 initiator, target, messageContent, false));
         handleSocialSpy(initiator, target, messageContent);
         MessageHandling.lastMessaged.put(initiator, target);
@@ -41,7 +42,13 @@ public class PrivateMessageListener implements Listener {
                 continue;
             }
             spyingPlayer.sendMessage(Util.parseMessage(
-                    LocaleHandler.Message.SOCIAL_SPY_FORMAT.getMessage(),
+                    ConfigHandler.getInstance().getSocialSpyFormat(),
+                    initiator, target, messageContent, true
+            ));
+        }
+        if (ConfigHandler.getInstance().doesConsoleHaveSocialSpy()) {
+            SimplePMs.getPMConsoleSender().sendMessage(Util.parseMessage(
+                    ConfigHandler.getInstance().getSocialSpyFormat(),
                     initiator, target, messageContent, true
             ));
         }

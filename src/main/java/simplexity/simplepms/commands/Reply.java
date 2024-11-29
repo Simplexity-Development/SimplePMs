@@ -9,7 +9,7 @@ import simplexity.simplepms.config.LocaleHandler;
 
 import java.util.List;
 
-public class ReplyCommand implements TabExecutor {
+public class Reply implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length < 1) {

@@ -1,6 +1,10 @@
-#
-
-#
+# You can use Placeholder API placeholders in these messages. To do so put the placeholder like <papi:placeholder> so for
+# something like %player_username% you would do <papi:player_username> instead.
+format:
+  received: "<gray>[<green><initiator></green> <gold>→</gold> <yellow>You</yellow>]</gray><reset> <message>"
+  sent: "<gray>[<yellow>You</yellow> <gold>→</gold> <green><target></green>]</gray><reset> <message>"
+  social-spy: "<dark_gray>[<gray>Spy</gray>]</dark_gray> <gray><initiator> → <target></gray> <dark_gray>»</dark_gray> <gray><message></gray>"
+# Other messages can be configured in locale.yml
 mysql:
   enabled: false
   ip: "localhost:3306"
