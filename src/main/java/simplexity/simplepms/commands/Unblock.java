@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import simplexity.simplepms.config.LocaleHandler;
 import simplexity.simplepms.objects.PlayerBlock;
-import simplexity.simplepms.saving.SQLHandler;
+import simplexity.simplepms.saving.SqlHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +27,13 @@ public class Unblock implements TabExecutor {
             return false;
         }
         String blockString = args[0];
-        List<PlayerBlock> playerBlockList = SQLHandler.getInstance().getBlockList(player.getUniqueId());
+        List<PlayerBlock> playerBlockList = SqlHandler.getInstance().getBlockList(player.getUniqueId());
         UUID blockedPlayerUUID = blockedPlayerUUID(blockString, playerBlockList);
         if (blockedPlayerUUID == null) {
             player.sendRichMessage(LocaleHandler.Message.PLAYER_NOT_BLOCKED.getMessage());
             return false;
         }
-        SQLHandler.getInstance().removeBlockedPlayer(player.getUniqueId(), blockedPlayerUUID);
+        SqlHandler.getInstance().removeBlockedPlayer(player.getUniqueId(), blockedPlayerUUID);
         player.sendRichMessage(LocaleHandler.Message.NO_LONGER_BLOCKING.getMessage(),
                 Placeholder.parsed("name", blockString));
         return true;
@@ -54,7 +54,7 @@ public class Unblock implements TabExecutor {
             return null;
         }
         ArrayList<String> blocked = new ArrayList<>();
-        for (PlayerBlock block : SQLHandler.getInstance().getBlockList(player.getUniqueId())) {
+        for (PlayerBlock block : SqlHandler.getInstance().getBlockList(player.getUniqueId())) {
             blocked.add(block.blockedPlayerName());
         }
         return blocked;

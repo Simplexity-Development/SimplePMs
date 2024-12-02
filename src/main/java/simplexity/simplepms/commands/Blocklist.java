@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.LocaleHandler;
 import simplexity.simplepms.objects.PlayerBlock;
-import simplexity.simplepms.saving.SQLHandler;
+import simplexity.simplepms.saving.SqlHandler;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +27,7 @@ public class Blocklist implements CommandExecutor {
             return false;
         }
         UUID uuid = player.getUniqueId();
-        List<PlayerBlock> blockList = SQLHandler.getInstance().getBlockList(uuid);
+        List<PlayerBlock> blockList = SqlHandler.getInstance().getBlockList(uuid);
         if (blockList.isEmpty()) {
             player.sendRichMessage(LocaleHandler.Message.BLOCKLIST_EMPTY.getMessage());
             return true;
@@ -36,10 +36,12 @@ public class Blocklist implements CommandExecutor {
         for (PlayerBlock block : blockList) {
             message = message.appendNewline();
             message = message.append(miniMessage.deserialize(
-                    LocaleHandler.Message.BLOCKLIST_ITEM.getMessage(),
-                    Placeholder.parsed("name", block.blockedPlayerName()),
-                    Placeholder.unparsed("reason", block.blockReason())
+                    LocaleHandler.Message.BLOCKLIST_NAME.getMessage(),
+                    Placeholder.parsed("name", block.blockedPlayerName())
             ));
+            if (block.blockReason() == null || block.blockReason().isEmpty()) continue;
+            message = message.append(miniMessage.deserialize(LocaleHandler.Message.BLOCKLIST_REASON.getMessage(),
+                    Placeholder.parsed("reason", block.blockReason())));
         }
         sender.sendMessage(message);
         return true;

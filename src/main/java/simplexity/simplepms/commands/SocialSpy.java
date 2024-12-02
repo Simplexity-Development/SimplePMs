@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.LocaleHandler;
 import simplexity.simplepms.objects.PlayerSettings;
-import simplexity.simplepms.saving.SQLHandler;
+import simplexity.simplepms.saving.SqlHandler;
 
 import java.util.UUID;
 
@@ -22,14 +22,14 @@ public class SocialSpy implements CommandExecutor {
             return false;
         }
         UUID uuid = player.getUniqueId();
-        PlayerSettings settings = SQLHandler.getInstance().getSettings(uuid);
+        PlayerSettings settings = SqlHandler.getInstance().getSettings(uuid);
         if (settings == null || settings.socialSpyEnabled()) {
-            SQLHandler.getInstance().setSocialSpyEnabled(uuid, false);
+            SqlHandler.getInstance().setSocialSpyEnabled(uuid, false);
             sender.sendRichMessage(LocaleHandler.Message.SOCIAL_SPY_DISABLED.getMessage());
             SimplePMs.getSpyingPlayers().remove(player);
             return true;
         }
-        SQLHandler.getInstance().setSocialSpyEnabled(uuid, true);
+        SqlHandler.getInstance().setSocialSpyEnabled(uuid, true);
         sender.sendRichMessage(LocaleHandler.Message.SOCIAL_SPY_ENABLED.getMessage());
         SimplePMs.getSpyingPlayers().add(player);
         return true;

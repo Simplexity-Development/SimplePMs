@@ -8,12 +8,12 @@ import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.commands.MessageHandling;
 import simplexity.simplepms.commands.Util;
 import simplexity.simplepms.config.ConfigHandler;
-import simplexity.simplepms.config.LocaleHandler;
 import simplexity.simplepms.events.PrivateMessageEvent;
 
 public class PrivateMessageListener implements Listener {
 
     private static final String CONSOLE_SPY = "message.admin.console-spy";
+
     @EventHandler
     public void onPrivateMessage(PrivateMessageEvent messageEvent) {
         CommandSender initiator = messageEvent.getInitiator();

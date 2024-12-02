@@ -19,21 +19,21 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @SuppressWarnings("CallToPrintStackTrace")
-public class SQLHandler {
+public class SqlHandler {
     Connection connection;
     Logger logger = SimplePMs.getInstance().getLogger();
 
-    private SQLHandler() {
+    private SqlHandler() {
     }
 
     public static final HashMap<UUID, List<PlayerBlock>> blockList = new HashMap<>();
     public static final HashMap<UUID, PlayerSettings> playerSettings = new HashMap<>();
 
-    private static SQLHandler instance;
+    private static SqlHandler instance;
 
-    public static SQLHandler getInstance() {
+    public static SqlHandler getInstance() {
         if (instance == null) {
-            instance = new SQLHandler();
+            instance = new SqlHandler();
         }
         return instance;
     }
@@ -89,6 +89,7 @@ public class SQLHandler {
             statement.setString(1, String.valueOf(playerUUID));
             statement.setString(2, String.valueOf(blockedPlayerUUID));
             statement.setString(3, reason);
+            statement.executeUpdate();
         } catch (SQLException e) {
             logger.severe("Failed to add blocked player: " + e.getMessage());
             e.printStackTrace();
@@ -104,6 +105,7 @@ public class SQLHandler {
         try (PreparedStatement statement = connection.prepareStatement(query)){
             statement.setString(1, String.valueOf(playerUUID));
             statement.setString(2, String.valueOf(blockedPlayerUUID));
+            statement.executeUpdate();
         } catch (SQLException e) {
             logger.severe("Failed to remove blocked player: " + e.getMessage());
             e.printStackTrace();
@@ -195,6 +197,7 @@ public class SQLHandler {
         if (blockedPlayers == null) {
             blockedPlayers = new ArrayList<>();
         }
+        removeBlockedPlayerFromList(playerUUID, blockedPlayerUUID);
         String playerName = Bukkit.getOfflinePlayer(blockedPlayerUUID).getName();
         blockedPlayers.add(new PlayerBlock(playerUUID, playerName, blockedPlayerUUID, reason));
         blockList.put(playerUUID, blockedPlayers);

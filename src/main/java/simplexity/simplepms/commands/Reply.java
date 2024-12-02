@@ -21,7 +21,7 @@ public class Reply implements TabExecutor {
             sender.sendRichMessage(LocaleHandler.Message.CANNOT_REPLY.getMessage());
             return false;
         }
-        if (MessageHandling.getInstance().messagingBlocked(sender, recipient)) {
+        if (MessageHandling.getInstance().messagingBlocked(sender, recipient, recipient.getName())) {
             return false;
         }
         String message = String.join(" ", args);

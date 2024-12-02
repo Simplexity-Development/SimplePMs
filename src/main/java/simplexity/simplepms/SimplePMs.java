@@ -7,6 +7,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import simplexity.simplepms.commands.Block;
 import simplexity.simplepms.commands.Blocklist;
+import simplexity.simplepms.commands.MessageToggle;
 import simplexity.simplepms.commands.PrivateMessage;
 import simplexity.simplepms.commands.Reload;
 import simplexity.simplepms.commands.Reply;
@@ -16,9 +17,7 @@ import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.listeners.LoginListener;
 import simplexity.simplepms.listeners.PrivateMessageListener;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -27,11 +26,11 @@ public final class SimplePMs extends JavaPlugin {
     private static Plugin instance;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
     private static boolean papiEnabled = false;
-    private static final List<Player> players = new ArrayList<>();
+    private static final HashSet<Player> players = new HashSet<>();
     private static final HashSet<Player> spyingPlayers = new HashSet<>();
     private static ConsoleCommandSender consoleSender;
 
-    public static List<Player> getPlayers() {
+    public static HashSet<Player> getPlayers() {
         return players;
     }
     public static Set<Player> getSpyingPlayers() {
@@ -78,6 +77,7 @@ public final class SimplePMs extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("block")).setExecutor(new Block());
         Objects.requireNonNull(this.getCommand("unblock")).setExecutor(new Unblock());
         Objects.requireNonNull(this.getCommand("blocklist")).setExecutor(new Blocklist());
+        Objects.requireNonNull(this.getCommand("msgtoggle")).setExecutor(new MessageToggle());
     }
 
 }

@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.config.LocaleHandler;
-import simplexity.simplepms.saving.SQLHandler;
+import simplexity.simplepms.saving.SqlHandler;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -33,7 +33,7 @@ public class Block implements CommandExecutor {
         UUID uuid = player.getUniqueId();
         UUID blockPlayerUUID = playerToBlock.getUniqueId();
         String reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        SQLHandler.getInstance().addBlockedPlayer(uuid, blockPlayerUUID, reason);
+        SqlHandler.getInstance().addBlockedPlayer(uuid, blockPlayerUUID, reason);
         player.sendRichMessage(LocaleHandler.Message.BLOCKED_PLAYER.getMessage(),
                 Placeholder.parsed("name", playerToBlockString));
         return true;

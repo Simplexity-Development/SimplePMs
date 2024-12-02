@@ -2,7 +2,7 @@ package simplexity.simplepms.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import simplexity.simplepms.SimplePMs;
-import simplexity.simplepms.saving.SQLHandler;
+import simplexity.simplepms.saving.SqlHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class ConfigHandler {
     public void loadConfigValues() {
         SimplePMs.getInstance().reloadConfig();
         FileConfiguration config = SimplePMs.getInstance().getConfig();
-        SQLHandler.getInstance().init();
+        SqlHandler.getInstance().init();
         LocaleHandler.getInstance().reloadLocale();
         validNamesForConsole.clear();
         sentMessageFormat = config.getString("format.sent", "<gray>[<yellow>You</yellow> <gold>→</gold> <green><target></green>]</gray><reset> <message>");

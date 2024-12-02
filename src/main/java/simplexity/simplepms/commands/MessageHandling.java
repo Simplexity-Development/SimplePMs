@@ -9,7 +9,7 @@ import simplexity.simplepms.config.LocaleHandler;
 import simplexity.simplepms.events.PrivateMessageEvent;
 import simplexity.simplepms.objects.PlayerBlock;
 import simplexity.simplepms.objects.PlayerSettings;
-import simplexity.simplepms.saving.SQLHandler;
+import simplexity.simplepms.saving.SqlHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +39,7 @@ public class MessageHandling {
         return Util.getPlayer(targetString);
     }
 
-    public boolean messagingBlocked(CommandSender sender, CommandSender recipient) {
+    public boolean messagingBlocked(CommandSender sender, CommandSender recipient, String providedName) {
         if (sender.hasPermission(ADMIN_OVERRIDE)) {
             return false;
         }
@@ -55,7 +55,7 @@ public class MessageHandling {
         }
         if (!initiator.canSee(target) && !ConfigHandler.getInstance().canPlayersSendToHiddenPlayers()) {
             initiator.sendRichMessage(LocaleHandler.Message.RECIPIENT_NOT_EXIST.getMessage(),
-                    Placeholder.unparsed("name", target.getName()));
+                    Placeholder.unparsed("name", providedName));
             return true;
         }
         if (messagesDisabled(initiator)) {
@@ -87,7 +87,7 @@ public class MessageHandling {
     }
 
     public boolean messagesDisabled(Player player) {
-        PlayerSettings playerSettings = SQLHandler.playerSettings.get(player.getUniqueId());
+        PlayerSettings playerSettings = SqlHandler.playerSettings.get(player.getUniqueId());
         if (playerSettings == null) {
             return false;
         }
@@ -95,7 +95,7 @@ public class MessageHandling {
     }
 
     public boolean userBlocked(Player player1, Player player2) {
-        List<PlayerBlock> playerBlocks = SQLHandler.blockList.get(player1.getUniqueId());
+        List<PlayerBlock> playerBlocks = SqlHandler.blockList.get(player1.getUniqueId());
         if (playerBlocks == null) {
             return false;
         }

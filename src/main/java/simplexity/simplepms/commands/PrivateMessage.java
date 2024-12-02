@@ -30,7 +30,7 @@ public class PrivateMessage implements TabExecutor {
                     Placeholder.unparsed("name", args[0]));
             return false;
         }
-        if (MessageHandling.getInstance().messagingBlocked(sender, target)) {
+        if (MessageHandling.getInstance().messagingBlocked(sender, target, args[0])) {
             return false;
         }
         String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));

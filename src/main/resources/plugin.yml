@@ -11,6 +11,10 @@ commands:
     description: "Allows the user to send a private message to someone."
     aliases: [dm, m, pm, tell, t]
     permission: message.basic.send
+  msgtoggle:
+    description: "Toggles direct messages for the user"
+    aliases: [messagetoggle, mt, togglemessage, togglemsg]
+    permission: message.basic.receive
   reply:
     description: "allows the user to reply to a private message"
     aliases: [r, re]
