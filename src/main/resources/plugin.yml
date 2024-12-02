@@ -1,7 +1,7 @@
 name: SimplePMs
 version: '${project.version}'
 main: simplexity.simplepms.SimplePMs
-api-version: 1.18
+api-version: 1.20.6
 authors: [ Rhythmic, Peashooter101 ]
 description: Plugin focused on simple private messaging.
 softdepend:
@@ -10,43 +10,68 @@ commands:
   msg:
     description: "Allows the user to send a private message to someone."
     aliases: [dm, m, pm, tell, t]
-    usage: "Usage: /msg <recipient> <message>"
-    permission: spm.message.send
+    permission: message.basic.send
+  msgtoggle:
+    description: "Toggles direct messages for the user"
+    aliases: [messagetoggle, mt, togglemessage, togglemsg]
+    permission: message.basic.toggle
   reply:
     description: "allows the user to reply to a private message"
     aliases: [r, re]
-    usage: "Usage: /r <message>"
-    permission: spm.message.send
+    permission: message.basic.send
+  block:
+    description: "Blocks a user from direct-messaging you"
+    permission: message.basic.block
+  unblock:
+    description: "Unblocks a user you have blocked"
+    permission: message.basic.block
+  blocklist:
+    description: "Lists the players you have blocked and the reasons"
+    permission: message.basic.block
   socialspy:
     description: "toggles socialspy"
     aliases: [ss, spy, sspy]
-    permission: spm.socialspy.toggle
+    permission: message.admin.social-spy
   spmreload:
     description: "reloads SimplePMs"
-    permission: spm.reload
+    permission: message.reload
 permissions:
-  spm.socialspy:
-    description: "Allows a user to read other people's PMs"
+  message.reload:
     default: op
-    children: ["spm.socialspy.toggle"]
-  spm.socialspy.toggle:
-    description: "Allows a user to read other people's PMs"
+    description: reloads the config and locale
+  message.basic:
     default: op
-  spm.consolespy:
-    description: "Allows a user to read messages being sent from the console directly to players"
+    description: Base permission for basic functionality
+    children:
+      message.basic.send: true
+      message.basic.receive: true
+      message.basic.toggle: true
+      message.basic.block: true
+  message.basic.send:
     default: op
-  spm.reload:
-    description: "Allows  the player to reload the configuration"
+    description: Allows sending messages
+  message.basic.receive:
     default: op
-  spm.recipient.override:
-    description: "Allows the player to send messages to someone who does not have the 'receive' permission"
+    description: Allows receiving messages
+  message.basic.toggle:
     default: op
-  spm.message.*:
-    description: "Allows a player to send and receive direct messages with /msg and /r"
+    description: Allows enabling/disabling direct messages
+  message.basic.block:
     default: op
-  spm.message.send:
-    description: "Allows a player to send direct messages with /msg and /r"
-    default: true
-  spm.message.receive:
-    description: "Allows a player to receive direct messages from /msg and /r"
-    default: true
+    description: Allows blocking direct messages from and to specific users
+  message.admin:
+    default: op
+    description: Base permission for the admin commands
+    children:
+      message.admin.override: true
+      message.admin.social-spy: true
+      message.admin.console-spy: true
+  message.admin.override:
+    default: op
+    description: Allows messaging someone who has their messages currently disabled, has you blocked or does not have permissions to usually see messages
+  message.admin.social-spy:
+    default: op
+    description: Shows the direct messages of other players for moderation purposes
+  message.admin.console-spy:
+    default: op
+    description: Shows the direct messages sent to and from the console sender (from this plugin) to other players

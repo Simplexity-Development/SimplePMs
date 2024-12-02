@@ -26,27 +26,16 @@ A simple plugin that allows for players to send private messages to one another,
 
 ### Permissions
 
-- `spm.socialspy`
-   <br> Allows a player to read other player's private messages.
-   <br> Default: `op`
-- `spm.socialspy.toggle`: 
-   <br> Allows a player to toggle socialspy on and off
-   <br> Default: `op`
-- `spm.recipient.override`
-   <br> Allows a player to send players a direct message whether they have the `receive` permission or not. Useful for staff.
-   <br> Default: `op`
-- `spm.consolespy:`
-   <br> Allows a player to read messages being sent from the console directly to players
-   <br> Default: op
-- `spm.reload`: 
-   <br> Allows a player to reload the plugin configuration/locale. 
-   <br> Default: `op`
-- `spm.message.send`: 
-   <br> Allows a player to send direct messages with /msg and /r. 
-   <br> Default: `true`
-- `spm.message.receive`
-   <br> Allows a player to receive direct messages
-   <br> Default: `true`
+| Permission                  | What it do                                                                                                       |
+|-----------------------------|------------------------------------------------------------------------------------------------------------------|
+| `message.reload`            | Allows reloading the config/locale                                                                               |
+| `message.basic.send`        | Allows sending messages                                                                                          |
+| `message.basic.receive`     | Allows receiving messages                                                                                        |
+| `message.basic.toggle`      | Allows toggling direct messages on or off                                                                        |
+| `message.basic.block`       | Allows blocking, unblocking, and listing your blocked users                                                      |
+| `message.admin.override`    | Allows messaging users who have their messages disabled, have you blocked, or do not have the receive permission |
+| `message.admin.social-spy`  | Shows a log of direct messages being sent between players                                                        |
+| `message.admin.console-spy` | Shows a log of any direct messages being sent between the console and players (from this plugin)                 |
 
 ### PlaceholderAPI integration
 
