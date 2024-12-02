@@ -16,8 +16,7 @@ public class ConfigHandler {
     }
 
     private boolean mysqlEnabled, playersSendToConsole, playersSendToHiddenPlayers, consoleHasSocialSpy;
-    private String mysqlIp, mysqlName, mysqlUsername, mysqlPassword, sentMessageFormat, receivedMessageFormat,
-            socialSpyFormat;
+    private String mysqlIp, mysqlName, mysqlUsername, mysqlPassword, normalFormat, socialSpyFormat;
     private List<String> validNamesForConsole = new ArrayList<>();
 
     public void loadConfigValues() {
@@ -26,9 +25,8 @@ public class ConfigHandler {
         SqlHandler.getInstance().init();
         LocaleHandler.getInstance().reloadLocale();
         validNamesForConsole.clear();
-        sentMessageFormat = config.getString("format.sent", "<gray>[<yellow>You</yellow> <gold>→</gold> <green><target></green>]</gray><reset> <message>");
-        receivedMessageFormat = config.getString("format.received", "<gray>[<green><initiator></green> <gold>→</gold> <yellow>You</yellow>]</gray><reset> <message>");
-        socialSpyFormat = config.getString("format.social-spy", "<dark_gray>[<gray>Spy</gray>]</dark_gray> <gray><initiator> → <target></gray> <dark_gray>»</dark_gray> <gray><message></gray>");
+        normalFormat = config.getString("format.normal", "<displayname>");
+        socialSpyFormat = config.getString("format.social-spy", "<username>");
         mysqlEnabled = config.getBoolean("mysql.enabled", false);
         mysqlIp = config.getString("mysql.ip", "localhost:3306");
         mysqlName = config.getString("mysql.name", "homes");
@@ -72,19 +70,18 @@ public class ConfigHandler {
         return validNamesForConsole;
     }
 
-    public String getSentMessageFormat() {
-        return sentMessageFormat;
-    }
 
-    public String getReceivedMessageFormat() {
-        return receivedMessageFormat;
-    }
 
-    public String getSocialSpyFormat() {
-        return socialSpyFormat;
-    }
+
 
     public boolean doesConsoleHaveSocialSpy() {
         return consoleHasSocialSpy;
+    }
+
+    public String getNormalFormat() {
+        return normalFormat;
+    }
+    public String getSocialSpyFormat() {
+        return socialSpyFormat;
     }
 }

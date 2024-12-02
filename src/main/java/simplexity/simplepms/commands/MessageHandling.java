@@ -110,6 +110,10 @@ public class MessageHandling {
     public void callPMEvent(CommandSender initiator, CommandSender target, String messageContent) {
         PrivateMessageEvent messageEvent = new PrivateMessageEvent(initiator, target, messageContent, SimplePMs.getSpyingPlayers());
         SimplePMs.getInstance().getServer().getPluginManager().callEvent(messageEvent);
+        if (!messageEvent.isCancelled()) {
+            messageEvent.sendMessage(initiator, target, messageContent);
+        }
+
     }
 
 }

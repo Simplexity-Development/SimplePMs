@@ -15,7 +15,7 @@ import simplexity.simplepms.commands.SocialSpy;
 import simplexity.simplepms.commands.Unblock;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.listeners.LoginListener;
-import simplexity.simplepms.listeners.PrivateMessageListener;
+import simplexity.simplepms.listeners.QuitListener;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -42,7 +42,7 @@ public final class SimplePMs extends JavaPlugin {
         instance = this;
         registerCommands();
         this.getServer().getPluginManager().registerEvents(new LoginListener(), this);
-        this.getServer().getPluginManager().registerEvents(new PrivateMessageListener(), this);
+        this.getServer().getPluginManager().registerEvents(new QuitListener(), this);
         if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             papiEnabled = true;
         } else {

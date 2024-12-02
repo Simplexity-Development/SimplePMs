@@ -12,13 +12,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
+import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.config.LocaleHandler;
 
 public class Util {
     private static Util instance;
     private final MiniMessage miniMessage = SimplePMs.getMiniMessage();
 
-    private Util(){}
+    private Util() {
+    }
 
     public static Util getInstance() {
         if (instance == null) instance = new Util();
@@ -26,35 +28,45 @@ public class Util {
     }
 
     public Component parseMessage(String localeMessage, @NotNull CommandSender initiator,
-                                         @NotNull CommandSender target, String messageContent,
-                                         boolean socialSpy) {
-        Component senderName = getCommmandSenderComponent(initiator, socialSpy);
-        Component otherSenderName = getCommmandSenderComponent(target, socialSpy);
-        Player initiatingPlayer = getPlayerFromCommandSender(initiator);
-        Player targetPlayer = getPlayerFromCommandSender(target);
-        if (SimplePMs.isPapiEnabled()) {
-            TagResolver initiatorResolver = papiTag(initiatingPlayer);
-            TagResolver targetResolver = papiTag(targetPlayer);
-            return miniMessage.deserialize(localeMessage,
-                    Placeholder.component("initiator", senderName),
-                    initiatorResolver,
-                    Placeholder.component("target", otherSenderName),
-                    targetResolver,
-                    Placeholder.unparsed("message", messageContent));
-        } else {
-            return miniMessage.deserialize(localeMessage,
-                    Placeholder.component("initiator", senderName),
-                    Placeholder.component("target", otherSenderName),
-                    Placeholder.unparsed("message", messageContent));
-        }
+                                  @NotNull CommandSender target, String messageContent,
+                                  boolean socialSpy) {
+        Component senderComponent = getCommmandSenderComponent(initiator, socialSpy);
+        Component targetComponent = getCommmandSenderComponent(target, socialSpy);
+        return miniMessage.deserialize(localeMessage,
+                Placeholder.component("initiator", senderComponent),
+                Placeholder.component("target", targetComponent),
+                Placeholder.unparsed("message", messageContent));
     }
+
 
     private Component getCommmandSenderComponent(CommandSender sender, boolean socialSpy) {
         if (!(sender instanceof Player player)) {
             if (socialSpy) return miniMessage.deserialize(LocaleHandler.Message.CONSOLE_NAME_SOCIAL_SPY.getMessage());
             return miniMessage.deserialize(LocaleHandler.Message.CONSOLE_SENDER_NAME.getMessage());
         }
-        return player.displayName();
+        if (!SimplePMs.isPapiEnabled()) {
+            if (socialSpy) return parseName(player, ConfigHandler.getInstance().getSocialSpyFormat());
+            return parseName(player, ConfigHandler.getInstance().getNormalFormat());
+        }
+        if (socialSpy) return parsePapiName(player, ConfigHandler.getInstance().getSocialSpyFormat());
+        return parsePapiName(player, ConfigHandler.getInstance().getNormalFormat());
+    }
+
+    private Component parseName(Player player, String message) {
+        return miniMessage.deserialize(
+                message,
+                Placeholder.component("displayname", player.displayName()),
+                Placeholder.unparsed("username", player.getName())
+        );
+    }
+
+    private Component parsePapiName(Player player, String message) {
+        return miniMessage.deserialize(
+                message,
+                papiTag(player),
+                Placeholder.component("displayname", player.displayName()),
+                Placeholder.unparsed("username", player.getName())
+        );
     }
 
     public Player getPlayerFromCommandSender(CommandSender sender) {
