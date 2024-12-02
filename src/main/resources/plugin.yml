@@ -14,7 +14,7 @@ commands:
   msgtoggle:
     description: "Toggles direct messages for the user"
     aliases: [messagetoggle, mt, togglemessage, togglemsg]
-    permission: message.basic.receive
+    permission: message.basic.toggle
   reply:
     description: "allows the user to reply to a private message"
     aliases: [r, re]

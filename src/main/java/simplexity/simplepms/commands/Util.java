@@ -15,22 +15,32 @@ import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.LocaleHandler;
 
 public class Util {
-    private static final MiniMessage miniMessage = SimplePMs.getMiniMessage();
+    private static Util instance;
+    private final MiniMessage miniMessage = SimplePMs.getMiniMessage();
 
-    public static Component parseMessage(String localeMessage, @NotNull CommandSender sender,
-                                         @NotNull CommandSender otherSender, String messageContent,
+    private Util(){}
+
+    public static Util getInstance() {
+        if (instance == null) instance = new Util();
+        return instance;
+    }
+
+    public Component parseMessage(String localeMessage, @NotNull CommandSender initiator,
+                                         @NotNull CommandSender target, String messageContent,
                                          boolean socialSpy) {
-        Component senderName = getCommmandSenderComponent(sender, socialSpy);
-        Component otherSenderName = getCommmandSenderComponent(otherSender, socialSpy);
-        Player sendingPlayer = getPlayerFromCommandSender(sender);
-        Player otherSendingPlayer = getPlayerFromCommandSender(otherSender);
+        Component senderName = getCommmandSenderComponent(initiator, socialSpy);
+        Component otherSenderName = getCommmandSenderComponent(target, socialSpy);
+        Player initiatingPlayer = getPlayerFromCommandSender(initiator);
+        Player targetPlayer = getPlayerFromCommandSender(target);
         if (SimplePMs.isPapiEnabled()) {
+            TagResolver initiatorResolver = papiTag(initiatingPlayer);
+            TagResolver targetResolver = papiTag(targetPlayer);
             return miniMessage.deserialize(localeMessage,
                     Placeholder.component("initiator", senderName),
+                    initiatorResolver,
                     Placeholder.component("target", otherSenderName),
-                    Placeholder.unparsed("message", messageContent),
-                    papiTag(sendingPlayer),
-                    papiTag(otherSendingPlayer));
+                    targetResolver,
+                    Placeholder.unparsed("message", messageContent));
         } else {
             return miniMessage.deserialize(localeMessage,
                     Placeholder.component("initiator", senderName),
@@ -39,7 +49,7 @@ public class Util {
         }
     }
 
-    private static Component getCommmandSenderComponent(CommandSender sender, boolean socialSpy) {
+    private Component getCommmandSenderComponent(CommandSender sender, boolean socialSpy) {
         if (!(sender instanceof Player player)) {
             if (socialSpy) return miniMessage.deserialize(LocaleHandler.Message.CONSOLE_NAME_SOCIAL_SPY.getMessage());
             return miniMessage.deserialize(LocaleHandler.Message.CONSOLE_SENDER_NAME.getMessage());
@@ -47,23 +57,24 @@ public class Util {
         return player.displayName();
     }
 
-    public static Player getPlayerFromCommandSender(CommandSender sender) {
+    public Player getPlayerFromCommandSender(CommandSender sender) {
         if (!(sender instanceof Player player)) {
             return null;
         }
         return player;
     }
 
-    public static TagResolver papiTag(final Player player) {
+    public TagResolver papiTag(final Player player) {
+        if (player == null) return TagResolver.empty();
         return TagResolver.resolver("papi", (argumentQueue, context) -> {
             final String papiPlaceholder = argumentQueue.popOr("PLACEHOLDER API NEEDS ARGUMENT").value();
             final String parsedPlaceholder = PlaceholderAPI.setPlaceholders(player, '%' + papiPlaceholder + '%');
             final Component componentPlaceholder = LegacyComponentSerializer.legacySection().deserialize(parsedPlaceholder);
-            return Tag.selfClosingInserting(componentPlaceholder);
+            return Tag.inserting(componentPlaceholder);
         });
     }
 
-    public static Player getPlayer(String name) {
+    public Player getPlayer(String name) {
         Player player;
         player = SimplePMs.getInstance().getServer().getPlayer(name);
         if (player != null) {

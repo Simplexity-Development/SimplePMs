@@ -24,7 +24,7 @@ public class Block implements CommandExecutor {
             return false;
         }
         String playerToBlockString = args[0];
-        Player playerToBlock = Util.getPlayer(playerToBlockString);
+        Player playerToBlock = Util.getInstance().getPlayer(playerToBlockString);
         if (playerToBlock == null) {
             sender.sendRichMessage(LocaleHandler.Message.RECIPIENT_NOT_EXIST.getMessage(),
                     Placeholder.parsed("name", playerToBlockString));

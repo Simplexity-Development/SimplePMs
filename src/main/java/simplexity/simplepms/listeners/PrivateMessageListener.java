@@ -19,10 +19,10 @@ public class PrivateMessageListener implements Listener {
         CommandSender initiator = messageEvent.getInitiator();
         CommandSender target = messageEvent.getRecipient();
         String messageContent = messageEvent.getMessageContent();
-        initiator.sendMessage(Util.parseMessage(
+        initiator.sendMessage(Util.getInstance().parseMessage(
                 ConfigHandler.getInstance().getSentMessageFormat(),
                 initiator, target, messageContent, false));
-        target.sendMessage(Util.parseMessage(
+        target.sendMessage(Util.getInstance().parseMessage(
                 ConfigHandler.getInstance().getReceivedMessageFormat(),
                 initiator, target, messageContent, false));
         handleSocialSpy(initiator, target, messageContent);
@@ -31,8 +31,8 @@ public class PrivateMessageListener implements Listener {
     }
 
     public void handleSocialSpy(CommandSender initiator, CommandSender target, String messageContent) {
-        Player initiatingPlayer = Util.getPlayerFromCommandSender(initiator);
-        Player targetPlayer = Util.getPlayerFromCommandSender(target);
+        Player initiatingPlayer = Util.getInstance().getPlayerFromCommandSender(initiator);
+        Player targetPlayer = Util.getInstance().getPlayerFromCommandSender(target);
         boolean needConsoleSpy = initiatingPlayer == null || targetPlayer == null;
         for (Player spyingPlayer : SimplePMs.getSpyingPlayers()) {
             if (initiator.equals(spyingPlayer) || target.equals(spyingPlayer)) {
@@ -41,14 +41,14 @@ public class PrivateMessageListener implements Listener {
             if (needConsoleSpy && !spyingPlayer.hasPermission(CONSOLE_SPY)) {
                 continue;
             }
-            spyingPlayer.sendMessage(Util.parseMessage(
+            spyingPlayer.sendMessage(Util.getInstance().parseMessage(
                     ConfigHandler.getInstance().getSocialSpyFormat(),
                     initiator, target, messageContent, true
             ));
         }
         if (ConfigHandler.getInstance().doesConsoleHaveSocialSpy()) {
-            SimplePMs.getPMConsoleSender().sendMessage(Util.parseMessage(
-                    ConfigHandler.getInstance().getSocialSpyFormat(),
+            SimplePMs.getPMConsoleSender().sendMessage(Util.getInstance().
+                    parseMessage(ConfigHandler.getInstance().getSocialSpyFormat(),
                     initiator, target, messageContent, true
             ));
         }

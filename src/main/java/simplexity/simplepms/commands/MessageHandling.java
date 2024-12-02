@@ -36,7 +36,7 @@ public class MessageHandling {
         if (ConfigHandler.getInstance().getValidNamesForConsole().contains(targetString)) {
             return SimplePMs.getPMConsoleSender();
         }
-        return Util.getPlayer(targetString);
+        return Util.getInstance().getPlayer(targetString);
     }
 
     public boolean messagingBlocked(CommandSender sender, CommandSender recipient, String providedName) {
