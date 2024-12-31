@@ -29,3 +29,8 @@ command-spy:
     - /minecraft:msg
     - /minecraft:say
     - /minecraft:me
+    - /minecraft:op
+    - /op
+    - /gmc
+    - /gamemode
+    - /give

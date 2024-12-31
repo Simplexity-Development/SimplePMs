@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import simplexity.simplepms.config.Message;
 import simplexity.simplepms.objects.PlayerBlock;
+import simplexity.simplepms.saving.Cache;
 import simplexity.simplepms.saving.SqlHandler;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class Unblock implements TabExecutor {
             return false;
         }
         String blockString = args[0];
-        List<PlayerBlock> playerBlockList = SqlHandler.getInstance().getBlockList(player.getUniqueId());
+        List<PlayerBlock> playerBlockList = Cache.getBlockList(player.getUniqueId());
         UUID blockedPlayerUUID = blockedPlayerUUID(blockString, playerBlockList);
         if (blockedPlayerUUID == null) {
             player.sendRichMessage(Message.PLAYER_NOT_BLOCKED.getMessage());
@@ -54,7 +55,7 @@ public class Unblock implements TabExecutor {
             return null;
         }
         ArrayList<String> blocked = new ArrayList<>();
-        for (PlayerBlock block : SqlHandler.getInstance().getBlockList(player.getUniqueId())) {
+        for (PlayerBlock block : Cache.getBlockList(player.getUniqueId())) {
             blocked.add(block.blockedPlayerName());
         }
         return blocked;

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.Message;
 import simplexity.simplepms.objects.PlayerBlock;
-import simplexity.simplepms.saving.SqlHandler;
+import simplexity.simplepms.saving.Cache;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +27,7 @@ public class Blocklist implements CommandExecutor {
             return false;
         }
         UUID uuid = player.getUniqueId();
-        List<PlayerBlock> blockList = SqlHandler.getInstance().getBlockList(uuid);
+        List<PlayerBlock> blockList = Cache.getBlockList(uuid);
         if (blockList.isEmpty()) {
             player.sendRichMessage(Message.BLOCKLIST_EMPTY.getMessage());
             return true;

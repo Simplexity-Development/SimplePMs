@@ -10,7 +10,7 @@ public enum Message {
     FORMAT_SENT("plugin.format.sent", "<gray>[<yellow>You</yellow> <gold>→</gold> <green><target></green>]</gray><reset> <message>"),
     FORMAT_RECEIVED("plugin.format.received", "<gray>[<green><initiator></green> <gold>→</gold> <yellow>You</yellow>]</gray><reset> <message>"),
     FORMAT_SOCIAL_SPY("plugin.format.social-spy", "<dark_gray>[<gray>Spy</gray>]</dark_gray> <gray><initiator> → <target></gray> <dark_gray>»</dark_gray> <gray><message></gray>"),
-    FORMAT_COMMAND_SPY("plugin.format.command-spy", "<dark_gray>[<gray>Spy</gray>]</dark_gray> <gray><initiator> used a tracked command: <yellow>[<command>]</yellow>. <gray>Full command: <message></gray>"),
+    FORMAT_COMMAND_SPY("plugin.format.command-spy", "<dark_gray>[<gray>Spy</gray>]</dark_gray> <gray><initiator> used <yellow>[<gray><message></gray>]</yellow>"),
     SOCIAL_SPY_ENABLED("plugin.social-spy.enabled", "<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <green>PM Spy has been enabled</green>"),
     SOCIAL_SPY_DISABLED("plugin.social-spy.disabled", "<dark_gray>[<#989898>PM-Spy</#989898>]</dark_gray> <gray>PM Spy has been disabled</gray>"),
     MESSAGES_ENABLED("plugin.message.toggle-enabled", "<green>You are now allowing direct messages</green>"),

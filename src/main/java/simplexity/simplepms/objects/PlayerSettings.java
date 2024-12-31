@@ -13,6 +13,12 @@ public final class PlayerSettings {
         this.messagesDisabled = messagesDisabled;
     }
 
+    public PlayerSettings(UUID playerUUID) {
+        this.playerUUID = playerUUID;
+        this.socialSpyEnabled = false;
+        this.messagesDisabled = false;
+    }
+
     public String toString() {
         return "Player UUID: " + playerUUID.toString()
                 + "\nSocial Spy Enabled: " + socialSpyEnabled

@@ -9,7 +9,7 @@ import simplexity.simplepms.config.Message;
 import simplexity.simplepms.events.PrivateMessageEvent;
 import simplexity.simplepms.objects.PlayerBlock;
 import simplexity.simplepms.objects.PlayerSettings;
-import simplexity.simplepms.saving.SqlHandler;
+import simplexity.simplepms.saving.Cache;
 
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +87,7 @@ public class PreProcessing {
     }
 
     public boolean messagesDisabled(Player player) {
-        PlayerSettings playerSettings = SqlHandler.playerSettings.get(player.getUniqueId());
+        PlayerSettings playerSettings = Cache.playerSettings.get(player.getUniqueId());
         if (playerSettings == null) {
             return false;
         }
@@ -95,7 +95,7 @@ public class PreProcessing {
     }
 
     public boolean userBlocked(Player player1, Player player2) {
-        List<PlayerBlock> playerBlocks = SqlHandler.blockList.get(player1.getUniqueId());
+        List<PlayerBlock> playerBlocks = Cache.blockList.get(player1.getUniqueId());
         if (playerBlocks == null) {
             return false;
         }

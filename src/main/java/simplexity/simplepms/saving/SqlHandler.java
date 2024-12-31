@@ -13,21 +13,53 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 @SuppressWarnings("CallToPrintStackTrace")
 public class SqlHandler {
-    Connection connection;
-    Logger logger = SimplePMs.getInstance().getLogger();
+    private Connection connection;
+    private final Logger logger = SimplePMs.getInstance().getLogger();
+    private static final String blocklistInitStatement = """
+            CREATE TABLE IF NOT EXISTS blocklist (
+               player_uuid VARCHAR (36) NOT NULL,
+               blocked_player_uuid VARCHAR(36) NOT NULL,
+               block_reason VARCHAR(256),
+               PRIMARY KEY (player_uuid, blocked_player_uuid)
+            );""";
+
+    private static final String settingsInitStatement = """
+            CREATE TABLE IF NOT EXISTS settings (
+               player_uuid VARCHAR (36) NOT NULL PRIMARY KEY,
+               socialspy_enabled BOOLEAN NOT NULL,
+               messages_disabled BOOLEAN NOT NULL
+            );""";
+
+    private static final String settingsUpdateStatement = """
+            REPLACE INTO settings (player_uuid, socialspy_enabled, messages_disabled)
+            VALUES (?, ?, ?);""";
+
+    private static final String settingsSelection = """
+            SELECT socialspy_enabled, messages_disabled
+            FROM settings
+            WHERE player_uuid = ?;""";
+
+    private static final String blocklistUpdateStatement = """
+            REPLACE INTO blocklist (player_uuid, blocked_player_uuid, block_reason)
+            VALUES (?, ?, ?);""";
+
+    private static final String deleteBlockStatement = """
+            DELETE FROM blocklist
+            WHERE player_uuid = ? and blocked_player_uuid = ?;""";
+
+    private static final String blockSelection = """
+            SELECT blocked_player_uuid, block_reason
+            from blocklist
+            WHERE player_uuid = ?;""";
 
     private SqlHandler() {
     }
-
-    public static final HashMap<UUID, List<PlayerBlock>> blockList = new HashMap<>();
-    public static final HashMap<UUID, PlayerSettings> playerSettings = new HashMap<>();
 
     private static SqlHandler instance;
 
@@ -43,20 +75,8 @@ public class SqlHandler {
         try {
             connection = sqlOrSqlLite();
             try (Statement statement = connection.createStatement()) {
-                statement.execute("""
-                        CREATE TABLE IF NOT EXISTS blocklist (
-                            player_uuid VARCHAR (36) NOT NULL,
-                            blocked_player_uuid VARCHAR(36) NOT NULL,
-                            block_reason VARCHAR(256),
-                            PRIMARY KEY (player_uuid, blocked_player_uuid)
-                        );""");
-                statement.execute("""
-                        CREATE TABLE IF NOT EXISTS settings (
-                            player_uuid VARCHAR (36) NOT NULL PRIMARY KEY,
-                            socialspy_enabled BOOLEAN NOT NULL,
-                            messages_disabled BOOLEAN NOT NULL
-                        );
-                        """);
+                statement.execute(blocklistInitStatement);
+                statement.execute(settingsInitStatement);
             }
         } catch (SQLException e) {
             logger.severe("Failed to connect to database: " + e.getMessage());
@@ -64,28 +84,29 @@ public class SqlHandler {
         }
     }
 
-    public List<PlayerBlock> getBlockList(UUID uuid) {
-        if (blockList.containsKey(uuid)) {
-            return blockList.get(uuid);
+    public PlayerSettings getSettings(UUID playerUUID) {
+        try (PreparedStatement statement = connection.prepareStatement(settingsSelection)) {
+            statement.setString(1, String.valueOf(playerUUID));
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    PlayerSettings settings = new PlayerSettings(playerUUID);
+                    updateSettings(playerUUID, settings);
+                    return settings;
+                } else {
+                    boolean socialSpy = resultSet.getBoolean("socialspy_enabled");
+                    boolean messagesDisabled = resultSet.getBoolean("messages_disabled");
+                    return new PlayerSettings(playerUUID, socialSpy, messagesDisabled);
+                }
+            }
+        } catch (SQLException e) {
+            logger.severe("Failed to retrieve settings from database: " + e.getMessage());
+            e.printStackTrace();
         }
-        addBlockListToCache(uuid);
-        return blockList.get(uuid);
-    }
-
-    public PlayerSettings getSettings(UUID uuid) {
-        if (playerSettings.containsKey(uuid)) {
-            return playerSettings.get(uuid);
-        }
-        addSettingsToCache(uuid);
-        return playerSettings.get(uuid);
+        return null;
     }
 
     public void addBlockedPlayer(UUID playerUUID, UUID blockedPlayerUUID, String reason) {
-        String query = """
-                REPLACE INTO blocklist (player_uuid, blocked_player_uuid, block_reason)
-                VALUES (?, ?, ?);
-                """;
-        try (PreparedStatement statement = connection.prepareStatement(query)){
+        try (PreparedStatement statement = connection.prepareStatement(blocklistUpdateStatement)){
             statement.setString(1, String.valueOf(playerUUID));
             statement.setString(2, String.valueOf(blockedPlayerUUID));
             statement.setString(3, reason);
@@ -94,146 +115,53 @@ public class SqlHandler {
             logger.severe("Failed to add blocked player: " + e.getMessage());
             e.printStackTrace();
         }
-        addBlockedPlayerToList(playerUUID, blockedPlayerUUID, reason);
     }
 
     public void removeBlockedPlayer(UUID playerUUID, UUID blockedPlayerUUID) {
-        String query = """
-              DELETE FROM blocklist
-              WHERE player_uuid = ? and blocked_player_uuid = ?;
-              """;
-        try (PreparedStatement statement = connection.prepareStatement(query)){
+        try (PreparedStatement statement = connection.prepareStatement(deleteBlockStatement)){
             statement.setString(1, String.valueOf(playerUUID));
             statement.setString(2, String.valueOf(blockedPlayerUUID));
             statement.executeUpdate();
         } catch (SQLException e) {
             logger.severe("Failed to remove blocked player: " + e.getMessage());
             e.printStackTrace();
-            return;
         }
-        removeBlockedPlayerFromList(playerUUID, blockedPlayerUUID);
     }
 
-    public void setSocialSpyEnabled(UUID playerUUID, boolean socialSpyEnabled) {
-        String query = """
-                UPDATE settings
-                SET socialspy_enabled = ?
-                WHERE player_uuid = ?;
-                """;
-        try (PreparedStatement statement = connection.prepareStatement(query)){
-            statement.setBoolean(1, socialSpyEnabled);
-            statement.setString(2, String.valueOf(playerUUID));
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            logger.severe("Failed to update social spy settings: " + e.getMessage());
-            e.printStackTrace();
-            return;
-        }
-        updateCachedSocialSpySettings(playerUUID, socialSpyEnabled);
-    }
-
-    public void setMessagesDisabled(UUID playerUUID, boolean messagesDisabled) {
-        String query = """
-                UPDATE settings
-                SET messages_disabled = ?
-                WHERE player_uuid = ?;
-                """;
-        try (PreparedStatement statement = connection.prepareStatement(query)){
-            statement.setBoolean(1, messagesDisabled);
-            statement.setString(2, String.valueOf(playerUUID));
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            logger.severe("Failed to update message settings: " + e.getMessage());
-            e.printStackTrace();
-            return;
-        }
-        updateCachedMessageSettings(playerUUID, messagesDisabled);
-    }
-
-    private void addBlockListToCache(UUID playerUuid) {
-        String query = """
-                SELECT blocked_player_uuid, block_reason
-                from blocklist
-                WHERE player_uuid = ?;
-                """;
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, String.valueOf(playerUuid));
+    public List<PlayerBlock> getBlockedPlayers(UUID playerUUID) {
+        List<PlayerBlock> blockedPlayers = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(blockSelection)) {
+            statement.setString(1, String.valueOf(playerUUID));
             try (ResultSet resultSet = statement.executeQuery()) {
-                List<PlayerBlock> playerBlocks = new ArrayList<>();
+                if (!resultSet.next()) return null;
                 while (resultSet.next()) {
-                    String blockReason = resultSet.getString("block_reason");
-                    UUID blockedPlayerUuid = UUID.fromString(resultSet.getString("blocked_player_uuid"));
-                    String playerName = Bukkit.getOfflinePlayer(blockedPlayerUuid).getName();
-                    playerBlocks.add(new PlayerBlock(playerUuid, playerName, blockedPlayerUuid, blockReason));
+                    UUID blockedPlayerUUID = UUID.fromString(resultSet.getString("blocked_player_uuid"));
+                    String blockedPlayerName = Bukkit.getOfflinePlayer(blockedPlayerUUID).getName();
+                    String reason = resultSet.getString("block_reason");
+                    PlayerBlock block = new PlayerBlock(playerUUID, blockedPlayerName, blockedPlayerUUID, reason);
+                    blockedPlayers.add(block);
                 }
-                blockList.put(playerUuid, playerBlocks);
             }
+            return blockedPlayers;
         } catch (SQLException e) {
-            logger.severe("Failed to add blocklist cache: " + e.getMessage());
+            logger.severe("Failed to get blocked players: " + e.getMessage());
             e.printStackTrace();
         }
+        return null;
     }
 
-    private void addSettingsToCache(UUID playerUuid) {
-        String query = """
-                SELECT socialspy_enabled, messages_disabled
-                from settings where player_uuid = ?;
-                """;
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, String.valueOf(playerUuid));
-            try (ResultSet resultSet = statement.executeQuery()) {
-                boolean socialSpyEnabled = resultSet.getBoolean("socialspy_enabled");
-                boolean messagesDisabled = resultSet.getBoolean("messages_disabled");
-                playerSettings.put(playerUuid, new PlayerSettings(playerUuid, socialSpyEnabled, messagesDisabled));
-            }
+    public void updateSettings(UUID playerUUID, PlayerSettings settings) {
+        try (PreparedStatement statement = connection.prepareStatement(settingsUpdateStatement)){
+            statement.setString(1, String.valueOf(playerUUID));
+            statement.setBoolean(2, settings.socialSpyEnabled());
+            statement.setBoolean(3, settings.messagesDisabled());
+            statement.executeUpdate();
         } catch (SQLException e) {
-            logger.severe("Failed to add settings to cache: " + e.getMessage());
+            logger.severe("Failed to update settings to database: " + e.getMessage());
             e.printStackTrace();
         }
-    }
 
-    private void addBlockedPlayerToList(UUID playerUUID, UUID blockedPlayerUUID, String reason) {
-        List<PlayerBlock> blockedPlayers = blockList.get(playerUUID);
-        if (blockedPlayers == null) {
-            blockedPlayers = new ArrayList<>();
-        }
-        removeBlockedPlayerFromList(playerUUID, blockedPlayerUUID);
-        String playerName = Bukkit.getOfflinePlayer(blockedPlayerUUID).getName();
-        blockedPlayers.add(new PlayerBlock(playerUUID, playerName, blockedPlayerUUID, reason));
-        blockList.put(playerUUID, blockedPlayers);
     }
-
-    private void removeBlockedPlayerFromList(UUID playerUUID, UUID blockedPlayerUUID) {
-        List<PlayerBlock> blockedPlayers = blockList.get(playerUUID);
-        if (blockedPlayers == null) {
-            return;
-        }
-        blockedPlayers.removeIf(block -> block.blockedPlayerUUID().equals(blockedPlayerUUID));
-        blockList.put(playerUUID, blockedPlayers);
-    }
-
-    private void updateCachedSocialSpySettings(UUID playerUUID, boolean socialSpyEnabled) {
-        PlayerSettings settings = playerSettings.get(playerUUID);
-        if (settings == null) {
-            settings = new PlayerSettings(playerUUID, socialSpyEnabled, true);
-            playerSettings.put(playerUUID, settings);
-            return;
-        }
-        settings.setSocialSpyEnabled(socialSpyEnabled);
-        playerSettings.put(playerUUID, settings);
-    }
-
-    private void updateCachedMessageSettings(UUID playerUUID, boolean messagesDisabled) {
-        PlayerSettings settings = playerSettings.get(playerUUID);
-        if (settings == null) {
-            settings = new PlayerSettings(playerUUID, false, messagesDisabled);
-            playerSettings.put(playerUUID, settings);
-            return;
-        }
-        settings.setMessagesDisabled(messagesDisabled);
-        playerSettings.put(playerUUID, settings);
-    }
-
 
     private Connection sqlOrSqlLite() throws SQLException {
         if (ConfigHandler.getInstance().isMysqlEnabled()) {
