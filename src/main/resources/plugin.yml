@@ -75,3 +75,9 @@ permissions:
   message.admin.console-spy:
     default: op
     description: Shows the direct messages sent to and from the console sender (from this plugin) to other players
+  message.bypass.social-spy:
+    default: op
+    description: Prevents messages to and from you from showing in social spy, does not prevent the formatted console spy message
+  message.bypass.command-spy:
+    default: op
+    description: Stops your commands from being shown to others with command spy (if they are configured to be tracked). Does not prevent the formatted console spy message

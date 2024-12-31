@@ -1,4 +1,4 @@
-package simplexity.simplepms.commands;
+package simplexity.simplepms.logic;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.ConfigHandler;
-import simplexity.simplepms.config.LocaleHandler;
+import simplexity.simplepms.config.Message;
 
 public class Util {
     private static Util instance;
@@ -38,11 +38,19 @@ public class Util {
                 Placeholder.unparsed("message", messageContent));
     }
 
+    public Component parseMessage(String localeMessage, @NotNull CommandSender initiator, String command, String messageContent, boolean socialSpy) {
+        Component senderComponent = getCommmandSenderComponent(initiator, socialSpy);
+        return miniMessage.deserialize(localeMessage,
+                Placeholder.component("initiator", senderComponent),
+                Placeholder.unparsed("command", command),
+                Placeholder.unparsed("message", messageContent));
+    }
+
 
     private Component getCommmandSenderComponent(CommandSender sender, boolean socialSpy) {
         if (!(sender instanceof Player player)) {
-            if (socialSpy) return miniMessage.deserialize(LocaleHandler.Message.CONSOLE_NAME_SOCIAL_SPY.getMessage());
-            return miniMessage.deserialize(LocaleHandler.Message.CONSOLE_SENDER_NAME.getMessage());
+            if (socialSpy) return miniMessage.deserialize(Message.CONSOLE_NAME_SOCIAL_SPY.getMessage());
+            return miniMessage.deserialize(Message.CONSOLE_SENDER_NAME.getMessage());
         }
         if (!SimplePMs.isPapiEnabled()) {
             if (socialSpy) return parseName(player, ConfigHandler.getInstance().getSocialSpyFormat());

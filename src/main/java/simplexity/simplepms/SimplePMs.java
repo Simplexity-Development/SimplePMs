@@ -15,6 +15,7 @@ import simplexity.simplepms.commands.SocialSpy;
 import simplexity.simplepms.commands.Unblock;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.listeners.LoginListener;
+import simplexity.simplepms.listeners.PreCommandListener;
 import simplexity.simplepms.listeners.QuitListener;
 
 import java.util.HashSet;
@@ -43,6 +44,7 @@ public final class SimplePMs extends JavaPlugin {
         registerCommands();
         this.getServer().getPluginManager().registerEvents(new LoginListener(), this);
         this.getServer().getPluginManager().registerEvents(new QuitListener(), this);
+        this.getServer().getPluginManager().registerEvents(new PreCommandListener(), this);
         if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             papiEnabled = true;
         } else {
@@ -50,6 +52,8 @@ public final class SimplePMs extends JavaPlugin {
         }
         consoleSender = this.getServer().getConsoleSender();
         this.saveDefaultConfig();
+        getConfig().options().copyDefaults(true);
+        saveConfig();
         ConfigHandler.getInstance().loadConfigValues();
     }
 

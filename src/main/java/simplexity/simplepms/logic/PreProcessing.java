@@ -1,11 +1,11 @@
-package simplexity.simplepms.commands;
+package simplexity.simplepms.logic;
 
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.ConfigHandler;
-import simplexity.simplepms.config.LocaleHandler;
+import simplexity.simplepms.config.Message;
 import simplexity.simplepms.events.PrivateMessageEvent;
 import simplexity.simplepms.objects.PlayerBlock;
 import simplexity.simplepms.objects.PlayerSettings;
@@ -15,19 +15,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class MessageHandling {
-    private static MessageHandling instance;
+public class PreProcessing {
+    private static PreProcessing instance;
     private static final String RECEIVE_PERMISSION = "message.basic.receive";
     private static final String ADMIN_OVERRIDE = "message.admin.override";
     private static final Logger logger = SimplePMs.getInstance().getLogger();
     public static final HashMap<CommandSender, CommandSender> lastMessaged = new HashMap<>();
 
 
-    private MessageHandling() {
+    private PreProcessing() {
     }
 
-    public static MessageHandling getInstance() {
-        if (instance == null) instance = new MessageHandling();
+    public static PreProcessing getInstance() {
+        if (instance == null) instance = new PreProcessing();
         return instance;
     }
 
@@ -50,24 +50,24 @@ public class MessageHandling {
             logger.info("[ERROR] There was an attempt to send a message from a non-player that is not the console. Info: ");
             logger.info("Sender: " + sender.getName() + " [" + sender + "]");
             logger.info("Recipient: " + recipient.getName() + " [" + recipient + "]");
-            sender.sendRichMessage(LocaleHandler.Message.SOMETHING_WENT_WRONG.getMessage());
+            sender.sendRichMessage(Message.SOMETHING_WENT_WRONG.getMessage());
             return true;
         }
         if (!initiator.canSee(target) && !ConfigHandler.getInstance().canPlayersSendToHiddenPlayers()) {
-            initiator.sendRichMessage(LocaleHandler.Message.RECIPIENT_NOT_EXIST.getMessage(),
+            initiator.sendRichMessage(Message.RECIPIENT_NOT_EXIST.getMessage(),
                     Placeholder.unparsed("name", providedName));
             return true;
         }
         if (messagesDisabled(initiator)) {
-            initiator.sendRichMessage(LocaleHandler.Message.YOUR_MESSAGES_CURRENTLY_DISABLED.getMessage());
+            initiator.sendRichMessage(Message.YOUR_MESSAGES_CURRENTLY_DISABLED.getMessage());
             return true;
         }
         if (messagesDisabled(target) || !target.hasPermission(RECEIVE_PERMISSION) || userBlocked(target, initiator)) {
-            initiator.sendRichMessage(LocaleHandler.Message.TARGET_CANNOT_RECIEVE_MESSAGE.getMessage());
+            initiator.sendRichMessage(Message.TARGET_CANNOT_RECIEVE_MESSAGE.getMessage());
             return true;
         }
         if (userBlocked(initiator, target)) {
-            initiator.sendRichMessage(LocaleHandler.Message.CANNOT_MESSAGE_SOMEONE_YOU_BLOCKED.getMessage());
+            initiator.sendRichMessage(Message.CANNOT_MESSAGE_SOMEONE_YOU_BLOCKED.getMessage());
             return true;
         }
         return false;
@@ -78,11 +78,11 @@ public class MessageHandling {
             logger.info("[ERROR] There was an attempt to send a message to a non-player that is not the console. Info: ");
             logger.info("Sender: " + sender.getName() + " [" + sender + "]");
             logger.info("Recipient: " + recipient.getName() + " [" + recipient + "]");
-            sender.sendRichMessage(LocaleHandler.Message.SOMETHING_WENT_WRONG.getMessage());
+            sender.sendRichMessage(Message.SOMETHING_WENT_WRONG.getMessage());
             return true;
         }
         if (ConfigHandler.getInstance().canPlayersSendToConsole()) return true;
-        sender.sendRichMessage(LocaleHandler.Message.CANNOT_MESSAGE_CONSOLE.getMessage());
+        sender.sendRichMessage(Message.CANNOT_MESSAGE_CONSOLE.getMessage());
         return false;
     }
 
@@ -111,7 +111,7 @@ public class MessageHandling {
         PrivateMessageEvent messageEvent = new PrivateMessageEvent(initiator, target, messageContent, SimplePMs.getSpyingPlayers());
         SimplePMs.getInstance().getServer().getPluginManager().callEvent(messageEvent);
         if (!messageEvent.isCancelled()) {
-            messageEvent.sendMessage(initiator, target, messageContent);
+            Messaging.sendMessage(messageEvent, initiator, target, messageContent);
         }
 
     }

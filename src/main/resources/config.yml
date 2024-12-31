@@ -20,3 +20,12 @@ valid-console-names:
 # This sends a specific message to console with the same socialspy format.
 # Useful for searching logs, but also may cause clutter
 console-has-social-spy: true
+console-has-command-spy: false
+command-spy:
+  enabled: false
+  commands: # have social spy also spy on these commands:
+    - /minecraft:w
+    - /minecraft:tell
+    - /minecraft:msg
+    - /minecraft:say
+    - /minecraft:me
