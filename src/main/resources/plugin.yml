@@ -36,11 +36,8 @@ commands:
     description: "reloads SimplePMs"
     permission: message.reload
 permissions:
-  message.reload:
-    default: op
-    description: reloads the config and locale
   message.basic:
-    default: op
+    default: true
     description: Base permission for basic functionality
     children:
       message.basic.send: true
@@ -48,17 +45,20 @@ permissions:
       message.basic.toggle: true
       message.basic.block: true
   message.basic.send:
-    default: op
+    default: true
     description: Allows sending messages
   message.basic.receive:
-    default: op
+    default: true
     description: Allows receiving messages
   message.basic.toggle:
-    default: op
+    default: true
     description: Allows enabling/disabling direct messages
   message.basic.block:
-    default: op
+    default: true
     description: Allows blocking direct messages from and to specific users
+  message.reload:
+    default: op
+    description: reloads the config and locale
   message.admin:
     default: op
     description: Base permission for the admin commands

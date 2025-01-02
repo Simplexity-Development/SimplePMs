@@ -3,6 +3,7 @@
 ## Releases available on [Modrinth](https://modrinth.com/plugin/simplepms)
 
 Simple plugin for handling direct messaging that features:
+
 - Message and Reply
 - Toggle messages on or off
 - Block users
@@ -25,18 +26,20 @@ Simple plugin for handling direct messaging that features:
 
 ### Permissions
 
-| Permission                  | What it do                                                                                                       |
-|-----------------------------|------------------------------------------------------------------------------------------------------------------|
-| `message.reload`            | Allows reloading the config/locale                                                                               |
-| `message.basic.*`           | Gives all basic messaging functionality                                                                          |
-| `message.basic.send`        | Allows sending messages                                                                                          |
-| `message.basic.receive`     | Allows receiving messages                                                                                        |
-| `message.basic.toggle`      | Allows toggling direct messages on or off                                                                        |
-| `message.basic.block`       | Allows blocking, unblocking, and listing your blocked users                                                      |
-| `message.admin.*`           | Gives all subsequent admin permissions                                                                           |
-| `message.admin.override`    | Allows messaging users who have their messages disabled, have you blocked, or do not have the receive permission |
-| `message.admin.social-spy`  | Shows a log of direct messages being sent between players                                                        |
-| `message.admin.console-spy` | Shows a log of any direct messages being sent between the console and players (from this plugin)                 |
+| Permission                   | Default | What it do                                                                                                       |
+|------------------------------|:-------:|------------------------------------------------------------------------------------------------------------------|
+| `message.reload`             |   OP    | Allows reloading the config/locale                                                                               |
+| `message.basic.*`            | `true`  | Gives all basic messaging functionality                                                                          |
+| `message.basic.send`         | `true`  | Allows sending messages                                                                                          |
+| `message.basic.receive`      | `true`  | Allows receiving messages                                                                                        |
+| `message.basic.toggle`       | `true`  | Allows toggling direct messages on or off                                                                        |
+| `message.basic.block`        | `true`  | Allows blocking, unblocking, and listing your blocked users                                                      |
+| `message.admin.*`            |   OP    | Gives all subsequent admin permissions                                                                           |
+| `message.admin.override`     |   OP    | Allows messaging users who have their messages disabled, have you blocked, or do not have the receive permission |
+| `message.admin.social-spy`   |   OP    | Shows a log of direct messages being sent between players                                                        |
+| `message.admin.console-spy`  |   OP    | Shows a log of any direct messages being sent between the console and players (from this plugin)                 |
+| `message.bypass.social-spy`  |   OP    | Prevents messages you send or messages being sent to you from being shown to others with social spy              |
+| `message.bypass.command-spy` |   OP    | Prevents commands you send from being shown to social spy                                                        |
 
 ### PlaceholderAPI integration
 
@@ -46,5 +49,5 @@ You can use placeholderAPI placeholders in the messages in the config by doing: 
 <br>You will need placeholderAPI installed for those placeholders to work
 
 > Note: This only works in the `config.yml`
-> 
+>
 > This will not work for messages in the `locale.yml`
