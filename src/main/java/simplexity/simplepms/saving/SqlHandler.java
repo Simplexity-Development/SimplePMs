@@ -106,7 +106,7 @@ public class SqlHandler {
     }
 
     public void addBlockedPlayer(UUID playerUUID, UUID blockedPlayerUUID, String reason) {
-        try (PreparedStatement statement = connection.prepareStatement(blocklistUpdateStatement)){
+        try (PreparedStatement statement = connection.prepareStatement(blocklistUpdateStatement)) {
             statement.setString(1, String.valueOf(playerUUID));
             statement.setString(2, String.valueOf(blockedPlayerUUID));
             statement.setString(3, reason);
@@ -118,7 +118,7 @@ public class SqlHandler {
     }
 
     public void removeBlockedPlayer(UUID playerUUID, UUID blockedPlayerUUID) {
-        try (PreparedStatement statement = connection.prepareStatement(deleteBlockStatement)){
+        try (PreparedStatement statement = connection.prepareStatement(deleteBlockStatement)) {
             statement.setString(1, String.valueOf(playerUUID));
             statement.setString(2, String.valueOf(blockedPlayerUUID));
             statement.executeUpdate();
@@ -151,7 +151,7 @@ public class SqlHandler {
     }
 
     public void updateSettings(UUID playerUUID, PlayerSettings settings) {
-        try (PreparedStatement statement = connection.prepareStatement(settingsUpdateStatement)){
+        try (PreparedStatement statement = connection.prepareStatement(settingsUpdateStatement)) {
             statement.setString(1, String.valueOf(playerUUID));
             statement.setBoolean(2, settings.socialSpyEnabled());
             statement.setBoolean(3, settings.messagesDisabled());

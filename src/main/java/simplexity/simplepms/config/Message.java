@@ -30,7 +30,12 @@ public enum Message {
     YOUR_MESSAGES_CURRENTLY_DISABLED("error.your-messages-currently-disabled", "<red>Sorry, you cannot send a message to someone while your messages are disabled.</red>"),
     CANNOT_MESSAGE_SOMEONE_YOU_BLOCKED("error.cannot-message-someone-you-blocked", "<red>Sorry, you cannot message someone you currently have blocked.</red>"),
     CANNOT_MESSAGE_CONSOLE("error.cannot-message-console", "<red>Sorry, you cannot message the server</red>"),
-    SOMETHING_WENT_WRONG("error.something-wrong", "<red>Sorry, something went wrong, please check console for more information</red>");
+    SOMETHING_WENT_WRONG("error.something-wrong", "<red>Sorry, something went wrong, please check console for more information</red>"),
+    SOUND_NOT_VALID("console-error.sound-not-valid", "Warning! The sound you have input: '%sound-string%' is invalid! Please be sure you use a sound that is listed on https://jd.papermc.io/paper/1.21.4/org/bukkit/Sound.html"),
+    USING_DEFAULT_SOUND("console-error.using-default-sound", "Using %default-sound% until a valid sound is provided"),
+    OUT_OF_RANGE("console-error.float-out-of-range", "The number %number% is out of range! Volume and pitch values must be a number between 0 and 2!"),
+    USING_DEFAULT_NUMBER("console-error.using-default-float", "Setting to 1.0 until a valid value is provided");
+
 
     private final String path;
     private String message;

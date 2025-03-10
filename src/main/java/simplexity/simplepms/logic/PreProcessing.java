@@ -111,7 +111,7 @@ public class PreProcessing {
         PrivateMessageEvent messageEvent = new PrivateMessageEvent(initiator, target, messageContent, SimplePMs.getSpyingPlayers());
         SimplePMs.getInstance().getServer().getPluginManager().callEvent(messageEvent);
         if (!messageEvent.isCancelled()) {
-            Messaging.sendMessage(messageEvent, initiator, target, messageContent);
+            Messaging.sendMessage(initiator, target, messageContent);
         }
 
     }

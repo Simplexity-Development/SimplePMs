@@ -34,3 +34,19 @@ command-spy:
     - /gmc
     - /gamemode
     - /give
+sounds:
+  received:
+    enabled: false
+    sound: BLOCK_NOTE_BLOCK_XYLOPHONE
+    pitch: 1.8
+    volume: 0.5
+  sent:
+    enabled: false
+    sound: ENTITY_ALLAY_ITEM_THROWN
+    pitch: 1.8
+    volume: 0.5
+  spy:
+    enabled: false
+    sound: ENTITY_ITEM_FRAME_ROTATE_ITEM
+    pitch: 1.8
+    volume: 0.5

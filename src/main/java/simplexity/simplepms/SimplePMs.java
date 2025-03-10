@@ -34,6 +34,7 @@ public final class SimplePMs extends JavaPlugin {
     public static HashSet<Player> getPlayers() {
         return players;
     }
+
     public static Set<Player> getSpyingPlayers() {
         return spyingPlayers;
     }

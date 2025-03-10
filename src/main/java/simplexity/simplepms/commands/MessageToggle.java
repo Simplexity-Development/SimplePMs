@@ -20,13 +20,13 @@ public class MessageToggle implements CommandExecutor {
             return false;
         }
         UUID uuid = player.getUniqueId();
-        PlayerSettings playerSettings = SqlHandler.getInstance().getSettings(uuid);
+        PlayerSettings playerSettings = Cache.getPlayerSettings(uuid);
         if (playerSettings.messagesDisabled()) {
             Cache.updateMessageSettings(uuid, false);
             player.sendRichMessage(Message.MESSAGES_ENABLED.getMessage());
             return true;
         }
-        Cache.updateMessageSettings(uuid, false);
+        Cache.updateMessageSettings(uuid, true);
         player.sendRichMessage(Message.MESSAGES_DISABLED.getMessage());
         return true;
     }

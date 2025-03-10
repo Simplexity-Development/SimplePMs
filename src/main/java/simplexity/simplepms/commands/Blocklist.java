@@ -28,7 +28,7 @@ public class Blocklist implements CommandExecutor {
         }
         UUID uuid = player.getUniqueId();
         List<PlayerBlock> blockList = Cache.getBlockList(uuid);
-        if (blockList.isEmpty()) {
+        if (blockList == null || blockList.isEmpty()) {
             player.sendRichMessage(Message.BLOCKLIST_EMPTY.getMessage());
             return true;
         }

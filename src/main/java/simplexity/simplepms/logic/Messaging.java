@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.config.Message;
-import simplexity.simplepms.events.PrivateMessageEvent;
 
 public class Messaging {
 
@@ -14,17 +13,38 @@ public class Messaging {
     private static final String SOCIAL_SPY_BYPASS = "message.bypass.social-spy";
     private static final String COMMAND_SPY_BYPASS = "message.bypass.command-spy";
 
-    public static void sendMessage(PrivateMessageEvent privateMessageEvent, CommandSender initiator, CommandSender target, String messageContent) {
-        initiator.sendMessage(Util.getInstance().parseMessage(
-                Message.FORMAT_SENT.getMessage(),
-                initiator, target, messageContent, false));
-        target.sendMessage(Util.getInstance().parseMessage(
-                Message.FORMAT_RECEIVED.getMessage(),
-                initiator, target, messageContent, false));
+    public static void sendMessage(CommandSender initiator, CommandSender target, String messageContent) {
+        handleMessageSend(initiator, target, messageContent);
+        handleMessageReceive(initiator, target, messageContent);
         handleSocialSpy(initiator, target, messageContent);
         PreProcessing.lastMessaged.put(initiator, target);
         PreProcessing.lastMessaged.put(target, initiator);
     }
+
+    private static void handleMessageSend(CommandSender initiator, CommandSender target, String messageContent) {
+        initiator.sendMessage(Util.getInstance().parseMessage(
+                Message.FORMAT_SENT.getMessage(),
+                initiator, target, messageContent, false));
+        if (!ConfigHandler.getInstance().sendingMessagePlaysSound()) return;
+        if (!(initiator instanceof Player player)) return;
+        player.playSound(player,
+                ConfigHandler.getInstance().getSendSound(),
+                ConfigHandler.getInstance().getSendVolume(),
+                ConfigHandler.getInstance().getSendPitch());
+    }
+
+    private static void handleMessageReceive(CommandSender initiator, CommandSender target, String messageContent) {
+        target.sendMessage(Util.getInstance().parseMessage(
+                Message.FORMAT_RECEIVED.getMessage(),
+                initiator, target, messageContent, false));
+        if (!ConfigHandler.getInstance().receivingMessagePlaysSound()) return;
+        if (!(target instanceof Player player)) return;
+        player.playSound(player,
+                ConfigHandler.getInstance().getReceiveSound(),
+                ConfigHandler.getInstance().getReceiveVolume(),
+                ConfigHandler.getInstance().getReceivePitch());
+    }
+
 
     public static void sendCommandSpy(CommandSender initiator, String command, String messageContent) {
         if (initiator.hasPermission(COMMAND_SPY_BYPASS)) return;
@@ -34,6 +54,7 @@ public class Messaging {
         for (Player spyingPlayer : SimplePMs.getSpyingPlayers()) {
             if (initiator.equals(spyingPlayer)) continue;
             spyingPlayer.sendMessage(parsedMessage);
+            playSpySound(spyingPlayer);
         }
         if (ConfigHandler.getInstance().doesConsoleHaveCommandSpy()) {
             sendConsoleMessage(parsedMessage);
@@ -45,10 +66,11 @@ public class Messaging {
         Player initiatorPlayer = Util.getInstance().getPlayerFromCommandSender(initiator);
         Player targetPlayer = Util.getInstance().getPlayerFromCommandSender(target);
         if (initiatorPlayer == null || targetPlayer == null) consoleSpy = true;
-        if (consoleSpy) {
-            sendConsoleSpy(initiator, target, messageContent);
-        } else {
+        if (!consoleSpy) {
+            if (initiatorPlayer.hasPermission(SOCIAL_SPY_BYPASS) || targetPlayer.hasPermission(SOCIAL_SPY_BYPASS)) return;
             sendSocialSpy(initiator, target, messageContent);
+        } else {
+            sendConsoleSpy(initiator, target, messageContent);
         }
     }
 
@@ -61,6 +83,7 @@ public class Messaging {
             if (initiator.equals(spyingPlayer) || target.equals(spyingPlayer)) continue;
             if (!spyingPlayer.hasPermission(CONSOLE_SPY)) continue;
             spyingPlayer.sendMessage(parsedMessage);
+            playSpySound(spyingPlayer);
         }
         if (ConfigHandler.getInstance().doesConsoleHaveSocialSpy()) {
             sendConsoleMessage(parsedMessage);
@@ -75,14 +98,23 @@ public class Messaging {
         for (Player spyingPlayer : SimplePMs.getSpyingPlayers()) {
             if (initiator.equals(spyingPlayer) || target.equals(spyingPlayer)) continue;
             spyingPlayer.sendMessage(parsedMessage);
+            playSpySound(spyingPlayer);
         }
         if (ConfigHandler.getInstance().doesConsoleHaveSocialSpy()) {
             sendConsoleMessage(parsedMessage);
         }
     }
 
-    private static void sendConsoleMessage(Component message){
+    private static void sendConsoleMessage(Component message) {
         SimplePMs.getPMConsoleSender().sendMessage(message);
+    }
+
+    private static void playSpySound(Player spyingPlayer) {
+        if (!ConfigHandler.getInstance().messagePlaysSoundForSpy()) return;
+        spyingPlayer.playSound(spyingPlayer,
+                ConfigHandler.getInstance().getSpySound(),
+                ConfigHandler.getInstance().getSpyVolume(),
+                ConfigHandler.getInstance().getSpyPitch());
     }
 
 

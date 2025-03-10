@@ -3,6 +3,7 @@ package simplexity.simplepms.saving;
 import simplexity.simplepms.objects.PlayerBlock;
 import simplexity.simplepms.objects.PlayerSettings;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -29,23 +30,24 @@ public class Cache {
         return settings;
     }
 
-    public static void updateSocialSpySettings(UUID uuid, boolean socialSpy){
+    public static void updateSocialSpySettings(UUID uuid, boolean socialSpy) {
         PlayerSettings settings = getPlayerSettings(uuid);
         settings.setSocialSpyEnabled(socialSpy);
         playerSettings.put(uuid, settings);
         SqlHandler.getInstance().updateSettings(uuid, settings);
     }
 
-    public static void updateMessageSettings(UUID uuid, boolean messageDisabled){
+    public static void updateMessageSettings(UUID uuid, boolean messageDisabled) {
         PlayerSettings settings = getPlayerSettings(uuid);
         settings.setMessagesDisabled(messageDisabled);
         playerSettings.put(uuid, settings);
         SqlHandler.getInstance().updateSettings(uuid, settings);
     }
 
-    public static void addBlockedUser(UUID uuid, PlayerBlock playerBlock){
+    public static void addBlockedUser(UUID uuid, PlayerBlock playerBlock) {
         List<PlayerBlock> blockedPlayers = getBlockList(uuid);
-        blockedPlayers.removeIf( block -> {
+        if (blockedPlayers == null) blockedPlayers = new ArrayList<>();
+        blockedPlayers.removeIf(block -> {
             UUID blockedUUID = playerBlock.blockedPlayerUUID();
             UUID currentUUID = block.blockedPlayerUUID();
             return currentUUID.equals(blockedUUID);
@@ -55,9 +57,9 @@ public class Cache {
         SqlHandler.getInstance().addBlockedPlayer(uuid, playerBlock.blockedPlayerUUID(), playerBlock.blockReason());
     }
 
-    public static void removeBlockedUser(UUID uuid, PlayerBlock playerBlock){
+    public static void removeBlockedUser(UUID uuid, PlayerBlock playerBlock) {
         List<PlayerBlock> blockedPlayers = getBlockList(uuid);
-        blockedPlayers.removeIf( block -> {
+        blockedPlayers.removeIf(block -> {
             UUID blockedUUID = playerBlock.blockedPlayerUUID();
             UUID currentUUID = block.blockedPlayerUUID();
             return currentUUID.equals(blockedUUID);

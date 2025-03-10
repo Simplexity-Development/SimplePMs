@@ -8,10 +8,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.config.Message;
 import simplexity.simplepms.logic.Util;
-import simplexity.simplepms.saving.SqlHandler;
+import simplexity.simplepms.objects.PlayerBlock;
+import simplexity.simplepms.saving.Cache;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 public class Block implements CommandExecutor {
     @Override
@@ -31,10 +31,13 @@ public class Block implements CommandExecutor {
                     Placeholder.parsed("name", playerToBlockString));
             return false;
         }
-        UUID uuid = player.getUniqueId();
-        UUID blockPlayerUUID = playerToBlock.getUniqueId();
-        String reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        SqlHandler.getInstance().addBlockedPlayer(uuid, blockPlayerUUID, reason);
+        String blockReason = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        PlayerBlock playerBlock = new PlayerBlock(
+                player.getUniqueId(),
+                playerToBlock.getName(),
+                playerToBlock.getUniqueId(),
+                blockReason);
+        Cache.addBlockedUser(player.getUniqueId(), playerBlock);
         player.sendRichMessage(Message.BLOCKED_PLAYER.getMessage(),
                 Placeholder.parsed("name", playerToBlockString));
         return true;
