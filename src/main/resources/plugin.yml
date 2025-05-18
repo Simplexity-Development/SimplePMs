@@ -9,15 +9,14 @@ softdepend:
 commands:
   msg:
     description: "Allows the user to send a private message to someone."
-    aliases: [dm, m, pm, tell, t]
+    aliases: [tell, w]
     permission: message.basic.send
   msgtoggle:
     description: "Toggles direct messages for the user"
-    aliases: [messagetoggle, mt, togglemessage, togglemsg]
     permission: message.basic.toggle
   reply:
     description: "allows the user to reply to a private message"
-    aliases: [r, re]
+    aliases: [r]
     permission: message.basic.send
   block:
     description: "Blocks a user from direct-messaging you"
@@ -30,7 +29,7 @@ commands:
     permission: message.basic.block
   socialspy:
     description: "toggles socialspy"
-    aliases: [ss, spy, sspy]
+    aliases: [ss]
     permission: message.admin.social-spy
   spmreload:
     description: "reloads SimplePMs"
