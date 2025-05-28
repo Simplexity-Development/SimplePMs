@@ -14,7 +14,7 @@ public class LoginListener implements Listener {
     public void onLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
         PlayerSettings playerSettings = SqlHandler.getInstance().getSettings(player.getUniqueId());
-        if (playerSettings.socialSpyEnabled()) {
+        if (playerSettings.isSocialSpyEnabled()) {
             SimplePMs.getSpyingPlayers().add(player);
         }
         SimplePMs.getPlayers().add(player);

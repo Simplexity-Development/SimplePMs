@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.config.Message;
-import simplexity.simplepms.logic.Util;
+import simplexity.simplepms.logic.MessageUtils;
 import simplexity.simplepms.objects.PlayerBlock;
 import simplexity.simplepms.saving.Cache;
 
@@ -25,7 +25,7 @@ public class Block implements CommandExecutor {
             return false;
         }
         String playerToBlockString = args[0];
-        Player playerToBlock = Util.getInstance().getPlayer(playerToBlockString);
+        Player playerToBlock = MessageUtils.getInstance().getPlayer(playerToBlockString);
         if (playerToBlock == null) {
             sender.sendRichMessage(Message.RECIPIENT_NOT_EXIST.getMessage(),
                     Placeholder.parsed("name", playerToBlockString));

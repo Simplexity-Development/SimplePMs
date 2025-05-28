@@ -5,7 +5,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import simplexity.simplepms.config.ConfigHandler;
-import simplexity.simplepms.logic.Messaging;
+import simplexity.simplepms.logic.PMHandler;
 
 public class PreCommandListener implements Listener {
     @EventHandler(priority= EventPriority.MONITOR, ignoreCancelled = true)
@@ -16,6 +16,6 @@ public class PreCommandListener implements Listener {
         if (!ConfigHandler.getInstance().getCommandsToSpy().contains(args[0])) return;
         String command = args[0].toLowerCase();
         String message = event.getMessage();
-        Messaging.sendCommandSpy(event.getPlayer(), command, message);
+        PMHandler.sendCommandSpy(event.getPlayer(), command, message);
     }
 }

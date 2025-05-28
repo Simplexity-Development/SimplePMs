@@ -1,5 +1,6 @@
 package simplexity.simplepms;
 
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -56,6 +57,10 @@ public final class SimplePMs extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveConfig();
         ConfigHandler.getInstance().loadConfigValues();
+        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+            commands.registrar().register(PrivateMessage.createCommand());
+            commands.registrar().register(Reply.createCommand());
+        });
     }
 
     public static MiniMessage getMiniMessage() {
@@ -75,8 +80,6 @@ public final class SimplePMs extends JavaPlugin {
     }
 
     private void registerCommands() {
-        Objects.requireNonNull(this.getCommand("msg")).setExecutor(new PrivateMessage());
-        Objects.requireNonNull(this.getCommand("reply")).setExecutor(new Reply());
         Objects.requireNonNull(this.getCommand("socialspy")).setExecutor(new SocialSpy());
         Objects.requireNonNull(this.getCommand("spmreload")).setExecutor(new Reload());
         Objects.requireNonNull(this.getCommand("block")).setExecutor(new Block());

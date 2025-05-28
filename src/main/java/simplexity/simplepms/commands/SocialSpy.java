@@ -24,7 +24,7 @@ public class SocialSpy implements CommandExecutor {
         }
         UUID uuid = player.getUniqueId();
         PlayerSettings settings = SqlHandler.getInstance().getSettings(uuid);
-        if (settings == null || settings.socialSpyEnabled()) {
+        if (settings == null || settings.isSocialSpyEnabled()) {
             Cache.updateSocialSpySettings(uuid, false);
             sender.sendRichMessage(Message.SOCIAL_SPY_DISABLED.getMessage());
             SimplePMs.getSpyingPlayers().remove(player);

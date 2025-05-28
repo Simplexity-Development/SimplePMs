@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.config.Message;
 import simplexity.simplepms.objects.PlayerSettings;
 import simplexity.simplepms.saving.Cache;
-import simplexity.simplepms.saving.SqlHandler;
 
 import java.util.UUID;
 
@@ -21,7 +20,7 @@ public class MessageToggle implements CommandExecutor {
         }
         UUID uuid = player.getUniqueId();
         PlayerSettings playerSettings = Cache.getPlayerSettings(uuid);
-        if (playerSettings.messagesDisabled()) {
+        if (playerSettings.areMessagesDisabled()) {
             Cache.updateMessageSettings(uuid, false);
             player.sendRichMessage(Message.MESSAGES_ENABLED.getMessage());
             return true;

@@ -153,8 +153,8 @@ public class SqlHandler {
     public void updateSettings(UUID playerUUID, PlayerSettings settings) {
         try (PreparedStatement statement = connection.prepareStatement(settingsUpdateStatement)) {
             statement.setString(1, String.valueOf(playerUUID));
-            statement.setBoolean(2, settings.socialSpyEnabled());
-            statement.setBoolean(3, settings.messagesDisabled());
+            statement.setBoolean(2, settings.isSocialSpyEnabled());
+            statement.setBoolean(3, settings.areMessagesDisabled());
             statement.executeUpdate();
         } catch (SQLException e) {
             logger.severe("Failed to update settings to database: " + e.getMessage());

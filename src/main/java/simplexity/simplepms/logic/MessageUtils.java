@@ -15,15 +15,15 @@ import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.config.Message;
 
-public class Util {
-    private static Util instance;
+public class MessageUtils {
+    private static MessageUtils instance;
     private final MiniMessage miniMessage = SimplePMs.getMiniMessage();
 
-    private Util() {
+    private MessageUtils() {
     }
 
-    public static Util getInstance() {
-        if (instance == null) instance = new Util();
+    public static MessageUtils getInstance() {
+        if (instance == null) instance = new MessageUtils();
         return instance;
     }
 

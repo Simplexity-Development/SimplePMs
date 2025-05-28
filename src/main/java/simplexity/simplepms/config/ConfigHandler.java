@@ -24,7 +24,7 @@ public class ConfigHandler {
     private Sound receiveSound, sendSound, spySound;
     private float receivePitch, receiveVolume, sendPitch, sendVolume, spyPitch, spyVolume;
     private String mysqlIp, mysqlName, mysqlUsername, mysqlPassword, normalFormat, socialSpyFormat;
-    private List<String> validNamesForConsole = new ArrayList<>();
+    private final List<String> validNamesForConsole = new ArrayList<>();
     private final HashSet<String> commandsToSpy = new HashSet<>();
 
     public void loadConfigValues() {
@@ -32,9 +32,10 @@ public class ConfigHandler {
         FileConfiguration config = SimplePMs.getInstance().getConfig();
         SqlHandler.getInstance().init();
         LocaleHandler.getInstance().reloadLocale();
-        validNamesForConsole.clear();
         List<String> commands = config.getStringList("command-spy.commands");
+        List<String> consoleNames = config.getStringList("valid-console-names");
         updateHashSet(commandsToSpy, commands);
+        validateConsoleNames(consoleNames);
         normalFormat = config.getString("format.normal", "<displayname>");
         socialSpyFormat = config.getString("format.social-spy", "<username>");
         mysqlEnabled = config.getBoolean("mysql.enabled", false);
@@ -45,7 +46,6 @@ public class ConfigHandler {
         mysqlPassword = config.getString("mysql.password", "badpassword!");
         playersSendToConsole = config.getBoolean("allow-messaging.console", true);
         playersSendToHiddenPlayers = config.getBoolean("allow-messaging.hidden-players", false);
-        validNamesForConsole = config.getStringList("valid-console-names");
         consoleHasSocialSpy = config.getBoolean("console-has-social-spy", true);
         consoleHasCommandSpy = config.getBoolean("console-has-command-spy", false);
         receiveSoundEnabled = config.getBoolean("sounds.received.enabled", false);
@@ -102,6 +102,13 @@ public class ConfigHandler {
         logger.warning(warning);
         logger.warning(Message.USING_DEFAULT_NUMBER.getMessage());
         return 1.0f;
+    }
+
+    private void validateConsoleNames(List<String> list) {
+        validNamesForConsole.clear();
+        for (String name : list) {
+            validNamesForConsole.add(name.toLowerCase());
+        }
     }
 
 

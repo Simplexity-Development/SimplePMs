@@ -15,10 +15,10 @@ import java.util.Set;
  */
 public class PrivateMessageEvent extends Event implements Cancellable {
 
-    private final CommandSender initiator;
-    private final CommandSender recipient;
-    private final String messageContent;
-    private final Set<Player> spyingPlayers;
+    private CommandSender initiator;
+    private CommandSender recipient;
+    private String messageContent;
+    private Set<Player> spyingPlayers;
     private boolean cancelled;
     private static final HandlerList handlers = new HandlerList();
 
@@ -27,19 +27,6 @@ public class PrivateMessageEvent extends Event implements Cancellable {
         this.recipient = recipient;
         this.messageContent = messageContent;
         this.spyingPlayers = spyingPlayers;
-    }
-
-    public @NotNull HandlerList getHandlers() {
-        return handlers;
-    }
-
-    /**
-     * Gets the handlerList for this event
-     *
-     * @return HandlerList
-     */
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 
     /**
@@ -52,6 +39,14 @@ public class PrivateMessageEvent extends Event implements Cancellable {
     }
 
     /**
+     * Sets the CommandSender who sent the message
+     */
+
+    public void setInitiator(CommandSender initiator) {
+        this.initiator = initiator;
+    }
+
+    /**
      * Gets the CommandSender who is to receive the message
      *
      * @return CommandSender
@@ -61,12 +56,28 @@ public class PrivateMessageEvent extends Event implements Cancellable {
     }
 
     /**
+     * Sets the CommandSender who will receive the message
+     */
+
+    public void setRecipient(CommandSender recipient){
+        this.recipient = recipient;
+    }
+
+    /**
      * Gets the content of the message being sent
      *
      * @return String
      */
     public String getMessageContent() {
         return messageContent;
+    }
+
+    /**
+     * Sets the message content
+     */
+
+    public void setMessageContent(String messageContent){
+        this.messageContent = messageContent;
     }
 
     /**
@@ -96,5 +107,18 @@ public class PrivateMessageEvent extends Event implements Cancellable {
         cancelled = cancel;
     }
 
+
+    public @NotNull HandlerList getHandlers() {
+        return handlers;
+    }
+
+    /**
+     * Gets the handlerList for this event
+     *
+     * @return HandlerList
+     */
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 }
 

@@ -1,28 +1,30 @@
 package simplexity.simplepms.logic;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.config.Message;
+import simplexity.simplepms.events.PrivateMessageEvent;
 
-public class Messaging {
+import java.util.HashMap;
 
-    private static final String CONSOLE_SPY = "message.admin.console-spy";
-    private static final String SOCIAL_SPY_BYPASS = "message.bypass.social-spy";
-    private static final String COMMAND_SPY_BYPASS = "message.bypass.command-spy";
+public class PMHandler {
+    public static final HashMap<CommandSender, CommandSender> lastMessaged = new HashMap<>();
 
-    public static void sendMessage(CommandSender initiator, CommandSender target, String messageContent) {
+    public static void handlePrivateMessage(CommandSender initiator, CommandSender target, String messageContent) throws CommandSyntaxException {
+        PrivateMessageEvent messageEvent = callPMEvent(initiator, target, messageContent);
         handleMessageSend(initiator, target, messageContent);
         handleMessageReceive(initiator, target, messageContent);
         handleSocialSpy(initiator, target, messageContent);
-        PreProcessing.lastMessaged.put(initiator, target);
-        PreProcessing.lastMessaged.put(target, initiator);
+        lastMessaged.put(initiator, target);
+        lastMessaged.put(target, initiator);
     }
 
     private static void handleMessageSend(CommandSender initiator, CommandSender target, String messageContent) {
-        initiator.sendMessage(Util.getInstance().parseMessage(
+        initiator.sendMessage(MessageUtils.getInstance().parseMessage(
                 Message.FORMAT_SENT.getMessage(),
                 initiator, target, messageContent, false));
         if (!ConfigHandler.getInstance().sendingMessagePlaysSound()) return;
@@ -34,7 +36,7 @@ public class Messaging {
     }
 
     private static void handleMessageReceive(CommandSender initiator, CommandSender target, String messageContent) {
-        target.sendMessage(Util.getInstance().parseMessage(
+        target.sendMessage(MessageUtils.getInstance().parseMessage(
                 Message.FORMAT_RECEIVED.getMessage(),
                 initiator, target, messageContent, false));
         if (!ConfigHandler.getInstance().receivingMessagePlaysSound()) return;
@@ -47,8 +49,8 @@ public class Messaging {
 
 
     public static void sendCommandSpy(CommandSender initiator, String command, String messageContent) {
-        if (initiator.hasPermission(COMMAND_SPY_BYPASS)) return;
-        Component parsedMessage = Util.getInstance().parseMessage(
+        if (initiator.hasPermission(Constants.BYPASS_COMMAND_SPY)) return;
+        Component parsedMessage = MessageUtils.getInstance().parseMessage(
                 Message.FORMAT_COMMAND_SPY.getMessage(), initiator,
                 command, messageContent, true);
         for (Player spyingPlayer : SimplePMs.getSpyingPlayers()) {
@@ -61,13 +63,14 @@ public class Messaging {
         }
     }
 
-    public static void handleSocialSpy(CommandSender initiator, CommandSender target, String messageContent) {
+    private static void handleSocialSpy(CommandSender initiator, CommandSender target, String messageContent) {
         boolean consoleSpy = false;
-        Player initiatorPlayer = Util.getInstance().getPlayerFromCommandSender(initiator);
-        Player targetPlayer = Util.getInstance().getPlayerFromCommandSender(target);
+        Player initiatorPlayer = MessageUtils.getInstance().getPlayerFromCommandSender(initiator);
+        Player targetPlayer = MessageUtils.getInstance().getPlayerFromCommandSender(target);
         if (initiatorPlayer == null || targetPlayer == null) consoleSpy = true;
         if (!consoleSpy) {
-            if (initiatorPlayer.hasPermission(SOCIAL_SPY_BYPASS) || targetPlayer.hasPermission(SOCIAL_SPY_BYPASS)) return;
+            if (initiatorPlayer.hasPermission(Constants.BYPASS_SOCIAL_SPY) || targetPlayer.hasPermission(Constants.BYPASS_SOCIAL_SPY))
+                return;
             sendSocialSpy(initiator, target, messageContent);
         } else {
             sendConsoleSpy(initiator, target, messageContent);
@@ -75,13 +78,13 @@ public class Messaging {
     }
 
     private static void sendConsoleSpy(CommandSender initiator, CommandSender target, String messageContent) {
-        Component parsedMessage = Util.getInstance().parseMessage(
+        Component parsedMessage = MessageUtils.getInstance().parseMessage(
                 Message.FORMAT_SOCIAL_SPY.getMessage(),
                 initiator, target, messageContent,
                 true);
         for (Player spyingPlayer : SimplePMs.getSpyingPlayers()) {
             if (initiator.equals(spyingPlayer) || target.equals(spyingPlayer)) continue;
-            if (!spyingPlayer.hasPermission(CONSOLE_SPY)) continue;
+            if (!spyingPlayer.hasPermission(Constants.ADMIN_CONSOLE_SPY)) continue;
             spyingPlayer.sendMessage(parsedMessage);
             playSpySound(spyingPlayer);
         }
@@ -91,7 +94,7 @@ public class Messaging {
     }
 
     private static void sendSocialSpy(CommandSender initiator, CommandSender target, String messageContent) {
-        Component parsedMessage = Util.getInstance().parseMessage(
+        Component parsedMessage = MessageUtils.getInstance().parseMessage(
                 Message.FORMAT_SOCIAL_SPY.getMessage(),
                 initiator, target, messageContent,
                 true);
@@ -117,5 +120,11 @@ public class Messaging {
                 ConfigHandler.getInstance().getSpyPitch());
     }
 
+    private static PrivateMessageEvent callPMEvent(CommandSender initiator, CommandSender target, String messageContent) {
+        PrivateMessageEvent messageEvent = new PrivateMessageEvent(initiator, target, messageContent, SimplePMs.getSpyingPlayers());
+        SimplePMs.getInstance().getServer().getPluginManager().callEvent(messageEvent);
+        if (messageEvent.isCancelled()) return null;
+        return messageEvent;
+    }
 
 }
