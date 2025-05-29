@@ -1,15 +1,13 @@
 package simplexity.simplepms.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import simplexity.simplepms.commands.arguments.MessageArgument;
 import simplexity.simplepms.commands.arguments.TargetArgument;
 import simplexity.simplepms.logic.Constants;
 import simplexity.simplepms.logic.PMHandler;
@@ -21,13 +19,12 @@ public class PrivateMessage {
 
     public static LiteralCommandNode<CommandSourceStack> createCommand() {
         TargetArgument targetArg = new TargetArgument();
-        MessageArgument messageArg = new MessageArgument();
 
         return Commands.literal("msg")
                 .requires(PrivateMessage::canExecute)
                 .then(Commands.argument("target", targetArg)
                         .suggests(targetArg::suggestOnlinePlayers)
-                        .then(Commands.argument("message", messageArg)
+                        .then(Commands.argument("message", StringArgumentType.greedyString())
                                 .executes(PrivateMessage::execute))).build();
     }
 

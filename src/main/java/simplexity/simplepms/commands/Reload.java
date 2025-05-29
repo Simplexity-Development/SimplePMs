@@ -5,13 +5,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.config.ConfigHandler;
-import simplexity.simplepms.config.Message;
+import simplexity.simplepms.config.LocaleMessage;
 
 public class Reload implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         ConfigHandler.getInstance().loadConfigValues();
-        sender.sendRichMessage(Message.RELOADED.getMessage());
+        sender.sendRichMessage(LocaleMessage.RELOADED.getMessage());
         return true;
     }
 

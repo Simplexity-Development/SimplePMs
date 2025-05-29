@@ -1,13 +1,13 @@
 package simplexity.simplepms.commands;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.CommandSender;
-import simplexity.simplepms.commands.arguments.MessageArgument;
 import simplexity.simplepms.logic.Constants;
 import simplexity.simplepms.logic.PMHandler;
 
@@ -15,11 +15,10 @@ import simplexity.simplepms.logic.PMHandler;
 public class Reply {
 
     public static LiteralCommandNode<CommandSourceStack> createCommand() {
-        MessageArgument messageArgument = new MessageArgument();
 
         return Commands.literal("reply")
                 .requires(Reply::canExecute)
-                .then(Commands.argument("message", messageArgument)
+                .then(Commands.argument("message",  StringArgumentType.greedyString())
                         .executes(Reply::execute)).build();
     }
 

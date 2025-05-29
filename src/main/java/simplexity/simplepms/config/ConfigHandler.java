@@ -87,8 +87,8 @@ public class ConfigHandler {
         try {
             sound = Sound.valueOf(soundString);
         } catch (IllegalArgumentException exception) {
-            String warning = Message.SOUND_NOT_VALID.getMessage().replace("%sound-string%", soundString);
-            String warning2 = Message.USING_DEFAULT_SOUND.getMessage().replace("%default-sound%", defaultSound.name());
+            String warning = LocaleMessage.LOG_ERROR_SOUND_NOT_VALID.getMessage().replace("%sound-string%", soundString);
+            String warning2 = LocaleMessage.LOG_ERROR_USING_DEFAULT_SOUND.getMessage().replace("%default-sound%", defaultSound.name());
             logger.warning(warning);
             logger.warning(warning2);
             sound = defaultSound;
@@ -98,9 +98,9 @@ public class ConfigHandler {
 
     private float getValidFloat(double numberToCheck){
         if (numberToCheck <= 2 && numberToCheck >= 0) return (float) numberToCheck;
-        String warning = Message.OUT_OF_RANGE.getMessage().replace("%number%", String.valueOf(numberToCheck));
+        String warning = LocaleMessage.LOG_ERROR_FLOAT_OUT_OF_RANGE.getMessage().replace("%number%", String.valueOf(numberToCheck));
         logger.warning(warning);
-        logger.warning(Message.USING_DEFAULT_NUMBER.getMessage());
+        logger.warning(LocaleMessage.LOG_ERROR_USING_DEFAULT_FLOAT.getMessage());
         return 1.0f;
     }
 

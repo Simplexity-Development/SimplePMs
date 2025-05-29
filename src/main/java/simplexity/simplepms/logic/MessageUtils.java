@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.ConfigHandler;
-import simplexity.simplepms.config.Message;
+import simplexity.simplepms.config.LocaleMessage;
 
 public class MessageUtils {
     private static MessageUtils instance;
@@ -49,8 +49,8 @@ public class MessageUtils {
 
     private Component getCommmandSenderComponent(CommandSender sender, boolean socialSpy) {
         if (!(sender instanceof Player player)) {
-            if (socialSpy) return miniMessage.deserialize(Message.CONSOLE_NAME_SOCIAL_SPY.getMessage());
-            return miniMessage.deserialize(Message.CONSOLE_SENDER_NAME.getMessage());
+            if (socialSpy) return miniMessage.deserialize(LocaleMessage.CONSOLE_NAME_SOCIAL_SPY.getMessage());
+            return miniMessage.deserialize(LocaleMessage.CONSOLE_SENDER_NAME.getMessage());
         }
         if (!SimplePMs.isPapiEnabled()) {
             if (socialSpy) return parseName(player, ConfigHandler.getInstance().getSocialSpyFormat());

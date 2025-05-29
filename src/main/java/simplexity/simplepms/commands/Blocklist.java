@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
-import simplexity.simplepms.config.Message;
+import simplexity.simplepms.config.LocaleMessage;
 import simplexity.simplepms.objects.PlayerBlock;
 import simplexity.simplepms.saving.Cache;
 
@@ -23,24 +23,24 @@ public class Blocklist implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(Message.ONLY_PLAYER.getMessage());
+            sender.sendMessage(LocaleMessage.ERROR_NOT_A_PLAYER.getMessage());
             return false;
         }
         UUID uuid = player.getUniqueId();
         List<PlayerBlock> blockList = Cache.getBlockList(uuid);
         if (blockList == null || blockList.isEmpty()) {
-            player.sendRichMessage(Message.BLOCKLIST_EMPTY.getMessage());
+            player.sendRichMessage(LocaleMessage.BLOCKLIST_EMPTY.getMessage());
             return true;
         }
-        Component message = miniMessage.deserialize(Message.BLOCKLIST_HEADER.getMessage());
+        Component message = miniMessage.deserialize(LocaleMessage.BLOCKLIST_HEADER.getMessage());
         for (PlayerBlock block : blockList) {
             message = message.appendNewline();
             message = message.append(miniMessage.deserialize(
-                    Message.BLOCKLIST_NAME.getMessage(),
+                    LocaleMessage.BLOCKLIST_NAME.getMessage(),
                     Placeholder.parsed("name", block.blockedPlayerName())
             ));
             if (block.blockReason() == null || block.blockReason().isEmpty()) continue;
-            message = message.append(miniMessage.deserialize(Message.BLOCKLIST_REASON.getMessage(),
+            message = message.append(miniMessage.deserialize(LocaleMessage.BLOCKLIST_REASON.getMessage(),
                     Placeholder.parsed("reason", block.blockReason())));
         }
         sender.sendMessage(message);

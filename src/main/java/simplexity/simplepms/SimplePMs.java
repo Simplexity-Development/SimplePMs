@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@SuppressWarnings("UnstableApiUsage")
 public final class SimplePMs extends JavaPlugin {
 
     private static Plugin instance;
@@ -60,6 +61,8 @@ public final class SimplePMs extends JavaPlugin {
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             commands.registrar().register(PrivateMessage.createCommand());
             commands.registrar().register(Reply.createCommand());
+            commands.registrar().register(Block.createCommand());
+            commands.registrar().register(Unblock.createCommand());
         });
     }
 
@@ -82,8 +85,6 @@ public final class SimplePMs extends JavaPlugin {
     private void registerCommands() {
         Objects.requireNonNull(this.getCommand("socialspy")).setExecutor(new SocialSpy());
         Objects.requireNonNull(this.getCommand("spmreload")).setExecutor(new Reload());
-        Objects.requireNonNull(this.getCommand("block")).setExecutor(new Block());
-        Objects.requireNonNull(this.getCommand("unblock")).setExecutor(new Unblock());
         Objects.requireNonNull(this.getCommand("blocklist")).setExecutor(new Blocklist());
         Objects.requireNonNull(this.getCommand("msgtoggle")).setExecutor(new MessageToggle());
     }

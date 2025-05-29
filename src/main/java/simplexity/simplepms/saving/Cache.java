@@ -57,15 +57,16 @@ public class Cache {
         SqlHandler.getInstance().addBlockedPlayer(uuid, playerBlock.blockedPlayerUUID(), playerBlock.blockReason());
     }
 
-    public static void removeBlockedUser(UUID uuid, PlayerBlock playerBlock) {
-        List<PlayerBlock> blockedPlayers = getBlockList(uuid);
-        blockedPlayers.removeIf(block -> {
-            UUID blockedUUID = playerBlock.blockedPlayerUUID();
-            UUID currentUUID = block.blockedPlayerUUID();
-            return currentUUID.equals(blockedUUID);
-        });
-        blockList.put(uuid, blockedPlayers);
-        SqlHandler.getInstance().removeBlockedPlayer(uuid, playerBlock.blockedPlayerUUID());
+    public static void removeBlockedUser(UUID uuid, UUID blockedPlayerUuid) {
+        List<PlayerBlock> userBlockList = blockList.get(uuid);
+        for (PlayerBlock block : userBlockList) {
+            if (block.blockedPlayerUUID().equals(blockedPlayerUuid)) {
+                userBlockList.remove(block);
+                break;
+            }
+        }
+        blockList.put(uuid, userBlockList);
+        SqlHandler.getInstance().removeBlockedPlayer(uuid, blockedPlayerUuid);
     }
 
 }

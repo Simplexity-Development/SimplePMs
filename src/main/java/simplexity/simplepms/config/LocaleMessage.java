@@ -1,6 +1,6 @@
 package simplexity.simplepms.config;
 
-public enum Message {
+public enum LocaleMessage {
     CONSOLE_SENDER_NAME("console.name", "<dark_red>[<red>Server</red>]</dark_red>"),
     CONSOLE_NAME_SOCIAL_SPY("console.social-spy-name", "[Server]"),
     RELOADED("plugin.reloaded", "<gold>SimplePMs Config has been reloaded"),
@@ -19,28 +19,28 @@ public enum Message {
     BLOCKLIST_NAME("plugin.block-list.name", "<white>• <name>"),
     BLOCKLIST_REASON("plugin.block-list.reason", "<gray> (Reason: <reason>)</gray>"),
     BLOCKLIST_EMPTY("plugin.block-list.empty", "<gray>You are not blocking anybody</gray>"),
-    ONLY_PLAYER("error.only-player", "<red>You must be a player to execute this command."),
-    NO_PERMISSION("error.no-permission", "<red>You do not have permission to do this"),
-    NO_RECIPIENT_PROVIDED("error.no-recipient-provided", "<red>You must provide a valid recipient for your message"),
-    NO_USER_PROVIDED("error.no-user-provided", "<red>You must provide a valid user</red>"),
-    BLANK_MESSAGE("error.blank-message", "You cannot send someone a blank message"),
-    RECIPIENT_NOT_EXIST("error.recipient-not-exist", "<red>The user <yellow><name></yellow> either does not exist, or is not online</red>"),
-    TARGET_CANNOT_RECIEVE_MESSAGE("error.cannot-receive-message", "<red>Sorry, looks like that player cannot receive messages right now</red>"),
-    CANNOT_REPLY("error.cannot-reply", "<red>There is nobody to reply to, sorry. Try <gray>/msg [name]</gray> instead"),
-    YOUR_MESSAGES_CURRENTLY_DISABLED("error.your-messages-currently-disabled", "<red>Sorry, you cannot send a message to someone while your messages are disabled.</red>"),
-    CANNOT_MESSAGE_SOMEONE_YOU_BLOCKED("error.cannot-message-someone-you-blocked", "<red>Sorry, you cannot message someone you currently have blocked.</red>"),
-    CANNOT_MESSAGE_CONSOLE("error.cannot-message-console", "<red>Sorry, you cannot message the server</red>"),
-    SOMETHING_WENT_WRONG("error.something-wrong", "<red>Sorry, something went wrong, please check console for more information</red>"),
-    SOUND_NOT_VALID("console-error.sound-not-valid", "Warning! The sound you have input: '%sound-string%' is invalid! Please be sure you use a sound that is listed on https://jd.papermc.io/paper/1.21.4/org/bukkit/Sound.html"),
-    USING_DEFAULT_SOUND("console-error.using-default-sound", "Using %default-sound% until a valid sound is provided"),
-    OUT_OF_RANGE("console-error.float-out-of-range", "The number %number% is out of range! Volume and pitch values must be a number between 0 and 2!"),
-    USING_DEFAULT_NUMBER("console-error.using-default-float", "Setting to 1.0 until a valid value is provided");
+    ERROR_NOT_A_PLAYER("error.only-player", "<red>You must be a player to execute this command."),
+    ERROR_NO_PERMISSION("error.no-permission", "<red>You do not have permission to do this"),
+    ERROR_NO_RECIPIENT_PROVIDED("error.no-recipient-provided", "<red>You must provide a valid recipient for your message"),
+    ERROR_NO_USER_PROVIDED("error.no-user-provided", "<red>You must provide a valid user</red>"),
+    ERROR_BLANK_MESSAGE("error.blank-message", "You cannot send someone a blank message"),
+    ERROR_RECIPIENT_NOT_EXIST("error.recipient-not-exist", "<red>The user <yellow><name></yellow> either does not exist, or is not online</red>"),
+    ERROR_TARGET_CANNOT_RECIEVE_MESSAGE("error.cannot-receive-message", "<red>Sorry, looks like that player cannot receive messages right now</red>"),
+    ERROR_CANNOT_REPLY("error.cannot-reply", "<red>There is nobody to reply to, sorry. Try <gray>/msg [name]</gray> instead"),
+    ERROR_YOUR_MESSAGES_CURRENTLY_DISABLED("error.your-messages-currently-disabled", "<red>Sorry, you cannot send a message to someone while your messages are disabled.</red>"),
+    ERROR_CANNOT_MESSAGE_SOMEONE_YOU_BLOCKED("error.cannot-message-someone-you-blocked", "<red>Sorry, you cannot message someone you currently have blocked.</red>"),
+    ERROR_CANNOT_MESSAGE_CONSOLE("error.cannot-message-console", "<red>Sorry, you cannot message the server</red>"),
+    ERROR_SOMETHING_WENT_WRONG("error.something-wrong", "<red>Sorry, something went wrong, please check console for more information</red>"),
+    LOG_ERROR_SOUND_NOT_VALID("console-error.sound-not-valid", "Warning! The sound you have input: '%sound-string%' is invalid! Please be sure you use a sound that is listed on https://jd.papermc.io/paper/1.21.4/org/bukkit/Sound.html"),
+    LOG_ERROR_USING_DEFAULT_SOUND("console-error.using-default-sound", "Using %default-sound% until a valid sound is provided"),
+    LOG_ERROR_FLOAT_OUT_OF_RANGE("console-error.float-out-of-range", "The number %number% is out of range! Volume and pitch values must be a number between 0 and 2!"),
+    LOG_ERROR_USING_DEFAULT_FLOAT("console-error.using-default-float", "Setting to 1.0 until a valid value is provided");
 
 
     private final String path;
     private String message;
 
-    Message(String path, String message) {
+    LocaleMessage(String path, String message) {
         this.path = path;
         this.message = message;
     }
