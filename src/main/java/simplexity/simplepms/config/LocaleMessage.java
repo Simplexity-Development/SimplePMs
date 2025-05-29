@@ -25,7 +25,7 @@ public enum LocaleMessage {
     ERROR_NO_USER_PROVIDED("error.no-user-provided", "<red>You must provide a valid user</red>"),
     ERROR_BLANK_MESSAGE("error.blank-message", "You cannot send someone a blank message"),
     ERROR_RECIPIENT_NOT_EXIST("error.recipient-not-exist", "<red>The user <yellow><name></yellow> either does not exist, or is not online</red>"),
-    ERROR_TARGET_CANNOT_RECIEVE_MESSAGE("error.cannot-receive-message", "<red>Sorry, looks like that player cannot receive messages right now</red>"),
+    ERROR_TARGET_CANNOT_RECEIVE_MESSAGE("error.cannot-receive-message", "<red>Sorry, looks like that player cannot receive messages right now</red>"),
     ERROR_CANNOT_REPLY("error.cannot-reply", "<red>There is nobody to reply to, sorry. Try <gray>/msg [name]</gray> instead"),
     ERROR_YOUR_MESSAGES_CURRENTLY_DISABLED("error.your-messages-currently-disabled", "<red>Sorry, you cannot send a message to someone while your messages are disabled.</red>"),
     ERROR_CANNOT_MESSAGE_SOMEONE_YOU_BLOCKED("error.cannot-message-someone-you-blocked", "<red>Sorry, you cannot message someone you currently have blocked.</red>"),

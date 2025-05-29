@@ -1,19 +1,25 @@
 package simplexity.simplepms.commands;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.config.LocaleMessage;
+import simplexity.simplepms.logic.Constants;
 
-public class Reload implements CommandExecutor {
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        ConfigHandler.getInstance().loadConfigValues();
-        sender.sendRichMessage(LocaleMessage.RELOADED.getMessage());
-        return true;
+@SuppressWarnings("UnstableApiUsage")
+public class Reload {
+    public static LiteralCommandNode<CommandSourceStack> createCommand() {
+
+        return Commands.literal("spmreload")
+                .requires(css -> css.getSender().hasPermission(Constants.RELOAD))
+                .executes(ctx -> {
+                    CommandSender sender = ctx.getSource().getSender();
+                    ConfigHandler.getInstance().loadConfigValues();
+                    sender.sendRichMessage(LocaleMessage.RELOADED.getMessage());
+                    return Command.SINGLE_SUCCESS;
+                }).build();
     }
-
-
 }

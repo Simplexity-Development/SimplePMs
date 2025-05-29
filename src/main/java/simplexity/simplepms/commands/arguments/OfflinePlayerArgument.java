@@ -15,7 +15,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import simplexity.simplepms.commands.Exceptions;
+import simplexity.simplepms.commands.util.Exceptions;
 import simplexity.simplepms.config.ConfigHandler;
 
 import java.util.concurrent.CompletableFuture;

@@ -1,12 +1,12 @@
-package simplexity.simplepms.commands;
+package simplexity.simplepms.commands.util;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.logic.Constants;
-import simplexity.simplepms.objects.PlayerBlock;
-import simplexity.simplepms.objects.PlayerSettings;
+import simplexity.simplepms.saving.objects.PlayerBlock;
+import simplexity.simplepms.saving.objects.PlayerSettings;
 import simplexity.simplepms.saving.Cache;
 
 import java.util.List;

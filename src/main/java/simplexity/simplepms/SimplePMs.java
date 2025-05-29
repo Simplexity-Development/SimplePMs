@@ -20,7 +20,6 @@ import simplexity.simplepms.listeners.PreCommandListener;
 import simplexity.simplepms.listeners.QuitListener;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -44,7 +43,6 @@ public final class SimplePMs extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        registerCommands();
         this.getServer().getPluginManager().registerEvents(new LoginListener(), this);
         this.getServer().getPluginManager().registerEvents(new QuitListener(), this);
         this.getServer().getPluginManager().registerEvents(new PreCommandListener(), this);
@@ -63,6 +61,10 @@ public final class SimplePMs extends JavaPlugin {
             commands.registrar().register(Reply.createCommand());
             commands.registrar().register(Block.createCommand());
             commands.registrar().register(Unblock.createCommand());
+            commands.registrar().register(MessageToggle.createCommand());
+            commands.registrar().register(SocialSpy.createCommand());
+            commands.registrar().register(Reload.createCommand());
+            commands.registrar().register(Blocklist.createCommand());
         });
     }
 
@@ -80,13 +82,6 @@ public final class SimplePMs extends JavaPlugin {
 
     public static ConsoleCommandSender getPMConsoleSender() {
         return consoleSender;
-    }
-
-    private void registerCommands() {
-        Objects.requireNonNull(this.getCommand("socialspy")).setExecutor(new SocialSpy());
-        Objects.requireNonNull(this.getCommand("spmreload")).setExecutor(new Reload());
-        Objects.requireNonNull(this.getCommand("blocklist")).setExecutor(new Blocklist());
-        Objects.requireNonNull(this.getCommand("msgtoggle")).setExecutor(new MessageToggle());
     }
 
 }

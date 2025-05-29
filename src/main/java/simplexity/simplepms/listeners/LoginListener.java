@@ -5,7 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import simplexity.simplepms.SimplePMs;
-import simplexity.simplepms.objects.PlayerSettings;
+import simplexity.simplepms.saving.objects.PlayerSettings;
 import simplexity.simplepms.saving.SqlHandler;
 
 public class LoginListener implements Listener {

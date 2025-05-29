@@ -9,9 +9,10 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.CommandSender;
 import simplexity.simplepms.commands.arguments.TargetArgument;
+import simplexity.simplepms.commands.util.MessageChecks;
 import simplexity.simplepms.logic.Constants;
 import simplexity.simplepms.logic.PMHandler;
-import simplexity.simplepms.objects.Target;
+import simplexity.simplepms.commands.arguments.Target;
 
 @SuppressWarnings("UnstableApiUsage")
 public class PrivateMessage {

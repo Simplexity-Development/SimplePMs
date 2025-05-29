@@ -1,4 +1,4 @@
-package simplexity.simplepms.objects;
+package simplexity.simplepms.commands.arguments;
 
 import org.bukkit.command.CommandSender;
 

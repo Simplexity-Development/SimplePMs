@@ -1,12 +1,11 @@
 package simplexity.simplepms.logic;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.events.BlockUserEvent;
-import simplexity.simplepms.objects.PlayerBlock;
+import simplexity.simplepms.saving.objects.PlayerBlock;
 import simplexity.simplepms.saving.Cache;
 
 import javax.annotation.Nullable;

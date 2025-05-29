@@ -4,9 +4,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import simplexity.simplepms.commands.Exceptions;
+import simplexity.simplepms.commands.util.Exceptions;
 import simplexity.simplepms.events.UnblockUserEvent;
-import simplexity.simplepms.objects.PlayerBlock;
+import simplexity.simplepms.saving.objects.PlayerBlock;
 import simplexity.simplepms.saving.Cache;
 
 import java.util.List;

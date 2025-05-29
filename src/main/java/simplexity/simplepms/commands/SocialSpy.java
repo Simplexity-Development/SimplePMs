@@ -1,39 +1,45 @@
 package simplexity.simplepms.commands;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.LocaleMessage;
-import simplexity.simplepms.objects.PlayerSettings;
+import simplexity.simplepms.logic.Constants;
 import simplexity.simplepms.saving.Cache;
 import simplexity.simplepms.saving.SqlHandler;
+import simplexity.simplepms.saving.objects.PlayerSettings;
 
 import java.util.UUID;
 
-public class SocialSpy implements CommandExecutor {
+@SuppressWarnings("UnstableApiUsage")
+public class SocialSpy {
 
+    public static LiteralCommandNode<CommandSourceStack> createCommand(){
+        return Commands.literal("socialspy")
+                .requires(SocialSpy::canExecute)
+                .executes(ctx -> {
+                    Player player = (Player) ctx.getSource().getSender();
+                    UUID uuid = player.getUniqueId();
+                    PlayerSettings settings = SqlHandler.getInstance().getSettings(uuid);
+                    if (settings == null || settings.isSocialSpyEnabled()) {
+                        Cache.updateSocialSpySettings(uuid, false);
+                        player.sendRichMessage(LocaleMessage.SOCIAL_SPY_DISABLED.getMessage());
+                        SimplePMs.getSpyingPlayers().remove(player);
+                        return Command.SINGLE_SUCCESS;
+                    }
+                    Cache.updateSocialSpySettings(uuid, true);
+                    player.sendRichMessage(LocaleMessage.SOCIAL_SPY_ENABLED.getMessage());
+                    SimplePMs.getSpyingPlayers().add(player);
+                    return Command.SINGLE_SUCCESS;
+                }).build();
+    }
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player player)) {
-            sender.sendRichMessage(LocaleMessage.ERROR_NOT_A_PLAYER.getMessage());
-            return false;
-        }
-        UUID uuid = player.getUniqueId();
-        PlayerSettings settings = SqlHandler.getInstance().getSettings(uuid);
-        if (settings == null || settings.isSocialSpyEnabled()) {
-            Cache.updateSocialSpySettings(uuid, false);
-            sender.sendRichMessage(LocaleMessage.SOCIAL_SPY_DISABLED.getMessage());
-            SimplePMs.getSpyingPlayers().remove(player);
-            return true;
-        }
-        Cache.updateSocialSpySettings(uuid, true);
-        sender.sendRichMessage(LocaleMessage.SOCIAL_SPY_ENABLED.getMessage());
-        SimplePMs.getSpyingPlayers().add(player);
-        return true;
+    private static boolean canExecute(CommandSourceStack css){
+        if (!(css.getSender() instanceof Player)) return false;
+        return css.getSender().hasPermission(Constants.ADMIN_SOCIAL_SPY);
     }
 
 }

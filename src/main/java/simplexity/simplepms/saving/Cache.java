@@ -1,7 +1,7 @@
 package simplexity.simplepms.saving;
 
-import simplexity.simplepms.objects.PlayerBlock;
-import simplexity.simplepms.objects.PlayerSettings;
+import simplexity.simplepms.saving.objects.PlayerBlock;
+import simplexity.simplepms.saving.objects.PlayerSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;

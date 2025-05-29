@@ -1,8 +1,8 @@
-package simplexity.simplepms.objects;
+package simplexity.simplepms.saving.objects;
 
 import java.util.UUID;
 
-@SuppressWarnings("StringTemplateMigration")
+@SuppressWarnings({"StringTemplateMigration", "unused"})
 public final class PlayerSettings {
     private final UUID playerUUID;
     private boolean socialSpyEnabled;

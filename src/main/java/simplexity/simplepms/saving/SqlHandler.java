@@ -3,8 +3,8 @@ package simplexity.simplepms.saving;
 import org.bukkit.Bukkit;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.ConfigHandler;
-import simplexity.simplepms.objects.PlayerBlock;
-import simplexity.simplepms.objects.PlayerSettings;
+import simplexity.simplepms.saving.objects.PlayerBlock;
+import simplexity.simplepms.saving.objects.PlayerSettings;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
