@@ -17,6 +17,7 @@ import simplexity.simplepms.commands.Unblock;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.listeners.LoginListener;
 import simplexity.simplepms.listeners.PreCommandListener;
+import simplexity.simplepms.listeners.PreLoginListener;
 import simplexity.simplepms.listeners.QuitListener;
 
 import java.util.HashSet;
@@ -32,7 +33,6 @@ public final class SimplePMs extends JavaPlugin {
     private static ConsoleCommandSender consoleSender;
 
 
-
     public static Set<Player> getSpyingPlayers() {
         return spyingPlayers;
     }
@@ -40,13 +40,12 @@ public final class SimplePMs extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        this.getServer().getPluginManager().registerEvents(new LoginListener(), this);
+        this.getServer().getPluginManager().registerEvents(new PreLoginListener(), this);
         this.getServer().getPluginManager().registerEvents(new QuitListener(), this);
         this.getServer().getPluginManager().registerEvents(new PreCommandListener(), this);
+        this.getServer().getPluginManager().registerEvents(new LoginListener(), this);
         if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             papiEnabled = true;
-        } else {
-            this.getLogger().info("You do not have PlaceholderAPI loaded on your server. Any PlaceholderAPI placeholders used in this plugin's messages, will not work.");
         }
         consoleSender = this.getServer().getConsoleSender();
         this.saveDefaultConfig();

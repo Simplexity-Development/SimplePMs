@@ -20,24 +20,57 @@ public class Cache {
         return playerSettings.get(uuid);
     }
 
+    /**
+     * Adds the provided player's settings to the cache
+     *
+     * @param uuid Player's UUID
+     */
     public static void addPlayerSettingsToCache(UUID uuid) {
-        PlayerSettings settings = SqlHandler.getInstance().getSettings(uuid);
-        playerSettings.put(uuid, settings);
+        SqlHandler.getInstance().getSettings(uuid, (settings) -> {
+            if (settings != null) {
+                playerSettings.put(uuid, settings);
+            }
+        });
     }
+
+    /**
+     * Adds the provided player's Block List to the cache
+     *
+     * @param uuid Player's UUID
+     */
 
     public static void addBlockListToCache(UUID uuid) {
-        List<PlayerBlock> userBlockList = SqlHandler.getInstance().getBlockedPlayers(uuid);
-        blockList.put(uuid, userBlockList);
+        SqlHandler.getInstance().getBlockedPlayers(uuid, (userBlockList) -> {
+            if (userBlockList != null) {
+                blockList.put(uuid, userBlockList);
+            }
+        });
     }
 
-    public static void removePlayerSettingsFromCache(UUID uuid){
+    /**
+     * Clears the user from the settings cache
+     *
+     * @param uuid Player's UUID
+     */
+    public static void removePlayerSettingsFromCache(UUID uuid) {
         playerSettings.remove(uuid);
     }
 
-    public static void removeBlockListFromCache(UUID uuid){
+    /**
+     * Clears the user from the blocklist cache
+     *
+     * @param uuid Player's UUID
+     */
+    public static void removeBlockListFromCache(UUID uuid) {
         playerSettings.remove(uuid);
     }
 
+    /**
+     * Updates the provided player's current social spy settings. Updates cache and then updates SQL
+     *
+     * @param uuid      UUID Player Uuid
+     * @param socialSpy boolean New Setting
+     */
     public static void updateSocialSpySettings(UUID uuid, boolean socialSpy) {
         PlayerSettings settings = playerSettings.get(uuid);
         settings.setSocialSpyEnabled(socialSpy);
@@ -45,12 +78,25 @@ public class Cache {
         SqlHandler.getInstance().updateSettings(uuid, settings.isSocialSpyEnabled(), settings.areMessagesDisabled());
     }
 
+    /**
+     * Updates the provided player's current message toggle state. Updates cache and then updates SQL
+     *
+     * @param uuid            UUID Player Uuid
+     * @param messageDisabled boolean New Setting
+     */
     public static void updateMessageSettings(UUID uuid, boolean messageDisabled) {
         PlayerSettings settings = playerSettings.get(uuid);
         settings.setMessagesDisabled(messageDisabled);
         playerSettings.put(uuid, settings);
         SqlHandler.getInstance().updateSettings(uuid, settings.isSocialSpyEnabled(), settings.areMessagesDisabled());
     }
+
+    /**
+     * Updates a player's blocklist by adding or updating a blocked player.
+     *
+     * @param uuid        UUID blocking player
+     * @param playerBlock PlayerBlock block
+     */
 
     public static void addBlockedUser(UUID uuid, PlayerBlock playerBlock) {
         removeCachedDuplicates(uuid, playerBlock.blockedPlayerUUID());
@@ -60,6 +106,12 @@ public class Cache {
         SqlHandler.getInstance().addBlockedPlayer(uuid, playerBlock.blockedPlayerUUID(), playerBlock.blockReason());
     }
 
+    /**
+     * Removes a blocked player from a player's blocklist
+     *
+     * @param uuid              UUID unblocking player
+     * @param blockedPlayerUuid UUID
+     */
     public static void removeBlockedUser(UUID uuid, UUID blockedPlayerUuid) {
         List<PlayerBlock> userBlockList = blockList.get(uuid);
         for (PlayerBlock block : userBlockList) {

@@ -13,6 +13,7 @@ import java.util.Set;
 /**
  * Called when a private message is sent
  */
+@SuppressWarnings("unused")
 public class PrivateMessageEvent extends Event implements Cancellable {
 
     private CommandSender initiator;
@@ -30,7 +31,7 @@ public class PrivateMessageEvent extends Event implements Cancellable {
     }
 
     /**
-     * Gets the CommandSender who sent the message
+     * Gets the CommandSender who sent the message.
      *
      * @return CommandSender
      */
@@ -39,7 +40,11 @@ public class PrivateMessageEvent extends Event implements Cancellable {
     }
 
     /**
-     * Sets the CommandSender who sent the message
+     * Sets which CommandSender will start this message.
+     * Expected types are either a Player or a ConsoleCommandSender
+     * Using other types of CommandSender may lead to unexpected and unsupported behavior
+     *
+     * @param initiator CommandSender
      */
 
     public void setInitiator(CommandSender initiator) {
@@ -56,7 +61,11 @@ public class PrivateMessageEvent extends Event implements Cancellable {
     }
 
     /**
-     * Sets the CommandSender who will receive the message
+     * Sets which CommandSender will receive this message.
+     * Expected types are either a Player or a ConsoleCommandSender
+     * Using other types of CommandSender may lead to unexpected and unsupported behavior
+     *
+     * @param recipient CommandSender
      */
 
     public void setRecipient(CommandSender recipient){
@@ -64,16 +73,19 @@ public class PrivateMessageEvent extends Event implements Cancellable {
     }
 
     /**
-     * Gets the content of the message being sent
+     * Gets the message that is going to be sent from this event
      *
-     * @return String
+     * @return String message
      */
     public String getMessageContent() {
         return messageContent;
     }
 
     /**
-     * Sets the message content
+     * Sets the message that will be sent from this event.
+     * Note that this only affects the actual message content and not the way the message is formatted
+     *
+     * @param messageContent String
      */
 
     public void setMessageContent(String messageContent){
@@ -107,6 +119,12 @@ public class PrivateMessageEvent extends Event implements Cancellable {
         cancelled = cancel;
     }
 
+
+    /**
+     * Gets the handlerList for this event
+     *
+     * @return HandlerList
+     */
 
     public @NotNull HandlerList getHandlers() {
         return handlers;
