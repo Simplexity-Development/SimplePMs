@@ -46,6 +46,8 @@ public class MessageUtils {
     }
 
 
+
+
     private Component getCommmandSenderComponent(CommandSender sender, boolean socialSpy) {
         if (!(sender instanceof Player player)) {
             if (socialSpy) return miniMessage.deserialize(LocaleMessage.CONSOLE_NAME_SOCIAL_SPY.getMessage());
@@ -74,13 +76,6 @@ public class MessageUtils {
                 Placeholder.component("displayname", player.displayName()),
                 Placeholder.unparsed("username", player.getName())
         );
-    }
-
-    public Player getPlayerFromCommandSender(CommandSender sender) {
-        if (!(sender instanceof Player player)) {
-            return null;
-        }
-        return player;
     }
 
     public TagResolver papiTag(final Player player) {
