@@ -28,13 +28,10 @@ public final class SimplePMs extends JavaPlugin {
     private static Plugin instance;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
     private static boolean papiEnabled = false;
-    private static final HashSet<Player> players = new HashSet<>();
     private static final HashSet<Player> spyingPlayers = new HashSet<>();
     private static ConsoleCommandSender consoleSender;
 
-    public static HashSet<Player> getPlayers() {
-        return players;
-    }
+
 
     public static Set<Player> getSpyingPlayers() {
         return spyingPlayers;
@@ -58,11 +55,15 @@ public final class SimplePMs extends JavaPlugin {
         ConfigHandler.getInstance().loadConfigValues();
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             commands.registrar().register(PrivateMessage.createCommand());
+            commands.registrar().register(PrivateMessage.createTellAlias());
+            commands.registrar().register(PrivateMessage.createWhisperAlias());
             commands.registrar().register(Reply.createCommand());
+            commands.registrar().register(Reply.createAlias());
             commands.registrar().register(Block.createCommand());
             commands.registrar().register(Unblock.createCommand());
             commands.registrar().register(MessageToggle.createCommand());
             commands.registrar().register(SocialSpy.createCommand());
+            commands.registrar().register(SocialSpy.createAlias());
             commands.registrar().register(Reload.createCommand());
             commands.registrar().register(Blocklist.createCommand());
         });

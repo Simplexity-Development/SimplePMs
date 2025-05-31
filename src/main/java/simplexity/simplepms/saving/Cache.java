@@ -13,45 +13,48 @@ public class Cache {
     public static final HashMap<UUID, PlayerSettings> playerSettings = new HashMap<>();
 
     public static List<PlayerBlock> getBlockList(UUID uuid) {
-        if (blockList.containsKey(uuid)) {
-            return blockList.get(uuid);
-        }
-        List<PlayerBlock> blockedPlayers = SqlHandler.getInstance().getBlockedPlayers(uuid);
-        blockList.put(uuid, blockedPlayers);
-        return blockedPlayers;
+        return blockList.get(uuid);
     }
 
     public static PlayerSettings getPlayerSettings(UUID uuid) {
-        if (playerSettings.containsKey(uuid)) {
-            return playerSettings.get(uuid);
-        }
+        return playerSettings.get(uuid);
+    }
+
+    public static void addPlayerSettingsToCache(UUID uuid) {
         PlayerSettings settings = SqlHandler.getInstance().getSettings(uuid);
         playerSettings.put(uuid, settings);
-        return settings;
+    }
+
+    public static void addBlockListToCache(UUID uuid) {
+        List<PlayerBlock> userBlockList = SqlHandler.getInstance().getBlockedPlayers(uuid);
+        blockList.put(uuid, userBlockList);
+    }
+
+    public static void removePlayerSettingsFromCache(UUID uuid){
+        playerSettings.remove(uuid);
+    }
+
+    public static void removeBlockListFromCache(UUID uuid){
+        playerSettings.remove(uuid);
     }
 
     public static void updateSocialSpySettings(UUID uuid, boolean socialSpy) {
-        PlayerSettings settings = getPlayerSettings(uuid);
+        PlayerSettings settings = playerSettings.get(uuid);
         settings.setSocialSpyEnabled(socialSpy);
         playerSettings.put(uuid, settings);
-        SqlHandler.getInstance().updateSettings(uuid, settings);
+        SqlHandler.getInstance().updateSettings(uuid, settings.isSocialSpyEnabled(), settings.areMessagesDisabled());
     }
 
     public static void updateMessageSettings(UUID uuid, boolean messageDisabled) {
-        PlayerSettings settings = getPlayerSettings(uuid);
+        PlayerSettings settings = playerSettings.get(uuid);
         settings.setMessagesDisabled(messageDisabled);
         playerSettings.put(uuid, settings);
-        SqlHandler.getInstance().updateSettings(uuid, settings);
+        SqlHandler.getInstance().updateSettings(uuid, settings.isSocialSpyEnabled(), settings.areMessagesDisabled());
     }
 
     public static void addBlockedUser(UUID uuid, PlayerBlock playerBlock) {
-        List<PlayerBlock> blockedPlayers = getBlockList(uuid);
-        if (blockedPlayers == null) blockedPlayers = new ArrayList<>();
-        blockedPlayers.removeIf(block -> {
-            UUID blockedUUID = playerBlock.blockedPlayerUUID();
-            UUID currentUUID = block.blockedPlayerUUID();
-            return currentUUID.equals(blockedUUID);
-        });
+        removeCachedDuplicates(uuid, playerBlock.blockedPlayerUUID());
+        List<PlayerBlock> blockedPlayers = blockList.get(uuid);
         blockedPlayers.add(playerBlock);
         blockList.put(uuid, blockedPlayers);
         SqlHandler.getInstance().addBlockedPlayer(uuid, playerBlock.blockedPlayerUUID(), playerBlock.blockReason());
@@ -67,6 +70,14 @@ public class Cache {
         }
         blockList.put(uuid, userBlockList);
         SqlHandler.getInstance().removeBlockedPlayer(uuid, blockedPlayerUuid);
+    }
+
+    private static void removeCachedDuplicates(UUID blockingUuid, UUID blockedUuid) {
+        List<PlayerBlock> blockedPlayers = blockList.get(blockingUuid);
+        if (blockedPlayers == null) blockedPlayers = new ArrayList<>();
+        blockedPlayers.removeIf(block ->
+                block.blockedPlayerUUID().equals(blockedUuid));
+        blockList.put(blockingUuid, blockedPlayers);
     }
 
 }

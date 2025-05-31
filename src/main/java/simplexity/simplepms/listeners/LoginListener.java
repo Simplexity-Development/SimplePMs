@@ -5,19 +5,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import simplexity.simplepms.SimplePMs;
+import simplexity.simplepms.saving.Cache;
 import simplexity.simplepms.saving.objects.PlayerSettings;
-import simplexity.simplepms.saving.SqlHandler;
 
 public class LoginListener implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
-        PlayerSettings playerSettings = SqlHandler.getInstance().getSettings(player.getUniqueId());
+        Cache.addPlayerSettingsToCache(player.getUniqueId());
+        Cache.addBlockListToCache(player.getUniqueId());
+        PlayerSettings playerSettings = Cache.getPlayerSettings(player.getUniqueId());
         if (playerSettings.isSocialSpyEnabled()) {
             SimplePMs.getSpyingPlayers().add(player);
         }
-        SimplePMs.getPlayers().add(player);
     }
 
 }

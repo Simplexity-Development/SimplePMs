@@ -2,6 +2,7 @@ package simplexity.simplepms.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -19,14 +20,35 @@ public class PrivateMessage {
 
 
     public static LiteralCommandNode<CommandSourceStack> createCommand() {
-        TargetArgument targetArg = new TargetArgument();
-
         return Commands.literal("msg")
                 .requires(PrivateMessage::canExecute)
-                .then(Commands.argument("target", targetArg)
-                        .suggests(targetArg::suggestOnlinePlayers)
-                        .then(Commands.argument("message", StringArgumentType.greedyString())
-                                .executes(PrivateMessage::execute))).build();
+                .then(targetArg()
+                        .then(messageArg())).build();
+    }
+
+    public static LiteralCommandNode<CommandSourceStack> createTellAlias() {
+        return Commands.literal("tell")
+                .requires(PrivateMessage::canExecute)
+                .then(targetArg()
+                        .then(messageArg())).build();
+    }
+
+    public static LiteralCommandNode<CommandSourceStack> createWhisperAlias() {
+        return Commands.literal("w")
+                .requires(PrivateMessage::canExecute)
+                .then(targetArg()
+                        .then(messageArg())).build();
+    }
+
+    private static RequiredArgumentBuilder<CommandSourceStack, Target> targetArg(){
+        TargetArgument targetArg = new TargetArgument();
+        return Commands.argument("target", targetArg)
+                .suggests(targetArg::suggestOnlinePlayers);
+    }
+
+    private static RequiredArgumentBuilder<CommandSourceStack, String> messageArg() {
+        return Commands.argument("message", StringArgumentType.greedyString())
+                .executes(PrivateMessage::execute);
     }
 
     private static boolean canExecute(CommandSourceStack css) {

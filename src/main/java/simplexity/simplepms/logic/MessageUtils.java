@@ -7,7 +7,6 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -94,18 +93,4 @@ public class MessageUtils {
         });
     }
 
-    public Player getPlayer(String name) {
-        Player player;
-        player = SimplePMs.getInstance().getServer().getPlayer(name);
-        if (player != null) {
-            return player;
-        }
-        for (Player listedPlayer : SimplePMs.getPlayers()) {
-            String listedPlayerPlainName = PlainTextComponentSerializer.plainText().serialize(listedPlayer.displayName());
-            if (listedPlayerPlainName.equalsIgnoreCase(name)) {
-                return listedPlayer;
-            }
-        }
-        return null;
-    }
 }

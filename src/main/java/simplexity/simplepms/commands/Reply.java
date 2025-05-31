@@ -2,6 +2,7 @@ package simplexity.simplepms.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -17,15 +18,24 @@ import simplexity.simplepms.logic.PMHandler;
 public class Reply {
 
     public static LiteralCommandNode<CommandSourceStack> createCommand() {
-
         return Commands.literal("reply")
                 .requires(Reply::canExecute)
-                .then(Commands.argument("message",  StringArgumentType.greedyString())
-                        .executes(Reply::execute)).build();
+                .then(messageArg()).build();
+    }
+
+    public static LiteralCommandNode<CommandSourceStack> createAlias() {
+        return Commands.literal("r")
+                .requires(Reply::canExecute)
+                .then(messageArg()).build();
     }
 
     private static boolean canExecute(CommandSourceStack css) {
         return css.getSender().hasPermission(Constants.MESSAGE_SEND);
+    }
+
+    private static RequiredArgumentBuilder<CommandSourceStack, String> messageArg() {
+        return Commands.argument("message", StringArgumentType.greedyString())
+                .executes(Reply::execute);
     }
 
     private static int execute(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {

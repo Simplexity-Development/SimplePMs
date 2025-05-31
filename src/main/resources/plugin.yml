@@ -6,34 +6,6 @@ authors: [ Rhythmic, Peashooter101 ]
 description: Plugin focused on simple private messaging.
 softdepend:
   - PlaceholderAPI
-commands:
-  msg:
-    description: "Allows the user to send a private message to someone."
-    aliases: [tell, w]
-    permission: message.basic.send
-  msgtoggle:
-    description: "Toggles direct messages for the user"
-    permission: message.basic.toggle
-  reply:
-    description: "allows the user to reply to a private message"
-    aliases: [r]
-    permission: message.basic.send
-  block:
-    description: "Blocks a user from direct-messaging you"
-    permission: message.basic.block
-  unblock:
-    description: "Unblocks a user you have blocked"
-    permission: message.basic.block
-  blocklist:
-    description: "Lists the players you have blocked and the reasons"
-    permission: message.basic.block
-  socialspy:
-    description: "toggles socialspy"
-    aliases: [ss]
-    permission: message.admin.social-spy
-  spmreload:
-    description: "reloads SimplePMs"
-    permission: message.reload
 permissions:
   message.basic:
     default: true
