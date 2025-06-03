@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings({"CallToPrintStackTrace", "SqlResolve", "StringTemplateMigration"})
 public class SqlHandler {
@@ -48,6 +48,7 @@ public class SqlHandler {
                     CREATE TABLE IF NOT EXISTS blocklist (
                        player_uuid VARCHAR (36) NOT NULL,
                        blocked_player_uuid VARCHAR(36) NOT NULL,
+                       blocked_player_name VARCHAR(256),
                        block_reason VARCHAR(256),
                        PRIMARY KEY (player_uuid, blocked_player_uuid)
                     );""");
@@ -64,8 +65,16 @@ public class SqlHandler {
         }
     }
 
-    public void getSettings(UUID playerUUID, Consumer<PlayerSettings> callback) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+    public void reloadDatabase() {
+        logger.info("Reconnecting to SimplePMs database...");
+        shutdownConnection();
+        setupConfig();
+        logger.info("Database reloaded successfully");
+    }
+
+
+    public CompletableFuture<PlayerSettings> getSettings(UUID playerUUID) {
+        return CompletableFuture.supplyAsync(() -> {
             String queryString = "SELECT socialspy_enabled, messages_disabled FROM settings WHERE player_uuid = ?;";
             PlayerSettings settings = null;
             try (Connection connection = getConnection()) {
@@ -84,19 +93,42 @@ public class SqlHandler {
             } catch (SQLException e) {
                 logger.warn("Failed to retrieve settings from database: {}", e.getMessage(), e);
             }
-            PlayerSettings finalSettings = settings;
-            Bukkit.getScheduler().runTask(plugin, () -> callback.accept(finalSettings));
+            return settings;
         });
     }
 
-    public void addBlockedPlayer(UUID playerUUID, UUID blockedPlayerUUID, String reason) {
+    public CompletableFuture<List<PlayerBlock>> getBlockedPlayers(UUID playerUUID) {
+        return CompletableFuture.supplyAsync(() -> {
+            String queryString = "SELECT blocked_player_uuid, block_reason, blocked_player_name from blocklist WHERE player_uuid = ?;";
+            List<PlayerBlock> blockedPlayers = new ArrayList<>();
+            try (Connection connection = getConnection()) {
+                PreparedStatement statement = connection.prepareStatement(queryString);
+                statement.setString(1, String.valueOf(playerUUID));
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        UUID blockedPlayerUUID = UUID.fromString(resultSet.getString("blocked_player_uuid"));
+                        String blockedPlayerName = resultSet.getString("blocked_player_name");
+                        String reason = resultSet.getString("block_reason");
+                        PlayerBlock block = new PlayerBlock(playerUUID, blockedPlayerName, blockedPlayerUUID, reason);
+                        blockedPlayers.add(block);
+                    }
+                }
+            } catch (SQLException e) {
+                logger.warn("Failed to get blocked players: {}", e.getMessage(), e);
+            }
+            return blockedPlayers;
+        });
+    }
+
+    public void addBlockedPlayer(UUID playerUUID, UUID blockedPlayerUUID, String blockedPlayerName, String reason) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            String queryString = "REPLACE INTO blocklist (player_uuid, blocked_player_uuid, block_reason) VALUES (?, ?, ?);";
+            String queryString = "REPLACE INTO blocklist (player_uuid, blocked_player_uuid, blocked_player_name, block_reason) VALUES (?, ?, ?, ?);";
             try (Connection connection = getConnection()) {
                 PreparedStatement statement = connection.prepareStatement(queryString);
                 statement.setString(1, String.valueOf(playerUUID));
                 statement.setString(2, String.valueOf(blockedPlayerUUID));
-                statement.setString(3, reason);
+                statement.setString(3, blockedPlayerName);
+                statement.setString(4, reason);
                 statement.executeUpdate();
             } catch (SQLException e) {
                 logger.warn("Failed to add blocked player: {}", e.getMessage(), e);
@@ -119,27 +151,6 @@ public class SqlHandler {
         });
     }
 
-    public void getBlockedPlayers(UUID playerUUID, Consumer<List<PlayerBlock>> callback) {
-        String queryString = "SELECT blocked_player_uuid, block_reason from blocklist WHERE player_uuid = ?;";
-        List<PlayerBlock> blockedPlayers = new ArrayList<>();
-        try (Connection connection = getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(queryString);
-            statement.setString(1, String.valueOf(playerUUID));
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    UUID blockedPlayerUUID = UUID.fromString(resultSet.getString("blocked_player_uuid"));
-                    String blockedPlayerName = Bukkit.getOfflinePlayer(blockedPlayerUUID).getName();
-                    String reason = resultSet.getString("block_reason");
-                    PlayerBlock block = new PlayerBlock(playerUUID, blockedPlayerName, blockedPlayerUUID, reason);
-                    blockedPlayers.add(block);
-                }
-            }
-            Bukkit.getScheduler().runTask(plugin, () -> callback.accept(blockedPlayers));
-        } catch (SQLException e) {
-            logger.warn("Failed to get blocked players: {}", e.getMessage(), e);
-        }
-    }
-
     public void updateSettings(UUID playerUUID, boolean socialSpyEnabled, boolean messagesDisabled) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             String queryString = "REPLACE INTO settings (player_uuid, socialspy_enabled, messages_disabled) VALUES (?, ?, ?);";
@@ -159,6 +170,7 @@ public class SqlHandler {
     private void setupConfig() {
         if (!ConfigHandler.getInstance().isMysqlEnabled()) {
             hikariConfig.setJdbcUrl("jdbc:sqlite:" + SimplePMs.getInstance().getDataFolder() + "/simple-pms.db");
+            hikariConfig.setConnectionTestQuery("PRAGMA journal_mode = WAL;");
             dataSource = new HikariDataSource(hikariConfig);
             return;
         }
@@ -170,5 +182,12 @@ public class SqlHandler {
 
     private static Connection getConnection() throws SQLException {
         return dataSource.getConnection();
+    }
+
+    public void shutdownConnection() {
+        if (dataSource == null || dataSource.isClosed()) return;
+        dataSource.close();
+        dataSource = null;
+        logger.info("Closed existing database connection");
     }
 }

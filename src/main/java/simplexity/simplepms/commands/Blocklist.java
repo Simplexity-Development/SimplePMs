@@ -38,11 +38,11 @@ public class Blocklist {
                         message = message.appendNewline();
                         message = message.append(miniMessage.deserialize(
                                 LocaleMessage.BLOCKLIST_NAME.getMessage(),
-                                Placeholder.parsed("name", block.blockedPlayerName())
+                                Placeholder.parsed("name", block.getBlockedPlayerName())
                         ));
-                        if (block.blockReason() == null || block.blockReason().isEmpty()) continue;
+                        if (block.getBlockReason() == null || block.getBlockReason().isEmpty()) continue;
                         message = message.append(miniMessage.deserialize(LocaleMessage.BLOCKLIST_REASON.getMessage(),
-                                Placeholder.parsed("reason", block.blockReason())));
+                                Placeholder.parsed("reason", block.getBlockReason())));
                     }
                     player.sendMessage(message);
                     return Command.SINGLE_SUCCESS;

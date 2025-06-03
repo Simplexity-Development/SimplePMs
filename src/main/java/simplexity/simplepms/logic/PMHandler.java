@@ -6,6 +6,7 @@ import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.config.LocaleMessage;
 import simplexity.simplepms.events.PrivateMessageEvent;
+import simplexity.simplepms.saving.Cache;
 
 import java.util.HashMap;
 
@@ -57,7 +58,7 @@ public class PMHandler {
 
 
     private static PrivateMessageEvent callPMEvent(CommandSender initiator, CommandSender target, String messageContent) {
-        PrivateMessageEvent messageEvent = new PrivateMessageEvent(initiator, target, messageContent, SimplePMs.getSpyingPlayers());
+        PrivateMessageEvent messageEvent = new PrivateMessageEvent(initiator, target, messageContent, Cache.getSpyingPlayers());
         SimplePMs.getInstance().getServer().getPluginManager().callEvent(messageEvent);
         return messageEvent;
     }

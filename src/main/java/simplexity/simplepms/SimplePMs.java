@@ -3,7 +3,6 @@ package simplexity.simplepms;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import simplexity.simplepms.commands.Block;
@@ -15,13 +14,10 @@ import simplexity.simplepms.commands.Reply;
 import simplexity.simplepms.commands.SocialSpy;
 import simplexity.simplepms.commands.Unblock;
 import simplexity.simplepms.config.ConfigHandler;
-import simplexity.simplepms.listeners.LoginListener;
+import simplexity.simplepms.listeners.JoinListener;
 import simplexity.simplepms.listeners.PreCommandListener;
-import simplexity.simplepms.listeners.PreLoginListener;
 import simplexity.simplepms.listeners.QuitListener;
-
-import java.util.HashSet;
-import java.util.Set;
+import simplexity.simplepms.saving.SqlHandler;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class SimplePMs extends JavaPlugin {
@@ -29,21 +25,15 @@ public final class SimplePMs extends JavaPlugin {
     private static Plugin instance;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
     private static boolean papiEnabled = false;
-    private static final HashSet<Player> spyingPlayers = new HashSet<>();
     private static ConsoleCommandSender consoleSender;
 
-
-    public static Set<Player> getSpyingPlayers() {
-        return spyingPlayers;
-    }
 
     @Override
     public void onEnable() {
         instance = this;
-        this.getServer().getPluginManager().registerEvents(new PreLoginListener(), this);
         this.getServer().getPluginManager().registerEvents(new QuitListener(), this);
         this.getServer().getPluginManager().registerEvents(new PreCommandListener(), this);
-        this.getServer().getPluginManager().registerEvents(new LoginListener(), this);
+        this.getServer().getPluginManager().registerEvents(new JoinListener(), this);
         if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             papiEnabled = true;
         }
@@ -52,6 +42,7 @@ public final class SimplePMs extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveConfig();
         ConfigHandler.getInstance().loadConfigValues();
+        SqlHandler.getInstance().init();
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             commands.registrar().register(PrivateMessage.createCommand());
             commands.registrar().register(PrivateMessage.createTellAlias());
@@ -66,6 +57,12 @@ public final class SimplePMs extends JavaPlugin {
             commands.registrar().register(Reload.createCommand());
             commands.registrar().register(Blocklist.createCommand());
         });
+    }
+
+    @Override
+
+    public void onDisable() {
+        SqlHandler.getInstance().shutdownConnection();
     }
 
     public static MiniMessage getMiniMessage() {

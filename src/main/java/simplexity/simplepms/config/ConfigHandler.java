@@ -3,7 +3,6 @@ package simplexity.simplepms.config;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import simplexity.simplepms.SimplePMs;
-import simplexity.simplepms.saving.SqlHandler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,7 +29,6 @@ public class ConfigHandler {
     public void loadConfigValues() {
         SimplePMs.getInstance().reloadConfig();
         FileConfiguration config = SimplePMs.getInstance().getConfig();
-        SqlHandler.getInstance().init();
         LocaleHandler.getInstance().reloadLocale();
         List<String> commands = config.getStringList("command-spy.commands");
         List<String> consoleNames = config.getStringList("valid-console-names");

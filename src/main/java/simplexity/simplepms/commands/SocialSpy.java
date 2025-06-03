@@ -6,7 +6,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
-import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.LocaleMessage;
 import simplexity.simplepms.logic.Constants;
 import simplexity.simplepms.saving.Cache;
@@ -41,12 +40,12 @@ public class SocialSpy {
         if (settings == null || settings.isSocialSpyEnabled()) {
             Cache.updateSocialSpySettings(uuid, false);
             player.sendRichMessage(LocaleMessage.SOCIAL_SPY_DISABLED.getMessage());
-            SimplePMs.getSpyingPlayers().remove(player);
+            Cache.getSpyingPlayers().remove(player);
             return Command.SINGLE_SUCCESS;
         }
         Cache.updateSocialSpySettings(uuid, true);
         player.sendRichMessage(LocaleMessage.SOCIAL_SPY_ENABLED.getMessage());
-        SimplePMs.getSpyingPlayers().add(player);
+        Cache.getSpyingPlayers().add(player);
         return Command.SINGLE_SUCCESS;
     }
 

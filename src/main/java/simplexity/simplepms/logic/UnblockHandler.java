@@ -18,8 +18,8 @@ public class UnblockHandler {
         List<PlayerBlock> playerBlocks = Cache.getBlockList(blockingPlayer.getUniqueId());
         UUID playerToUnblockUuid = null;
         for (PlayerBlock block : playerBlocks) {
-            if (block.blockedPlayerName().equalsIgnoreCase(userToRemove)) {
-                playerToUnblockUuid = block.blockedPlayerUUID();
+            if (block.getBlockedPlayerName().equalsIgnoreCase(userToRemove)) {
+                playerToUnblockUuid = block.getBlockedPlayerUUID();
                 break;
             }
         }

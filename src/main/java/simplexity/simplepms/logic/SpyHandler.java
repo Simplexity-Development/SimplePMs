@@ -7,6 +7,7 @@ import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.config.LocaleMessage;
 import simplexity.simplepms.events.PrivateMessageEvent;
+import simplexity.simplepms.saving.Cache;
 
 public class SpyHandler {
 
@@ -20,7 +21,7 @@ public class SpyHandler {
             console.sendMessage(parsedMessage);
         }
         if (initiator.hasPermission(Constants.BYPASS_COMMAND_SPY)) return;
-        for (Player spyingPlayer : SimplePMs.getSpyingPlayers()) {
+        for (Player spyingPlayer : Cache.getSpyingPlayers()) {
             if (initiator.equals(spyingPlayer)) continue;
             if (!spyingPlayer.hasPermission(Constants.ADMIN_SOCIAL_SPY)) continue;
             spyingPlayer.sendMessage(parsedMessage);

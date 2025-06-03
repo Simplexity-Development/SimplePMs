@@ -64,7 +64,7 @@ public class MessageChecks {
             return false;
         }
         for (PlayerBlock playerBlock : playerBlocks) {
-            if (playerBlock.blockedPlayerUUID().equals(potentialBlock.getUniqueId())) {
+            if (playerBlock.getBlockedPlayerUUID().equals(potentialBlock.getUniqueId())) {
                 return true;
             }
         }

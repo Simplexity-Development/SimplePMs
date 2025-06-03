@@ -43,7 +43,7 @@ public class OfflinePlayerArgument implements CustomArgumentType<OfflinePlayer, 
 
     @Override
     public @NotNull ArgumentType<String> getNativeType() {
-        return StringArgumentType.word();
+        return StringArgumentType.greedyString();
     }
 
     /**
