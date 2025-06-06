@@ -1,7 +1,8 @@
-package simplexity.simplepms.objects;
+package simplexity.simplepms.saving.objects;
 
 import java.util.UUID;
 
+@SuppressWarnings({"StringTemplateMigration", "unused"})
 public final class PlayerSettings {
     private final UUID playerUUID;
     private boolean socialSpyEnabled;
@@ -21,19 +22,19 @@ public final class PlayerSettings {
 
     public String toString() {
         return "Player UUID: " + playerUUID.toString()
-                + "\nSocial Spy Enabled: " + socialSpyEnabled
-                + "\nMessages Enabled: " + messagesDisabled;
+               + "\nSocial Spy Enabled: " + socialSpyEnabled
+               + "\nMessages Enabled: " + messagesDisabled;
     }
 
-    public UUID playerUUID() {
+    public UUID getPlayerUUID() {
         return playerUUID;
     }
 
-    public boolean socialSpyEnabled() {
+    public boolean isSocialSpyEnabled() {
         return socialSpyEnabled;
     }
 
-    public boolean messagesDisabled() {
+    public boolean areMessagesDisabled() {
         return messagesDisabled;
     }
 

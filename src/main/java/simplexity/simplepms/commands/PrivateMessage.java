@@ -1,48 +1,68 @@
 package simplexity.simplepms.commands;
 
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.command.Command;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import simplexity.simplepms.config.Message;
-import simplexity.simplepms.logic.PreProcessing;
+import simplexity.simplepms.commands.arguments.Target;
+import simplexity.simplepms.commands.arguments.TargetArgument;
+import simplexity.simplepms.commands.util.MessageChecks;
+import simplexity.simplepms.logic.Constants;
+import simplexity.simplepms.logic.PMHandler;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class PrivateMessage implements TabExecutor {
+@SuppressWarnings("UnstableApiUsage")
+public class PrivateMessage {
 
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (args.length < 1) {
-            sender.sendRichMessage(Message.NO_RECIPIENT_PROVIDED.getMessage());
-            return false;
-        }
-        if (args.length < 2) {
-            sender.sendRichMessage(Message.BLANK_MESSAGE.getMessage());
-            return false;
-        }
-        CommandSender target = PreProcessing.getInstance().getTarget(args);
-        if (target == null) {
-            sender.sendRichMessage(Message.RECIPIENT_NOT_EXIST.getMessage(),
-                    Placeholder.unparsed("name", args[0]));
-            return false;
-        }
-        if (PreProcessing.getInstance().messagingBlocked(sender, target, args[0])) {
-            return false;
-        }
-        String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        PreProcessing.getInstance().callPMEvent(sender, target, message);
-        return true;
+    public static LiteralCommandNode<CommandSourceStack> createCommand() {
+        return Commands.literal("msg")
+                .requires(PrivateMessage::canExecute)
+                .then(targetArg()
+                        .then(messageArg())).build();
     }
 
-
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (args.length > 1) return List.of();
-        return null;
+    public static LiteralCommandNode<CommandSourceStack> createTellAlias() {
+        return Commands.literal("tell")
+                .requires(PrivateMessage::canExecute)
+                .then(targetArg()
+                        .then(messageArg())).build();
     }
+
+    public static LiteralCommandNode<CommandSourceStack> createWhisperAlias() {
+        return Commands.literal("w")
+                .requires(PrivateMessage::canExecute)
+                .then(targetArg()
+                        .then(messageArg())).build();
+    }
+
+    private static RequiredArgumentBuilder<CommandSourceStack, Target> targetArg() {
+        TargetArgument targetArg = new TargetArgument();
+        return Commands.argument("target", targetArg)
+                .suggests(targetArg::suggestOnlinePlayers);
+    }
+
+    private static RequiredArgumentBuilder<CommandSourceStack, String> messageArg() {
+        return Commands.argument("message", StringArgumentType.greedyString())
+                .executes(PrivateMessage::execute);
+    }
+
+    private static boolean canExecute(CommandSourceStack css) {
+        return css.getSender().hasPermission(Constants.MESSAGE_SEND);
+    }
+
+    private static int execute(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        CommandSender sender = ctx.getSource().getSender();
+        Target argTarget = ctx.getArgument("target", Target.class);
+        CommandSender target = argTarget.sender();
+        MessageChecks.userChecks(sender, target, argTarget.providedName());
+        String message = ctx.getArgument("message", String.class);
+        PMHandler.handlePrivateMessage(sender, target, message);
+        return Command.SINGLE_SUCCESS;
+    }
+
 }

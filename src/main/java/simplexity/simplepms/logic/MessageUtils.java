@@ -7,23 +7,22 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.ConfigHandler;
-import simplexity.simplepms.config.Message;
+import simplexity.simplepms.config.LocaleMessage;
 
-public class Util {
-    private static Util instance;
+public class MessageUtils {
+    private static MessageUtils instance;
     private final MiniMessage miniMessage = SimplePMs.getMiniMessage();
 
-    private Util() {
+    private MessageUtils() {
     }
 
-    public static Util getInstance() {
-        if (instance == null) instance = new Util();
+    public static MessageUtils getInstance() {
+        if (instance == null) instance = new MessageUtils();
         return instance;
     }
 
@@ -49,8 +48,8 @@ public class Util {
 
     private Component getCommmandSenderComponent(CommandSender sender, boolean socialSpy) {
         if (!(sender instanceof Player player)) {
-            if (socialSpy) return miniMessage.deserialize(Message.CONSOLE_NAME_SOCIAL_SPY.getMessage());
-            return miniMessage.deserialize(Message.CONSOLE_SENDER_NAME.getMessage());
+            if (socialSpy) return miniMessage.deserialize(LocaleMessage.CONSOLE_NAME_SOCIAL_SPY.getMessage());
+            return miniMessage.deserialize(LocaleMessage.CONSOLE_SENDER_NAME.getMessage());
         }
         if (!SimplePMs.isPapiEnabled()) {
             if (socialSpy) return parseName(player, ConfigHandler.getInstance().getSocialSpyFormat());
@@ -77,16 +76,9 @@ public class Util {
         );
     }
 
-    public Player getPlayerFromCommandSender(CommandSender sender) {
-        if (!(sender instanceof Player player)) {
-            return null;
-        }
-        return player;
-    }
-
     public TagResolver papiTag(final Player player) {
         if (player == null) return TagResolver.empty();
-        return TagResolver.resolver("papi", (argumentQueue, context) -> {
+        return TagResolver.resolver("papi", (argumentQueue, _) -> {
             final String papiPlaceholder = argumentQueue.popOr("PLACEHOLDER API NEEDS ARGUMENT").value();
             final String parsedPlaceholder = PlaceholderAPI.setPlaceholders(player, '%' + papiPlaceholder + '%');
             final Component componentPlaceholder = LegacyComponentSerializer.legacySection().deserialize(parsedPlaceholder);
@@ -94,18 +86,4 @@ public class Util {
         });
     }
 
-    public Player getPlayer(String name) {
-        Player player;
-        player = SimplePMs.getInstance().getServer().getPlayer(name);
-        if (player != null) {
-            return player;
-        }
-        for (Player listedPlayer : SimplePMs.getPlayers()) {
-            String listedPlayerPlainName = PlainTextComponentSerializer.plainText().serialize(listedPlayer.displayName());
-            if (listedPlayerPlainName.equalsIgnoreCase(name)) {
-                return listedPlayer;
-            }
-        }
-        return null;
-    }
 }

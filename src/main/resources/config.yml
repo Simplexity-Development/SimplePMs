@@ -37,16 +37,16 @@ command-spy:
 sounds:
   received:
     enabled: false
-    sound: BLOCK_NOTE_BLOCK_XYLOPHONE
+    sound: minecraft:block.note_block.xylophone
     pitch: 1.8
     volume: 0.5
   sent:
     enabled: false
-    sound: ENTITY_ALLAY_ITEM_THROWN
+    sound: minecraft:entity.allay.item_thrown
     pitch: 1.8
     volume: 0.5
   spy:
     enabled: false
-    sound: ENTITY_ITEM_FRAME_ROTATE_ITEM
+    sound: minecraft:entity.item_frame.rotate_item
     pitch: 1.8
     volume: 0.5

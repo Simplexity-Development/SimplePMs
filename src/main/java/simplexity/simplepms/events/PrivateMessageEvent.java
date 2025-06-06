@@ -13,42 +13,42 @@ import java.util.Set;
 /**
  * Called when a private message is sent
  */
+@SuppressWarnings("unused")
 public class PrivateMessageEvent extends Event implements Cancellable {
 
-    private final CommandSender initiator;
-    private final CommandSender recipient;
-    private final String messageContent;
+    private CommandSender initiator;
+    private CommandSender recipient;
+    private String messageContent;
     private final Set<Player> spyingPlayers;
     private boolean cancelled;
     private static final HandlerList handlers = new HandlerList();
 
-    public PrivateMessageEvent(CommandSender initiator, CommandSender recipient, String messageContent, Set<Player> spyingPlayers) {
+    public PrivateMessageEvent(@NotNull CommandSender initiator, @NotNull CommandSender recipient, @NotNull String messageContent, @NotNull Set<Player> spyingPlayers) {
         this.initiator = initiator;
         this.recipient = recipient;
         this.messageContent = messageContent;
         this.spyingPlayers = spyingPlayers;
     }
 
-    public @NotNull HandlerList getHandlers() {
-        return handlers;
-    }
-
     /**
-     * Gets the handlerList for this event
-     *
-     * @return HandlerList
-     */
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
-    /**
-     * Gets the CommandSender who sent the message
+     * Gets the CommandSender who sent the message.
      *
      * @return CommandSender
      */
     public CommandSender getInitiator() {
         return initiator;
+    }
+
+    /**
+     * Sets which CommandSender will start this message.
+     * Expected types are either a Player or a ConsoleCommandSender
+     * Using other types of CommandSender may lead to unexpected and unsupported behavior
+     *
+     * @param initiator CommandSender
+     */
+
+    public void setInitiator(CommandSender initiator) {
+        this.initiator = initiator;
     }
 
     /**
@@ -61,12 +61,35 @@ public class PrivateMessageEvent extends Event implements Cancellable {
     }
 
     /**
-     * Gets the content of the message being sent
+     * Sets which CommandSender will receive this message.
+     * Expected types are either a Player or a ConsoleCommandSender
+     * Using other types of CommandSender may lead to unexpected and unsupported behavior
      *
-     * @return String
+     * @param recipient CommandSender
+     */
+
+    public void setRecipient(CommandSender recipient) {
+        this.recipient = recipient;
+    }
+
+    /**
+     * Gets the message that is going to be sent from this event
+     *
+     * @return String message
      */
     public String getMessageContent() {
         return messageContent;
+    }
+
+    /**
+     * Sets the message that will be sent from this event.
+     * Note that this only affects the actual message content and not the way the message is formatted
+     *
+     * @param messageContent String
+     */
+
+    public void setMessageContent(String messageContent) {
+        this.messageContent = messageContent;
     }
 
     /**
@@ -96,5 +119,23 @@ public class PrivateMessageEvent extends Event implements Cancellable {
         cancelled = cancel;
     }
 
-}
 
+    /**
+     * Gets the handlerList for this event
+     *
+     * @return HandlerList
+     */
+
+    public @NotNull HandlerList getHandlers() {
+        return handlers;
+    }
+
+    /**
+     * Gets the handlerList for this event
+     *
+     * @return HandlerList
+     */
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+}

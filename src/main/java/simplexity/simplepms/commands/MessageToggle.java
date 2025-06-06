@@ -1,33 +1,40 @@
 package simplexity.simplepms.commands;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import simplexity.simplepms.config.Message;
-import simplexity.simplepms.objects.PlayerSettings;
+import simplexity.simplepms.config.LocaleMessage;
+import simplexity.simplepms.logic.Constants;
 import simplexity.simplepms.saving.Cache;
-import simplexity.simplepms.saving.SqlHandler;
+import simplexity.simplepms.saving.objects.PlayerSettings;
 
 import java.util.UUID;
 
-public class MessageToggle implements CommandExecutor {
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if (!(sender instanceof Player player)) {
-            sender.sendRichMessage(Message.ONLY_PLAYER.getMessage());
-            return false;
-        }
-        UUID uuid = player.getUniqueId();
-        PlayerSettings playerSettings = Cache.getPlayerSettings(uuid);
-        if (playerSettings.messagesDisabled()) {
-            Cache.updateMessageSettings(uuid, false);
-            player.sendRichMessage(Message.MESSAGES_ENABLED.getMessage());
-            return true;
-        }
-        Cache.updateMessageSettings(uuid, true);
-        player.sendRichMessage(Message.MESSAGES_DISABLED.getMessage());
-        return true;
+@SuppressWarnings("UnstableApiUsage")
+public class MessageToggle {
+
+    public static LiteralCommandNode<CommandSourceStack> createCommand() {
+        return Commands.literal("msgtoggle")
+                .requires(MessageToggle::canExecute)
+                .executes(ctx -> {
+                    Player sender = (Player) ctx.getSource().getSender();
+                    UUID playerUuid = sender.getUniqueId();
+                    PlayerSettings playerSettings = Cache.getPlayerSettings(playerUuid);
+                    if (playerSettings.areMessagesDisabled()) {
+                        Cache.updateMessageSettings(playerUuid, false);
+                        sender.sendRichMessage(LocaleMessage.MESSAGES_ENABLED.getMessage());
+                        return Command.SINGLE_SUCCESS;
+                    }
+                    Cache.updateMessageSettings(playerUuid, true);
+                    sender.sendRichMessage(LocaleMessage.MESSAGES_DISABLED.getMessage());
+                    return Command.SINGLE_SUCCESS;
+                }).build();
+    }
+
+    public static boolean canExecute(CommandSourceStack css) {
+        if (!(css.getSender() instanceof Player)) return false;
+        return css.getSender().hasPermission(Constants.MESSAGE_TOGGLE);
     }
 }

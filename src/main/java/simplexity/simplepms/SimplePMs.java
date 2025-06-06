@@ -1,8 +1,8 @@
 package simplexity.simplepms;
 
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import simplexity.simplepms.commands.Block;
@@ -14,48 +14,83 @@ import simplexity.simplepms.commands.Reply;
 import simplexity.simplepms.commands.SocialSpy;
 import simplexity.simplepms.commands.Unblock;
 import simplexity.simplepms.config.ConfigHandler;
-import simplexity.simplepms.listeners.LoginListener;
+import simplexity.simplepms.listeners.JoinListener;
 import simplexity.simplepms.listeners.PreCommandListener;
 import simplexity.simplepms.listeners.QuitListener;
+import simplexity.simplepms.logic.Constants;
+import simplexity.simplepms.saving.SqlHandler;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
+@SuppressWarnings("UnstableApiUsage")
 public final class SimplePMs extends JavaPlugin {
 
     private static Plugin instance;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
     private static boolean papiEnabled = false;
-    private static final HashSet<Player> players = new HashSet<>();
-    private static final HashSet<Player> spyingPlayers = new HashSet<>();
     private static ConsoleCommandSender consoleSender;
 
-    public static HashSet<Player> getPlayers() {
-        return players;
-    }
-
-    public static Set<Player> getSpyingPlayers() {
-        return spyingPlayers;
-    }
 
     @Override
     public void onEnable() {
         instance = this;
-        registerCommands();
-        this.getServer().getPluginManager().registerEvents(new LoginListener(), this);
-        this.getServer().getPluginManager().registerEvents(new QuitListener(), this);
-        this.getServer().getPluginManager().registerEvents(new PreCommandListener(), this);
-        if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        consoleSender = getServer().getConsoleSender();
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             papiEnabled = true;
-        } else {
-            this.getLogger().info("You do not have PlaceholderAPI loaded on your server. Any PlaceholderAPI placeholders used in this plugin's messages, will not work.");
         }
-        consoleSender = this.getServer().getConsoleSender();
-        this.saveDefaultConfig();
+        SqlHandler.getInstance().init();
+        loadConfigStuff();
+        registerListeners();
+        registerCommands();
+        registerPermissions();
+    }
+
+    private void registerListeners() {
+        getServer().getPluginManager().registerEvents(new QuitListener(), this);
+        getServer().getPluginManager().registerEvents(new PreCommandListener(), this);
+        getServer().getPluginManager().registerEvents(new JoinListener(), this);
+    }
+
+    private void loadConfigStuff() {
+        saveDefaultConfig();
         getConfig().options().copyDefaults(true);
         saveConfig();
         ConfigHandler.getInstance().loadConfigValues();
+    }
+
+    private void registerCommands() {
+        getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+            commands.registrar().register(PrivateMessage.createCommand());
+            commands.registrar().register(PrivateMessage.createTellAlias());
+            commands.registrar().register(PrivateMessage.createWhisperAlias());
+            commands.registrar().register(Reply.createCommand());
+            commands.registrar().register(Reply.createAlias());
+            commands.registrar().register(Block.createCommand());
+            commands.registrar().register(Unblock.createCommand());
+            commands.registrar().register(MessageToggle.createCommand());
+            commands.registrar().register(SocialSpy.createCommand());
+            commands.registrar().register(SocialSpy.createAlias());
+            commands.registrar().register(Reload.createCommand());
+            commands.registrar().register(Blocklist.createCommand());
+        });
+    }
+
+    private void registerPermissions() {
+        getServer().getPluginManager().addPermission(Constants.MESSAGE_BASIC);
+        getServer().getPluginManager().addPermission(Constants.MESSAGE_ADMIN);
+        getServer().getPluginManager().addPermission(Constants.MESSAGE_SEND);
+        getServer().getPluginManager().addPermission(Constants.MESSAGE_RECEIVE);
+        getServer().getPluginManager().addPermission(Constants.MESSAGE_TOGGLE);
+        getServer().getPluginManager().addPermission(Constants.MESSAGE_BLOCK);
+        getServer().getPluginManager().addPermission(Constants.PLUGIN_RELOAD);
+        getServer().getPluginManager().addPermission(Constants.ADMIN_OVERRIDE);
+        getServer().getPluginManager().addPermission(Constants.ADMIN_SOCIAL_SPY);
+        getServer().getPluginManager().addPermission(Constants.ADMIN_CONSOLE_SPY);
+        getServer().getPluginManager().addPermission(Constants.BYPASS_SOCIAL_SPY);
+        getServer().getPluginManager().addPermission(Constants.BYPASS_COMMAND_SPY);
+    }
+
+    @Override
+    public void onDisable() {
+        SqlHandler.getInstance().shutdownConnection();
     }
 
     public static MiniMessage getMiniMessage() {
@@ -72,17 +107,6 @@ public final class SimplePMs extends JavaPlugin {
 
     public static ConsoleCommandSender getPMConsoleSender() {
         return consoleSender;
-    }
-
-    private void registerCommands() {
-        Objects.requireNonNull(this.getCommand("msg")).setExecutor(new PrivateMessage());
-        Objects.requireNonNull(this.getCommand("reply")).setExecutor(new Reply());
-        Objects.requireNonNull(this.getCommand("socialspy")).setExecutor(new SocialSpy());
-        Objects.requireNonNull(this.getCommand("spmreload")).setExecutor(new Reload());
-        Objects.requireNonNull(this.getCommand("block")).setExecutor(new Block());
-        Objects.requireNonNull(this.getCommand("unblock")).setExecutor(new Unblock());
-        Objects.requireNonNull(this.getCommand("blocklist")).setExecutor(new Blocklist());
-        Objects.requireNonNull(this.getCommand("msgtoggle")).setExecutor(new MessageToggle());
     }
 
 }

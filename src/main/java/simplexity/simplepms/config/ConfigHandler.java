@@ -1,9 +1,11 @@
 package simplexity.simplepms.config;
 
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
-import simplexity.simplepms.saving.SqlHandler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,20 +23,22 @@ public class ConfigHandler {
     private final Logger logger = SimplePMs.getInstance().getLogger();
     private boolean mysqlEnabled, playersSendToConsole, playersSendToHiddenPlayers, consoleHasSocialSpy,
             commandSpyEnabled, consoleHasCommandSpy, receiveSoundEnabled, sendSoundEnabled, spySoundEnabled;
-    private Sound receiveSound, sendSound, spySound;
+    private NamespacedKey receiveSound = Registry.SOUNDS.getKey(Sound.BLOCK_NOTE_BLOCK_XYLOPHONE);
+    private NamespacedKey sendSound = Registry.SOUNDS.getKey(Sound.ENTITY_ALLAY_ITEM_THROWN);
+    private NamespacedKey spySound = Registry.SOUNDS.getKey(Sound.ENTITY_ITEM_FRAME_ROTATE_ITEM);
     private float receivePitch, receiveVolume, sendPitch, sendVolume, spyPitch, spyVolume;
     private String mysqlIp, mysqlName, mysqlUsername, mysqlPassword, normalFormat, socialSpyFormat;
-    private List<String> validNamesForConsole = new ArrayList<>();
+    private final List<String> validNamesForConsole = new ArrayList<>();
     private final HashSet<String> commandsToSpy = new HashSet<>();
 
     public void loadConfigValues() {
         SimplePMs.getInstance().reloadConfig();
         FileConfiguration config = SimplePMs.getInstance().getConfig();
-        SqlHandler.getInstance().init();
         LocaleHandler.getInstance().reloadLocale();
-        validNamesForConsole.clear();
         List<String> commands = config.getStringList("command-spy.commands");
+        List<String> consoleNames = config.getStringList("valid-console-names");
         updateHashSet(commandsToSpy, commands);
+        validateConsoleNames(consoleNames);
         normalFormat = config.getString("format.normal", "<displayname>");
         socialSpyFormat = config.getString("format.social-spy", "<username>");
         mysqlEnabled = config.getBoolean("mysql.enabled", false);
@@ -45,7 +49,6 @@ public class ConfigHandler {
         mysqlPassword = config.getString("mysql.password", "badpassword!");
         playersSendToConsole = config.getBoolean("allow-messaging.console", true);
         playersSendToHiddenPlayers = config.getBoolean("allow-messaging.hidden-players", false);
-        validNamesForConsole = config.getStringList("valid-console-names");
         consoleHasSocialSpy = config.getBoolean("console-has-social-spy", true);
         consoleHasCommandSpy = config.getBoolean("console-has-command-spy", false);
         receiveSoundEnabled = config.getBoolean("sounds.received.enabled", false);
@@ -62,46 +65,51 @@ public class ConfigHandler {
     }
 
     private void loadReceiveSoundInfo(FileConfiguration config) {
-        String soundString = config.getString("sounds.received.sound", "BLOCK_NOTE_BLOCK_XYLOPHONE");
-        receiveSound = getValidSound(soundString, Sound.BLOCK_NOTE_BLOCK_XYLOPHONE);
+        String soundString = config.getString("sounds.received.sound", "minecraft:block.note_block.xylophone");
+        receiveSound = getValidSound(soundString, Registry.SOUNDS.getKey(Sound.BLOCK_NOTE_BLOCK_XYLOPHONE));
         receivePitch = getValidFloat(config.getDouble("sounds.received.pitch", 1.8));
         receiveVolume = getValidFloat(config.getDouble("sounds.received.volume", 0.5));
     }
 
-    private void loadSendSoundInfo(FileConfiguration config){
-        String soundString = config.getString("sounds.sent.sound", "ENTITY_ALLAY_ITEM_THROWN");
-        sendSound = getValidSound(soundString, Sound.ENTITY_ALLAY_ITEM_THROWN);
+    private void loadSendSoundInfo(FileConfiguration config) {
+        String soundString = config.getString("sounds.sent.sound", "minecraft:entity.allay.item_thrown");
+        sendSound = getValidSound(soundString, Registry.SOUNDS.getKey(Sound.ENTITY_ALLAY_ITEM_THROWN));
         sendPitch = getValidFloat(config.getDouble("sounds.sent.pitch", 1.8));
         sendVolume = getValidFloat(config.getDouble("sounds.sent.volume", 0.5));
     }
 
-    private void loadSpySoundInfo(FileConfiguration config){
-        String soundString = config.getString("sounds.spy.sound", "ENTITY_ITEM_FRAME_ROTATE_ITEM");
-        spySound = getValidSound(soundString, Sound.ENTITY_ITEM_FRAME_ROTATE_ITEM);
+    private void loadSpySoundInfo(FileConfiguration config) {
+        String soundString = config.getString("sounds.spy.sound", "minecraft:entity.item_frame.rotate_item");
+        spySound = getValidSound(soundString, Registry.SOUNDS.getKey(Sound.ENTITY_ITEM_FRAME_ROTATE_ITEM));
         spyPitch = getValidFloat(config.getDouble("sounds.spy.pitch", 1.8));
         spyVolume = getValidFloat(config.getDouble("sounds.spy.volume", 0.5));
     }
 
-    private Sound getValidSound(String soundString, Sound defaultSound){
-        Sound sound;
-        try {
-            sound = Sound.valueOf(soundString);
-        } catch (IllegalArgumentException exception) {
-            String warning = Message.SOUND_NOT_VALID.getMessage().replace("%sound-string%", soundString);
-            String warning2 = Message.USING_DEFAULT_SOUND.getMessage().replace("%default-sound%", defaultSound.name());
+    private NamespacedKey getValidSound(String soundString, NamespacedKey defaultSound) {
+        NamespacedKey key = NamespacedKey.fromString(soundString);
+        if (key == null || Registry.SOUNDS.get(key) == null) {
+            String warning = LocaleMessage.LOG_ERROR_SOUND_NOT_VALID.getMessage().replace("%sound-string%", soundString);
+            String warning2 = LocaleMessage.LOG_ERROR_USING_DEFAULT_SOUND.getMessage().replace("%default-sound%", defaultSound.getKey());
             logger.warning(warning);
             logger.warning(warning2);
-            sound = defaultSound;
+            return defaultSound;
         }
-        return sound;
+        return key;
     }
 
-    private float getValidFloat(double numberToCheck){
+    private float getValidFloat(double numberToCheck) {
         if (numberToCheck <= 2 && numberToCheck >= 0) return (float) numberToCheck;
-        String warning = Message.OUT_OF_RANGE.getMessage().replace("%number%", String.valueOf(numberToCheck));
+        String warning = LocaleMessage.LOG_ERROR_FLOAT_OUT_OF_RANGE.getMessage().replace("%number%", String.valueOf(numberToCheck));
         logger.warning(warning);
-        logger.warning(Message.USING_DEFAULT_NUMBER.getMessage());
+        logger.warning(LocaleMessage.LOG_ERROR_USING_DEFAULT_FLOAT.getMessage());
         return 1.0f;
+    }
+
+    private void validateConsoleNames(List<String> list) {
+        validNamesForConsole.clear();
+        for (String name : list) {
+            validNamesForConsole.add(name.toLowerCase());
+        }
     }
 
 
@@ -153,15 +161,15 @@ public class ConfigHandler {
         return commandSpyEnabled;
     }
 
-    public boolean receivingMessagePlaysSound(){
+    public boolean receivingMessagePlaysSound() {
         return receiveSoundEnabled;
     }
 
-    public boolean sendingMessagePlaysSound(){
+    public boolean sendingMessagePlaysSound() {
         return sendSoundEnabled;
     }
 
-    public boolean messagePlaysSoundForSpy(){
+    public boolean messagePlaysSoundForSpy() {
         return spySoundEnabled;
     }
 
@@ -173,15 +181,18 @@ public class ConfigHandler {
         return socialSpyFormat;
     }
 
-    public Sound getReceiveSound() {
+    @NotNull
+    public NamespacedKey getReceiveSound() {
         return receiveSound;
     }
 
-    public Sound getSendSound() {
+    @NotNull
+    public NamespacedKey getSendSound() {
         return sendSound;
     }
 
-    public Sound getSpySound() {
+    @NotNull
+    public NamespacedKey getSpySound() {
         return spySound;
     }
 
