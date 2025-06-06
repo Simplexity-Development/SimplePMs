@@ -21,6 +21,7 @@ public class UnblockUserEvent extends Event implements Cancellable {
 
     /**
      * Gets whether this event has been cancelled
+     *
      * @return boolean Cancelled
      */
 

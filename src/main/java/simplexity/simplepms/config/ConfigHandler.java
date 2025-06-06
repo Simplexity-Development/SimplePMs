@@ -1,10 +1,10 @@
 package simplexity.simplepms.config;
 
-import net.kyori.adventure.key.Key;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
 
 import java.util.ArrayList;
@@ -23,7 +23,9 @@ public class ConfigHandler {
     private final Logger logger = SimplePMs.getInstance().getLogger();
     private boolean mysqlEnabled, playersSendToConsole, playersSendToHiddenPlayers, consoleHasSocialSpy,
             commandSpyEnabled, consoleHasCommandSpy, receiveSoundEnabled, sendSoundEnabled, spySoundEnabled;
-    private NamespacedKey receiveSound, sendSound, spySound;
+    private NamespacedKey receiveSound = Registry.SOUNDS.getKey(Sound.BLOCK_NOTE_BLOCK_XYLOPHONE);
+    private NamespacedKey sendSound = Registry.SOUNDS.getKey(Sound.ENTITY_ALLAY_ITEM_THROWN);
+    private NamespacedKey spySound = Registry.SOUNDS.getKey(Sound.ENTITY_ITEM_FRAME_ROTATE_ITEM);
     private float receivePitch, receiveVolume, sendPitch, sendVolume, spyPitch, spyVolume;
     private String mysqlIp, mysqlName, mysqlUsername, mysqlPassword, normalFormat, socialSpyFormat;
     private final List<String> validNamesForConsole = new ArrayList<>();
@@ -64,26 +66,26 @@ public class ConfigHandler {
 
     private void loadReceiveSoundInfo(FileConfiguration config) {
         String soundString = config.getString("sounds.received.sound", "minecraft:block.note_block.xylophone");
-        receiveSound = getValidSound(soundString,  Registry.SOUNDS.getKey(Sound.BLOCK_NOTE_BLOCK_XYLOPHONE));
+        receiveSound = getValidSound(soundString, Registry.SOUNDS.getKey(Sound.BLOCK_NOTE_BLOCK_XYLOPHONE));
         receivePitch = getValidFloat(config.getDouble("sounds.received.pitch", 1.8));
         receiveVolume = getValidFloat(config.getDouble("sounds.received.volume", 0.5));
     }
 
-    private void loadSendSoundInfo(FileConfiguration config){
+    private void loadSendSoundInfo(FileConfiguration config) {
         String soundString = config.getString("sounds.sent.sound", "minecraft:entity.allay.item_thrown");
-        sendSound = getValidSound(soundString,  Registry.SOUNDS.getKey(Sound.ENTITY_ALLAY_ITEM_THROWN));
+        sendSound = getValidSound(soundString, Registry.SOUNDS.getKey(Sound.ENTITY_ALLAY_ITEM_THROWN));
         sendPitch = getValidFloat(config.getDouble("sounds.sent.pitch", 1.8));
         sendVolume = getValidFloat(config.getDouble("sounds.sent.volume", 0.5));
     }
 
-    private void loadSpySoundInfo(FileConfiguration config){
+    private void loadSpySoundInfo(FileConfiguration config) {
         String soundString = config.getString("sounds.spy.sound", "minecraft:entity.item_frame.rotate_item");
         spySound = getValidSound(soundString, Registry.SOUNDS.getKey(Sound.ENTITY_ITEM_FRAME_ROTATE_ITEM));
         spyPitch = getValidFloat(config.getDouble("sounds.spy.pitch", 1.8));
         spyVolume = getValidFloat(config.getDouble("sounds.spy.volume", 0.5));
     }
 
-    private NamespacedKey getValidSound(String soundString, NamespacedKey defaultSound){
+    private NamespacedKey getValidSound(String soundString, NamespacedKey defaultSound) {
         NamespacedKey key = NamespacedKey.fromString(soundString);
         if (key == null || Registry.SOUNDS.get(key) == null) {
             String warning = LocaleMessage.LOG_ERROR_SOUND_NOT_VALID.getMessage().replace("%sound-string%", soundString);
@@ -95,7 +97,7 @@ public class ConfigHandler {
         return key;
     }
 
-    private float getValidFloat(double numberToCheck){
+    private float getValidFloat(double numberToCheck) {
         if (numberToCheck <= 2 && numberToCheck >= 0) return (float) numberToCheck;
         String warning = LocaleMessage.LOG_ERROR_FLOAT_OUT_OF_RANGE.getMessage().replace("%number%", String.valueOf(numberToCheck));
         logger.warning(warning);
@@ -159,15 +161,15 @@ public class ConfigHandler {
         return commandSpyEnabled;
     }
 
-    public boolean receivingMessagePlaysSound(){
+    public boolean receivingMessagePlaysSound() {
         return receiveSoundEnabled;
     }
 
-    public boolean sendingMessagePlaysSound(){
+    public boolean sendingMessagePlaysSound() {
         return sendSoundEnabled;
     }
 
-    public boolean messagePlaysSoundForSpy(){
+    public boolean messagePlaysSoundForSpy() {
         return spySoundEnabled;
     }
 
@@ -179,14 +181,17 @@ public class ConfigHandler {
         return socialSpyFormat;
     }
 
+    @NotNull
     public NamespacedKey getReceiveSound() {
         return receiveSound;
     }
 
+    @NotNull
     public NamespacedKey getSendSound() {
         return sendSound;
     }
 
+    @NotNull
     public NamespacedKey getSpySound() {
         return spySound;
     }

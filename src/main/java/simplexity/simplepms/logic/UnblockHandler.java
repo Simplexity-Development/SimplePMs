@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.commands.util.Exceptions;
 import simplexity.simplepms.events.UnblockUserEvent;
-import simplexity.simplepms.saving.objects.PlayerBlock;
 import simplexity.simplepms.saving.Cache;
+import simplexity.simplepms.saving.objects.PlayerBlock;
 
 import java.util.List;
 import java.util.UUID;

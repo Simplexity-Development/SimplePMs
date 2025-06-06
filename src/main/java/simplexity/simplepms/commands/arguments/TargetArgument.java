@@ -28,7 +28,8 @@ public class TargetArgument implements CustomArgumentType<Target, String> {
     @Override
     public @NotNull Target parse(@NotNull StringReader reader) throws CommandSyntaxException {
         String targetName = reader.readString();
-        if (ConfigHandler.getInstance().getValidNamesForConsole().contains(targetName.toLowerCase())) return new Target(consoleSender, targetName);
+        if (ConfigHandler.getInstance().getValidNamesForConsole().contains(targetName.toLowerCase()))
+            return new Target(consoleSender, targetName);
         Player targetPlayer = Bukkit.getPlayerExact(targetName);
         if (targetPlayer != null) return new Target(targetPlayer, targetName);
         throw Exceptions.ERROR_INVALID_USER.create(targetName);

@@ -32,19 +32,32 @@ public final class SimplePMs extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        this.getServer().getPluginManager().registerEvents(new QuitListener(), this);
-        this.getServer().getPluginManager().registerEvents(new PreCommandListener(), this);
-        this.getServer().getPluginManager().registerEvents(new JoinListener(), this);
-        if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        consoleSender = getServer().getConsoleSender();
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             papiEnabled = true;
         }
-        consoleSender = this.getServer().getConsoleSender();
-        this.saveDefaultConfig();
+        SqlHandler.getInstance().init();
+        loadConfigStuff();
+        registerListeners();
+        registerCommands();
+        registerPermissions();
+    }
+
+    private void registerListeners() {
+        getServer().getPluginManager().registerEvents(new QuitListener(), this);
+        getServer().getPluginManager().registerEvents(new PreCommandListener(), this);
+        getServer().getPluginManager().registerEvents(new JoinListener(), this);
+    }
+
+    private void loadConfigStuff() {
+        saveDefaultConfig();
         getConfig().options().copyDefaults(true);
         saveConfig();
         ConfigHandler.getInstance().loadConfigValues();
-        SqlHandler.getInstance().init();
-        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+    }
+
+    private void registerCommands() {
+        getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             commands.registrar().register(PrivateMessage.createCommand());
             commands.registrar().register(PrivateMessage.createTellAlias());
             commands.registrar().register(PrivateMessage.createWhisperAlias());
@@ -58,6 +71,9 @@ public final class SimplePMs extends JavaPlugin {
             commands.registrar().register(Reload.createCommand());
             commands.registrar().register(Blocklist.createCommand());
         });
+    }
+
+    private void registerPermissions() {
         getServer().getPluginManager().addPermission(Constants.MESSAGE_BASIC);
         getServer().getPluginManager().addPermission(Constants.MESSAGE_ADMIN);
         getServer().getPluginManager().addPermission(Constants.MESSAGE_SEND);
@@ -73,7 +89,6 @@ public final class SimplePMs extends JavaPlugin {
     }
 
     @Override
-
     public void onDisable() {
         SqlHandler.getInstance().shutdownConnection();
     }

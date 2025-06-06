@@ -68,7 +68,7 @@ public class PrivateMessageEvent extends Event implements Cancellable {
      * @param recipient CommandSender
      */
 
-    public void setRecipient(CommandSender recipient){
+    public void setRecipient(CommandSender recipient) {
         this.recipient = recipient;
     }
 
@@ -88,7 +88,7 @@ public class PrivateMessageEvent extends Event implements Cancellable {
      * @param messageContent String
      */
 
-    public void setMessageContent(String messageContent){
+    public void setMessageContent(String messageContent) {
         this.messageContent = messageContent;
     }
 
@@ -139,4 +139,3 @@ public class PrivateMessageEvent extends Event implements Cancellable {
         return handlers;
     }
 }
-

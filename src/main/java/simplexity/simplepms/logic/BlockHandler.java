@@ -5,8 +5,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.events.BlockUserEvent;
-import simplexity.simplepms.saving.objects.PlayerBlock;
 import simplexity.simplepms.saving.Cache;
+import simplexity.simplepms.saving.objects.PlayerBlock;
 
 import javax.annotation.Nullable;
 
@@ -23,7 +23,7 @@ public class BlockHandler {
         Cache.addBlockedUser(blockingPlayer.getUniqueId(), playerBlock);
     }
 
-    private static BlockUserEvent callBlockEvent(@NotNull Player blockingPlayer, @NotNull OfflinePlayer playerToBlock, @Nullable String reason){
+    private static BlockUserEvent callBlockEvent(@NotNull Player blockingPlayer, @NotNull OfflinePlayer playerToBlock, @Nullable String reason) {
         String blockedPlayerName = playerToBlock.getName();
         if (blockedPlayerName == null) blockedPlayerName = "[NO NAME FOUND]";
         BlockUserEvent blockUserEvent = new BlockUserEvent(blockingPlayer.getUniqueId(), playerToBlock.getUniqueId(), blockedPlayerName, reason);

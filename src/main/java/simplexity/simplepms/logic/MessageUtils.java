@@ -46,8 +46,6 @@ public class MessageUtils {
     }
 
 
-
-
     private Component getCommmandSenderComponent(CommandSender sender, boolean socialSpy) {
         if (!(sender instanceof Player player)) {
             if (socialSpy) return miniMessage.deserialize(LocaleMessage.CONSOLE_NAME_SOCIAL_SPY.getMessage());
@@ -80,7 +78,7 @@ public class MessageUtils {
 
     public TagResolver papiTag(final Player player) {
         if (player == null) return TagResolver.empty();
-        return TagResolver.resolver("papi", (argumentQueue, context) -> {
+        return TagResolver.resolver("papi", (argumentQueue, _) -> {
             final String papiPlaceholder = argumentQueue.popOr("PLACEHOLDER API NEEDS ARGUMENT").value();
             final String parsedPlaceholder = PlaceholderAPI.setPlaceholders(player, '%' + papiPlaceholder + '%');
             final Component componentPlaceholder = LegacyComponentSerializer.legacySection().deserialize(parsedPlaceholder);

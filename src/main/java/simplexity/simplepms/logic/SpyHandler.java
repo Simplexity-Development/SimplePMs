@@ -2,6 +2,7 @@ package simplexity.simplepms.logic;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Registry;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import simplexity.simplepms.SimplePMs;
@@ -65,8 +66,9 @@ public class SpyHandler {
 
     private static void playSpySound(Player spyingPlayer) {
         if (!ConfigHandler.getInstance().messagePlaysSoundForSpy()) return;
-        spyingPlayer.playSound(spyingPlayer,
-                Registry.SOUNDS.get(ConfigHandler.getInstance().getSpySound()),
+        Sound sound = Registry.SOUNDS.get(ConfigHandler.getInstance().getSpySound());
+        if (sound == null) return;
+        spyingPlayer.playSound(spyingPlayer, sound,
                 ConfigHandler.getInstance().getSpyVolume(),
                 ConfigHandler.getInstance().getSpyPitch());
     }

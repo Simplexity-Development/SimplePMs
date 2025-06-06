@@ -9,11 +9,11 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.CommandSender;
+import simplexity.simplepms.commands.arguments.Target;
 import simplexity.simplepms.commands.arguments.TargetArgument;
 import simplexity.simplepms.commands.util.MessageChecks;
 import simplexity.simplepms.logic.Constants;
 import simplexity.simplepms.logic.PMHandler;
-import simplexity.simplepms.commands.arguments.Target;
 
 @SuppressWarnings("UnstableApiUsage")
 public class PrivateMessage {
@@ -40,7 +40,7 @@ public class PrivateMessage {
                         .then(messageArg())).build();
     }
 
-    private static RequiredArgumentBuilder<CommandSourceStack, Target> targetArg(){
+    private static RequiredArgumentBuilder<CommandSourceStack, Target> targetArg() {
         TargetArgument targetArg = new TargetArgument();
         return Commands.argument("target", targetArg)
                 .suggests(targetArg::suggestOnlinePlayers);

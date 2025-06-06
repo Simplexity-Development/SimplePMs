@@ -1,6 +1,7 @@
 package simplexity.simplepms.logic;
 
 import org.bukkit.Registry;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import simplexity.simplepms.SimplePMs;
@@ -37,8 +38,9 @@ public class PMHandler {
                 initiator, target, messageContent, false));
         if (!ConfigHandler.getInstance().sendingMessagePlaysSound()) return;
         if (!(initiator instanceof Player player)) return;
-        player.playSound(player,
-                Registry.SOUNDS.get(ConfigHandler.getInstance().getSendSound()),
+        Sound sound = Registry.SOUNDS.get(ConfigHandler.getInstance().getSendSound());
+        if (sound == null) return;
+        player.playSound(player, sound,
                 ConfigHandler.getInstance().getSendVolume(),
                 ConfigHandler.getInstance().getSendPitch());
     }
@@ -49,13 +51,12 @@ public class PMHandler {
                 initiator, target, messageContent, false));
         if (!ConfigHandler.getInstance().receivingMessagePlaysSound()) return;
         if (!(target instanceof Player player)) return;
-        player.playSound(player,
-                Registry.SOUNDS.get(ConfigHandler.getInstance().getReceiveSound()),
+        Sound sound = Registry.SOUNDS.get(ConfigHandler.getInstance().getReceiveSound());
+        if (sound == null) return;
+        player.playSound(player, sound,
                 ConfigHandler.getInstance().getReceiveVolume(),
                 ConfigHandler.getInstance().getReceivePitch());
     }
-
-
 
 
     private static PrivateMessageEvent callPMEvent(CommandSender initiator, CommandSender target, String messageContent) {

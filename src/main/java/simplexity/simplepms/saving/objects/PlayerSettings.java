@@ -22,8 +22,8 @@ public final class PlayerSettings {
 
     public String toString() {
         return "Player UUID: " + playerUUID.toString()
-                + "\nSocial Spy Enabled: " + socialSpyEnabled
-                + "\nMessages Enabled: " + messagesDisabled;
+               + "\nSocial Spy Enabled: " + socialSpyEnabled
+               + "\nMessages Enabled: " + messagesDisabled;
     }
 
     public UUID getPlayerUUID() {

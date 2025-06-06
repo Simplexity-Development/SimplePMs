@@ -16,19 +16,19 @@ import java.util.UUID;
 @SuppressWarnings({"UnstableApiUsage", "SameReturnValue"})
 public class SocialSpy {
 
-    public static LiteralCommandNode<CommandSourceStack> createCommand(){
+    public static LiteralCommandNode<CommandSourceStack> createCommand() {
         return Commands.literal("socialspy")
                 .requires(SocialSpy::canExecute)
                 .executes(SocialSpy::execute).build();
     }
 
-    public static LiteralCommandNode<CommandSourceStack> createAlias(){
+    public static LiteralCommandNode<CommandSourceStack> createAlias() {
         return Commands.literal("ss")
                 .requires(SocialSpy::canExecute)
                 .executes(SocialSpy::execute).build();
     }
 
-    private static boolean canExecute(CommandSourceStack css){
+    private static boolean canExecute(CommandSourceStack css) {
         if (!(css.getSender() instanceof Player)) return false;
         return css.getSender().hasPermission(Constants.ADMIN_SOCIAL_SPY);
     }

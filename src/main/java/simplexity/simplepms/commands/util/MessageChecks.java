@@ -5,9 +5,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.logic.Constants;
+import simplexity.simplepms.saving.Cache;
 import simplexity.simplepms.saving.objects.PlayerBlock;
 import simplexity.simplepms.saving.objects.PlayerSettings;
-import simplexity.simplepms.saving.Cache;
 
 import java.util.List;
 
@@ -15,17 +15,17 @@ public class MessageChecks {
 
 
     public static void userChecks(CommandSender initiator, CommandSender target, String providedName) throws CommandSyntaxException {
-        if (target instanceof Player playerTarget) {
-            if (!initiator.hasPermission(Constants.ADMIN_OVERRIDE)) {
-                targetCanGetMessageCheck(playerTarget);
-            }
-            if (initiator instanceof Player playerInitiator) {
-                MessageChecks.ownMessagesDisabledCheck(playerInitiator);
-                MessageChecks.initiatorBlockedTargetCheck(playerInitiator, playerTarget);
+        if (initiator instanceof Player playerInitiator) {
+            ownMessagesDisabledCheck(playerInitiator);
+            if (target instanceof Player playerTarget) {
+                initiatorBlockedTargetCheck(playerInitiator, playerTarget);
                 if (!initiator.hasPermission(Constants.ADMIN_OVERRIDE)) {
-                    MessageChecks.targetBlockedInitiatorCheck(playerInitiator, playerTarget);
-                    MessageChecks.vanishCheck(playerInitiator, playerTarget, providedName);
+                    targetCanGetMessageCheck(playerTarget);
+                    targetBlockedInitiatorCheck(playerInitiator, playerTarget);
+                    vanishCheck(playerInitiator, playerTarget, providedName);
                 }
+            } else {
+                canSendToConsole(providedName);
             }
         }
     }
@@ -56,6 +56,11 @@ public class MessageChecks {
     private static void initiatorBlockedTargetCheck(Player initiatingPlayer, Player targetPlayer) throws CommandSyntaxException {
         if (userBlocked(initiatingPlayer, targetPlayer))
             throw Exceptions.ERROR_CANNOT_MESSAGE_SOMEONE_YOU_HAVE_BLOCKED.create();
+    }
+
+    private static void canSendToConsole(String providedName) throws CommandSyntaxException {
+        if (!ConfigHandler.getInstance().canPlayersSendToConsole())
+            throw Exceptions.ERROR_INVALID_USER.create(providedName);
     }
 
     private static boolean userBlocked(Player blocklistPlayer, Player potentialBlock) {

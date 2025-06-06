@@ -69,6 +69,7 @@ public class BlockUserEvent extends Event implements Cancellable {
 
     /**
      * Gets the UUID of the player doing the blocking
+     *
      * @return UUID
      */
 
@@ -129,6 +130,7 @@ public class BlockUserEvent extends Event implements Cancellable {
      * This is solely for player-readable identification
      * This is used in the block list and in the unblock command, but UUID is used for actual verification.
      * Display names can be used here
+     *
      * @param blockedPlayerName String name
      */
     public void setBlockedPlayerName(@NotNull String blockedPlayerName) {
