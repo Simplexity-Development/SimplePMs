@@ -11,6 +11,7 @@ import simplexity.simplepms.saving.objects.PlayerBlock;
 import simplexity.simplepms.saving.objects.PlayerSettings;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@SuppressWarnings({"CallToPrintStackTrace", "SqlResolve", "StringTemplateMigration"})
+@SuppressWarnings({"CallToPrintStackTrace", "SqlResolve", "StringTemplateMigration", "SameParameterValue"})
 public class SqlHandler {
 
     private SqlHandler() {
@@ -60,6 +61,7 @@ public class SqlHandler {
                        messages_disabled BOOLEAN NOT NULL
                     );""");
             playerSettingsInitStatement.execute();
+            updateDatabaseColumns();
         } catch (SQLException e) {
             logger.warn("Failed to connect to database: {}", e.getMessage(), e);
         }
@@ -166,6 +168,67 @@ public class SqlHandler {
         });
 
     }
+
+    private void updateDatabaseColumns() {
+        if (ConfigHandler.getInstance().isMysqlEnabled()) {
+            doesMysqlColumnExist("blocklist", "blocked_player_name").thenAccept(exists -> {
+                if (!exists) {
+                    addColumn("blocklist", "blocked_player_name", "VARCHAR(256)", "");
+                }
+            });
+        } else {
+            doesSqliteColumnExist("blocklist", "blocked_player_name").thenAccept(exists -> {
+                if (!exists) {
+                    addColumn("blocklist", "blocked_player_name", "VARCHAR(256)", "");
+                }
+            });
+        }
+    }
+
+    private CompletableFuture<Boolean> doesSqliteColumnExist(String tableName, String columnName) {
+        return CompletableFuture.supplyAsync(() -> {
+            String query = "PRAGMA table_info(" + tableName + ")";
+            try (Connection connection = getConnection()) {
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    if (columnName.equalsIgnoreCase(resultSet.getString("name"))) {
+                        return true;
+                    }
+                }
+            } catch (SQLException e) {
+                logger.warn("Failed to to check for column {} in table {}: {}", columnName, tableName, e.getMessage(), e);
+            }
+            return false;
+        });
+    }
+
+    private CompletableFuture<Boolean> doesMysqlColumnExist(String tableName, String columnName) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection()) {
+                DatabaseMetaData metaData = connection.getMetaData();
+                ResultSet resultSet = metaData.getColumns(null, null, tableName, columnName);
+                return resultSet.next();
+            } catch (SQLException e) {
+                logger.warn("Failed to check for column {} in table {}: {}", columnName, tableName, e.getMessage(), e);
+            }
+            return false;
+        });
+    }
+
+    // Possibly extremely cursed way to do this :cackle:
+
+    private void addColumn(String tableName, String columnName, String dataType, String constraints) {
+        String query = "ALTER TABLE " + tableName + " ADD COLUMN " + columnName + dataType + constraints + ";";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.executeUpdate();
+            logger.info("Added new column '{}' to table '{}'", columnName, tableName);
+        } catch (SQLException e) {
+            logger.warn("Failed to add new column {} to table {}: {}", columnName, tableName, e.getMessage(), e);
+        }
+    }
+
 
     private void setupConfig() {
         if (!ConfigHandler.getInstance().isMysqlEnabled()) {
