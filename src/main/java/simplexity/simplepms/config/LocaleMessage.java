@@ -32,7 +32,9 @@ public enum LocaleMessage {
     ERROR_CANNOT_MESSAGE_CONSOLE("error.cannot-message-console", "<red>Sorry, you cannot message the server</red>"),
     ERROR_SOMETHING_WENT_WRONG("error.something-wrong", "<red>Sorry, something went wrong, please check console for more information</red>"),
     ERROR_NAME_NOT_FOUND("error.name-not-found", "Name not found"),
-    LOG_ERROR_SOUND_NOT_VALID("console-error.sound-not-valid", "Warning! The sound you have input: '%sound-string%' is invalid! Please be sure you use a sound that is listed on https://jd.papermc.io/paper/1.21.4/org/bukkit/Sound.html"),
+    LOG_ERROR_SOUND_NOT_VALID("console-error.sound-not-valid", "Warning! The sound you have input: '%sound-string%' is invalid! " +
+                                                               "Sounds must now be in namespaced-key format, you can find the namespaced versions here: " +
+                                                               "https://jd.papermc.io/paper/1.21.5/io/papermc/paper/registry/keys/SoundEventKeys.html"),
     LOG_ERROR_USING_DEFAULT_SOUND("console-error.using-default-sound", "Using %default-sound% until a valid sound is provided"),
     LOG_ERROR_FLOAT_OUT_OF_RANGE("console-error.float-out-of-range", "The number %number% is out of range! Volume and pitch values must be a number between 0 and 2!"),
     LOG_ERROR_USING_DEFAULT_FLOAT("console-error.using-default-float", "Setting to 1.0 until a valid value is provided");

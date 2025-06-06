@@ -17,6 +17,7 @@ import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.listeners.JoinListener;
 import simplexity.simplepms.listeners.PreCommandListener;
 import simplexity.simplepms.listeners.QuitListener;
+import simplexity.simplepms.logic.Constants;
 import simplexity.simplepms.saving.SqlHandler;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -57,6 +58,18 @@ public final class SimplePMs extends JavaPlugin {
             commands.registrar().register(Reload.createCommand());
             commands.registrar().register(Blocklist.createCommand());
         });
+        getServer().getPluginManager().addPermission(Constants.MESSAGE_BASIC);
+        getServer().getPluginManager().addPermission(Constants.MESSAGE_ADMIN);
+        getServer().getPluginManager().addPermission(Constants.MESSAGE_SEND);
+        getServer().getPluginManager().addPermission(Constants.MESSAGE_RECEIVE);
+        getServer().getPluginManager().addPermission(Constants.MESSAGE_TOGGLE);
+        getServer().getPluginManager().addPermission(Constants.MESSAGE_BLOCK);
+        getServer().getPluginManager().addPermission(Constants.PLUGIN_RELOAD);
+        getServer().getPluginManager().addPermission(Constants.ADMIN_OVERRIDE);
+        getServer().getPluginManager().addPermission(Constants.ADMIN_SOCIAL_SPY);
+        getServer().getPluginManager().addPermission(Constants.ADMIN_CONSOLE_SPY);
+        getServer().getPluginManager().addPermission(Constants.BYPASS_SOCIAL_SPY);
+        getServer().getPluginManager().addPermission(Constants.BYPASS_COMMAND_SPY);
     }
 
     @Override

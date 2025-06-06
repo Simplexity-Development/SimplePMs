@@ -15,7 +15,7 @@ public class Reload {
     public static LiteralCommandNode<CommandSourceStack> createCommand() {
 
         return Commands.literal("spmreload")
-                .requires(css -> css.getSender().hasPermission(Constants.RELOAD))
+                .requires(css -> css.getSender().hasPermission(Constants.PLUGIN_RELOAD))
                 .executes(ctx -> {
                     CommandSender sender = ctx.getSource().getSender();
                     ConfigHandler.getInstance().loadConfigValues();

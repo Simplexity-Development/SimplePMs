@@ -1,5 +1,6 @@
 package simplexity.simplepms.logic;
 
+import org.bukkit.Registry;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import simplexity.simplepms.SimplePMs;
@@ -37,7 +38,7 @@ public class PMHandler {
         if (!ConfigHandler.getInstance().sendingMessagePlaysSound()) return;
         if (!(initiator instanceof Player player)) return;
         player.playSound(player,
-                ConfigHandler.getInstance().getSendSound(),
+                Registry.SOUNDS.get(ConfigHandler.getInstance().getSendSound()),
                 ConfigHandler.getInstance().getSendVolume(),
                 ConfigHandler.getInstance().getSendPitch());
     }
@@ -49,7 +50,7 @@ public class PMHandler {
         if (!ConfigHandler.getInstance().receivingMessagePlaysSound()) return;
         if (!(target instanceof Player player)) return;
         player.playSound(player,
-                ConfigHandler.getInstance().getReceiveSound(),
+                Registry.SOUNDS.get(ConfigHandler.getInstance().getReceiveSound()),
                 ConfigHandler.getInstance().getReceiveVolume(),
                 ConfigHandler.getInstance().getReceivePitch());
     }

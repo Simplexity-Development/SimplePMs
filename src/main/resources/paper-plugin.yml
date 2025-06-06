@@ -1,0 +1,10 @@
+name: SimplePMs
+version: '${project.version}'
+main: simplexity.simplepms.SimplePMs
+api-version: 1.20.6
+description: Plugin focused on simple private messaging.
+dependencies:
+  server:
+    PlaceholderAPI:
+      load: OMIT
+      required: false
