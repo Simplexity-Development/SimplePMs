@@ -76,9 +76,10 @@ public class MessageUtils {
         );
     }
 
+    @SuppressWarnings("unused")
     public TagResolver papiTag(final Player player) {
         if (player == null) return TagResolver.empty();
-        return TagResolver.resolver("papi", (argumentQueue, _) -> {
+        return TagResolver.resolver("papi", (argumentQueue, context) -> {
             final String papiPlaceholder = argumentQueue.popOr("PLACEHOLDER API NEEDS ARGUMENT").value();
             final String parsedPlaceholder = PlaceholderAPI.setPlaceholders(player, '%' + papiPlaceholder + '%');
             final Component componentPlaceholder = LegacyComponentSerializer.legacySection().deserialize(parsedPlaceholder);
