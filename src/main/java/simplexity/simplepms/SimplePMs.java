@@ -36,8 +36,8 @@ public final class SimplePMs extends JavaPlugin {
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             papiEnabled = true;
         }
-        SqlHandler.getInstance().init();
         loadConfigStuff();
+        SqlHandler.getInstance().init();
         registerListeners();
         registerCommands();
         registerPermissions();
