@@ -61,7 +61,7 @@ public class SqlHandler {
                        messages_disabled BOOLEAN NOT NULL
                     );""");
             playerSettingsInitStatement.execute();
-            updateDatabaseColumns();
+            updateDatabaseColumns().join();
         } catch (SQLException e) {
             logger.warn("Failed to connect to database: {}", e.getMessage(), e);
         }
@@ -169,20 +169,26 @@ public class SqlHandler {
 
     }
 
-    private void updateDatabaseColumns() {
-        if (ConfigHandler.getInstance().isMysqlEnabled()) {
-            doesMysqlColumnExist("blocklist", "blocked_player_name").thenAccept(exists -> {
-                if (!exists) {
-                    addColumn("blocklist", "blocked_player_name", "VARCHAR(256)", "");
+    private CompletableFuture<Boolean> updateDatabaseColumns() {
+        return CompletableFuture.supplyAsync(() -> {
+            String tableName = "blocklist";
+            String columnName = "blocked_player_name";
+            boolean columnExists;
+            try {
+                if (ConfigHandler.getInstance().isMysqlEnabled()) {
+                    columnExists = doesMysqlColumnExist(tableName, columnName).get();
+                } else {
+                    columnExists = doesSqliteColumnExist(tableName, columnName).get();
                 }
-            });
-        } else {
-            doesSqliteColumnExist("blocklist", "blocked_player_name").thenAccept(exists -> {
-                if (!exists) {
-                    addColumn("blocklist", "blocked_player_name", "VARCHAR(256)", "");
+                if (!columnExists) {
+                    addColumn(tableName, columnName, "VARCHAR(256)", "");
                 }
-            });
-        }
+            } catch (Exception e) {
+                logger.warn("Unable to update database table: {} column: {}, error: {}", tableName, columnName, e.getMessage(), e);
+                return false;
+            }
+            return true;
+        });
     }
 
     private CompletableFuture<Boolean> doesSqliteColumnExist(String tableName, String columnName) {
@@ -219,7 +225,7 @@ public class SqlHandler {
     // Possibly extremely cursed way to do this :cackle:
 
     private void addColumn(String tableName, String columnName, String dataType, String constraints) {
-        String query = "ALTER TABLE " + tableName + " ADD COLUMN " + columnName + dataType + constraints + ";";
+        String query = String.format("ALTER TABLE %s ADD COLUMN %s %s %s;", tableName, columnName, dataType, constraints);
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.executeUpdate();
