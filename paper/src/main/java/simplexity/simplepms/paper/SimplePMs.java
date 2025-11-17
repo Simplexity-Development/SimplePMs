@@ -1,5 +1,6 @@
 package simplexity.simplepms.paper;
 
+import com.simplexity.simplepms.common.logger.Logger;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.ConsoleCommandSender;
@@ -18,7 +19,7 @@ import simplexity.simplepms.paper.listeners.JoinListener;
 import simplexity.simplepms.paper.listeners.PreCommandListener;
 import simplexity.simplepms.paper.listeners.QuitListener;
 import simplexity.simplepms.paper.logic.Constants;
-import simplexity.simplepms.paper.saving.SqlHandler;
+import simplexity.simplepms.paper.saving.DatabaseHandler;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class SimplePMs extends JavaPlugin {
@@ -28,7 +29,6 @@ public final class SimplePMs extends JavaPlugin {
     private static boolean papiEnabled = false;
     private static ConsoleCommandSender consoleSender;
 
-
     @Override
     public void onEnable() {
         instance = this;
@@ -37,10 +37,11 @@ public final class SimplePMs extends JavaPlugin {
             papiEnabled = true;
         }
         loadConfigStuff();
-        SqlHandler.getInstance().init();
+        DatabaseHandler.getInstance().init();
         registerListeners();
         registerCommands();
         registerPermissions();
+        Logger.setLogger(this.getSLF4JLogger());
     }
 
     private void registerListeners() {
@@ -90,7 +91,7 @@ public final class SimplePMs extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        SqlHandler.getInstance().shutdownConnection();
+        DatabaseHandler.getInstance().shutdownConnection();
     }
 
     public static MiniMessage getMiniMessage() {

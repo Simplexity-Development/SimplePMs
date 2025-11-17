@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import simplexity.simplepms.paper.config.ConfigHandler;
 import simplexity.simplepms.paper.config.LocaleMessage;
 import simplexity.simplepms.paper.logic.Constants;
-import simplexity.simplepms.paper.saving.SqlHandler;
+import simplexity.simplepms.paper.saving.DatabaseHandler;
 
 @SuppressWarnings("UnstableApiUsage")
 public class Reload {
@@ -19,7 +19,7 @@ public class Reload {
                 .executes(ctx -> {
                     CommandSender sender = ctx.getSource().getSender();
                     ConfigHandler.getInstance().loadConfigValues();
-                    SqlHandler.getInstance().reloadDatabase();
+                    DatabaseHandler.getInstance().reloadDatabase();
                     sender.sendRichMessage(LocaleMessage.RELOADED.getMessage());
                     return Command.SINGLE_SUCCESS;
                 }).build();

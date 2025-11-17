@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.paper.SimplePMs;
 import simplexity.simplepms.paper.events.BlockUserEvent;
 import simplexity.simplepms.paper.saving.Cache;
-import simplexity.simplepms.paper.saving.objects.PlayerBlock;
+import com.simplexity.simplepms.common.database.objects.PlayerBlock;
 
 import javax.annotation.Nullable;
 

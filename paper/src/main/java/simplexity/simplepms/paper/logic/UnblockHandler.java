@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.paper.commands.util.Exceptions;
 import simplexity.simplepms.paper.events.UnblockUserEvent;
 import simplexity.simplepms.paper.saving.Cache;
-import simplexity.simplepms.paper.saving.objects.PlayerBlock;
+import com.simplexity.simplepms.common.database.objects.PlayerBlock;
 
 import java.util.List;
 import java.util.UUID;

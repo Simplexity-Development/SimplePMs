@@ -1,4 +1,4 @@
-package simplexity.simplepms.paper.saving.objects;
+package com.simplexity.simplepms.common.database.objects;
 
 import java.util.UUID;
 

@@ -12,7 +12,7 @@ import simplexity.simplepms.paper.SimplePMs;
 import simplexity.simplepms.paper.config.LocaleMessage;
 import simplexity.simplepms.paper.logic.Constants;
 import simplexity.simplepms.paper.saving.Cache;
-import simplexity.simplepms.paper.saving.objects.PlayerBlock;
+import com.simplexity.simplepms.common.database.objects.PlayerBlock;
 
 import java.util.List;
 import java.util.UUID;

@@ -4,8 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import simplexity.simplepms.paper.SimplePMs;
 import simplexity.simplepms.paper.config.LocaleMessage;
-import simplexity.simplepms.paper.saving.objects.PlayerBlock;
-import simplexity.simplepms.paper.saving.objects.PlayerSettings;
+import com.simplexity.simplepms.common.database.objects.PlayerBlock;
+import com.simplexity.simplepms.common.database.objects.PlayerSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,11 +30,11 @@ public class Cache {
 
     public static void populateCache(UUID uuid, Player player, boolean hasSpyPerms) {
         Bukkit.getScheduler().runTaskAsynchronously(SimplePMs.getInstance(), () -> {
-            SqlHandler.getInstance().getBlockedPlayers(uuid).thenAccept(blocklist -> {
+            DatabaseHandler.getInstance().getBlockedPlayers(uuid).thenAccept(blocklist -> {
                 blockList.put(uuid, blocklist);
                 populateNullNames(uuid);
             });
-            SqlHandler.getInstance().getSettings(uuid).thenAccept(settings -> {
+            DatabaseHandler.getInstance().getSettings(uuid).thenAccept(settings -> {
                 playerSettings.put(uuid, settings);
                 if (hasSpyPerms && settings.isSocialSpyEnabled()) {
                     spyingPlayers.add(player);
@@ -71,7 +71,7 @@ public class Cache {
         PlayerSettings settings = playerSettings.get(uuid);
         settings.setSocialSpyEnabled(socialSpy);
         playerSettings.put(uuid, settings);
-        SqlHandler.getInstance().updateSettings(uuid, settings.isSocialSpyEnabled(), settings.areMessagesDisabled());
+        DatabaseHandler.getInstance().updateSettings(uuid, settings.isSocialSpyEnabled(), settings.areMessagesDisabled());
     }
 
     /**
@@ -84,7 +84,7 @@ public class Cache {
         PlayerSettings settings = playerSettings.get(uuid);
         settings.setMessagesDisabled(messageDisabled);
         playerSettings.put(uuid, settings);
-        SqlHandler.getInstance().updateSettings(uuid, settings.isSocialSpyEnabled(), settings.areMessagesDisabled());
+        DatabaseHandler.getInstance().updateSettings(uuid, settings.isSocialSpyEnabled(), settings.areMessagesDisabled());
     }
 
     /**
@@ -99,7 +99,7 @@ public class Cache {
         List<PlayerBlock> blockedPlayers = blockList.get(uuid);
         blockedPlayers.add(playerBlock);
         blockList.put(uuid, blockedPlayers);
-        SqlHandler.getInstance().addBlockedPlayer(uuid, playerBlock.getBlockedPlayerUUID(), playerBlock.getBlockedPlayerName(), playerBlock.getBlockReason());
+        DatabaseHandler.getInstance().addBlockedPlayer(uuid, playerBlock.getBlockedPlayerUUID(), playerBlock.getBlockedPlayerName(), playerBlock.getBlockReason());
     }
 
     /**
@@ -117,7 +117,7 @@ public class Cache {
             }
         }
         blockList.put(uuid, userBlockList);
-        SqlHandler.getInstance().removeBlockedPlayer(uuid, blockedPlayerUuid);
+        DatabaseHandler.getInstance().removeBlockedPlayer(uuid, blockedPlayerUuid);
     }
 
     private static void removeCachedDuplicates(UUID blockingUuid, UUID blockedUuid) {

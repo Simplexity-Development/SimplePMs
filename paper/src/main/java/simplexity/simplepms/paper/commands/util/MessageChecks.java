@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import simplexity.simplepms.paper.config.ConfigHandler;
 import simplexity.simplepms.paper.logic.Constants;
 import simplexity.simplepms.paper.saving.Cache;
-import simplexity.simplepms.paper.saving.objects.PlayerBlock;
-import simplexity.simplepms.paper.saving.objects.PlayerSettings;
+import com.simplexity.simplepms.common.database.objects.PlayerBlock;
+import com.simplexity.simplepms.common.database.objects.PlayerSettings;
 
 import java.util.List;
 

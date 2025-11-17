@@ -6,6 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.paper.SimplePMs;
+import simplexity.simplepms.paper.saving.DatabaseHandler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -111,7 +112,6 @@ public class ConfigHandler {
             validNamesForConsole.add(name.toLowerCase());
         }
     }
-
 
     public boolean isMysqlEnabled() {
         return mysqlEnabled;
