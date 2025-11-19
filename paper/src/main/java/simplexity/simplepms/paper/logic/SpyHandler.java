@@ -1,6 +1,7 @@
 package simplexity.simplepms.paper.logic;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
@@ -9,7 +10,10 @@ import simplexity.simplepms.paper.SimplePMs;
 import simplexity.simplepms.paper.config.ConfigHandler;
 import simplexity.simplepms.paper.config.LocaleMessage;
 import simplexity.simplepms.paper.events.PrivateMessageEvent;
-import simplexity.simplepms.paper.saving.Cache;
+import com.simplexity.simplepms.common.database.Cache;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SpyHandler {
 
@@ -23,7 +27,8 @@ public class SpyHandler {
             console.sendMessage(parsedMessage);
         }
         if (initiator.hasPermission(Constants.BYPASS_COMMAND_SPY)) return;
-        for (Player spyingPlayer : Cache.getSpyingPlayers()) {
+        Set<Player> spyingPlayers = Cache.getSpyingPlayers().stream().map(Bukkit::getPlayer).collect(Collectors.toSet());
+        for (Player spyingPlayer : spyingPlayers) {
             if (initiator.equals(spyingPlayer)) continue;
             if (!spyingPlayer.hasPermission(Constants.ADMIN_SOCIAL_SPY)) continue;
             spyingPlayer.sendMessage(parsedMessage);

@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.paper.SimplePMs;
 import simplexity.simplepms.paper.events.BlockUserEvent;
-import simplexity.simplepms.paper.saving.Cache;
+import com.simplexity.simplepms.common.database.Cache;
 import com.simplexity.simplepms.common.database.objects.PlayerBlock;
 
 import javax.annotation.Nullable;

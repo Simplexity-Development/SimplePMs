@@ -7,7 +7,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
 import simplexity.simplepms.paper.config.LocaleMessage;
 import simplexity.simplepms.paper.logic.Constants;
-import simplexity.simplepms.paper.saving.Cache;
+import com.simplexity.simplepms.common.database.Cache;
 import com.simplexity.simplepms.common.database.objects.PlayerSettings;
 
 import java.util.UUID;

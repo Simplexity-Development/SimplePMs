@@ -18,7 +18,7 @@ import simplexity.simplepms.paper.commands.util.Exceptions;
 import simplexity.simplepms.paper.config.LocaleMessage;
 import simplexity.simplepms.paper.logic.Constants;
 import simplexity.simplepms.paper.logic.UnblockHandler;
-import simplexity.simplepms.paper.saving.Cache;
+import com.simplexity.simplepms.common.database.Cache;
 import com.simplexity.simplepms.common.database.objects.PlayerBlock;
 
 import java.util.List;

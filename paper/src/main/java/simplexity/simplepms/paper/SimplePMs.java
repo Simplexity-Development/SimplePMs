@@ -1,6 +1,7 @@
 package simplexity.simplepms.paper;
 
 import com.simplexity.simplepms.common.logger.Logger;
+import com.simplexity.simplepms.common.logic.PlatformBridge;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.ConsoleCommandSender;
@@ -19,6 +20,7 @@ import simplexity.simplepms.paper.listeners.JoinListener;
 import simplexity.simplepms.paper.listeners.PreCommandListener;
 import simplexity.simplepms.paper.listeners.QuitListener;
 import simplexity.simplepms.paper.logic.Constants;
+import simplexity.simplepms.paper.logic.PaperPlatformAdapter;
 import simplexity.simplepms.paper.saving.DatabaseHandler;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -42,6 +44,7 @@ public final class SimplePMs extends JavaPlugin {
         registerCommands();
         registerPermissions();
         Logger.setLogger(this.getSLF4JLogger());
+        PlatformBridge.setPlatformAdapter(new PaperPlatformAdapter());
     }
 
     private void registerListeners() {

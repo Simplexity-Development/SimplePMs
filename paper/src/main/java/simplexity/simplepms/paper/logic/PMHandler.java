@@ -1,5 +1,6 @@
 package simplexity.simplepms.paper.logic;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
@@ -8,9 +9,11 @@ import simplexity.simplepms.paper.SimplePMs;
 import simplexity.simplepms.paper.config.ConfigHandler;
 import simplexity.simplepms.paper.config.LocaleMessage;
 import simplexity.simplepms.paper.events.PrivateMessageEvent;
-import simplexity.simplepms.paper.saving.Cache;
+import com.simplexity.simplepms.common.database.Cache;
 
 import java.util.HashMap;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PMHandler {
     public static final HashMap<CommandSender, CommandSender> lastMessaged = new HashMap<>();
@@ -60,7 +63,8 @@ public class PMHandler {
 
 
     private static PrivateMessageEvent callPMEvent(CommandSender initiator, CommandSender target, String messageContent) {
-        PrivateMessageEvent messageEvent = new PrivateMessageEvent(initiator, target, messageContent, Cache.getSpyingPlayers());
+        Set<Player> spyingPlayers = Cache.getSpyingPlayers().stream().map(Bukkit::getPlayer).collect(Collectors.toSet());
+        PrivateMessageEvent messageEvent = new PrivateMessageEvent(initiator, target, messageContent, spyingPlayers);
         SimplePMs.getInstance().getServer().getPluginManager().callEvent(messageEvent);
         return messageEvent;
     }

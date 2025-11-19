@@ -1,9 +1,7 @@
-package simplexity.simplepms.paper.saving;
+package com.simplexity.simplepms.common.database;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import simplexity.simplepms.paper.SimplePMs;
-import simplexity.simplepms.paper.config.LocaleMessage;
+import com.simplexity.simplepms.common.logic.LocaleKey;
+import com.simplexity.simplepms.common.logic.PlatformBridge;
 import com.simplexity.simplepms.common.database.objects.PlayerBlock;
 import com.simplexity.simplepms.common.database.objects.PlayerSettings;
 
@@ -17,7 +15,7 @@ import java.util.UUID;
 public class Cache {
     public static final HashMap<UUID, List<PlayerBlock>> blockList = new HashMap<>();
     public static final HashMap<UUID, PlayerSettings> playerSettings = new HashMap<>();
-    public static final HashSet<Player> spyingPlayers = new HashSet<>();
+    public static final HashSet<UUID> spyingPlayers = new HashSet<>();
 
     public static List<PlayerBlock> getBlockList(UUID uuid) {
         return blockList.get(uuid);
@@ -27,20 +25,16 @@ public class Cache {
         return playerSettings.get(uuid);
     }
 
+    public static void populateCache(UUID uuid, boolean hasSpyPerms) {
+        List<PlayerBlock> blocklist = SQLHandler.getInstance().getBlockedPlayers(uuid);
+        blockList.put(uuid, blocklist);
+        populateNullNames(uuid);
 
-    public static void populateCache(UUID uuid, Player player, boolean hasSpyPerms) {
-        Bukkit.getScheduler().runTaskAsynchronously(SimplePMs.getInstance(), () -> {
-            DatabaseHandler.getInstance().getBlockedPlayers(uuid).thenAccept(blocklist -> {
-                blockList.put(uuid, blocklist);
-                populateNullNames(uuid);
-            });
-            DatabaseHandler.getInstance().getSettings(uuid).thenAccept(settings -> {
-                playerSettings.put(uuid, settings);
-                if (hasSpyPerms && settings.isSocialSpyEnabled()) {
-                    spyingPlayers.add(player);
-                }
-            });
-        });
+        PlayerSettings settings = SQLHandler.getInstance().getSettings(uuid);
+        playerSettings.put(uuid, settings);
+        if (hasSpyPerms && settings.isSocialSpyEnabled()) {
+            spyingPlayers.add(uuid);
+        }
     }
 
     /**
@@ -71,7 +65,7 @@ public class Cache {
         PlayerSettings settings = playerSettings.get(uuid);
         settings.setSocialSpyEnabled(socialSpy);
         playerSettings.put(uuid, settings);
-        DatabaseHandler.getInstance().updateSettings(uuid, settings.isSocialSpyEnabled(), settings.areMessagesDisabled());
+        SQLHandler.getInstance().updateSettings(uuid, settings.isSocialSpyEnabled(), settings.areMessagesDisabled());
     }
 
     /**
@@ -84,7 +78,7 @@ public class Cache {
         PlayerSettings settings = playerSettings.get(uuid);
         settings.setMessagesDisabled(messageDisabled);
         playerSettings.put(uuid, settings);
-        DatabaseHandler.getInstance().updateSettings(uuid, settings.isSocialSpyEnabled(), settings.areMessagesDisabled());
+        SQLHandler.getInstance().updateSettings(uuid, settings.isSocialSpyEnabled(), settings.areMessagesDisabled());
     }
 
     /**
@@ -99,7 +93,7 @@ public class Cache {
         List<PlayerBlock> blockedPlayers = blockList.get(uuid);
         blockedPlayers.add(playerBlock);
         blockList.put(uuid, blockedPlayers);
-        DatabaseHandler.getInstance().addBlockedPlayer(uuid, playerBlock.getBlockedPlayerUUID(), playerBlock.getBlockedPlayerName(), playerBlock.getBlockReason());
+        SQLHandler.getInstance().addBlockedPlayer(uuid, playerBlock.getBlockedPlayerUUID(), playerBlock.getBlockedPlayerName(), playerBlock.getBlockReason());
     }
 
     /**
@@ -117,7 +111,7 @@ public class Cache {
             }
         }
         blockList.put(uuid, userBlockList);
-        DatabaseHandler.getInstance().removeBlockedPlayer(uuid, blockedPlayerUuid);
+        SQLHandler.getInstance().removeBlockedPlayer(uuid, blockedPlayerUuid);
     }
 
     private static void removeCachedDuplicates(UUID blockingUuid, UUID blockedUuid) {
@@ -132,15 +126,15 @@ public class Cache {
         if (playerBlocks == null || playerBlocks.isEmpty()) return;
         for (PlayerBlock block : playerBlocks) {
             if (block.getBlockedPlayerName() == null || block.getBlockedPlayerName().isEmpty()) {
-                String newName = Bukkit.getOfflinePlayer(block.getBlockedPlayerUUID()).getName();
-                if (newName == null) newName = LocaleMessage.ERROR_NAME_NOT_FOUND.getMessage();
+                String newName = PlatformBridge.getPlatformAdapter().getPlayerName(block.getBlockedPlayerUUID());
+                if (newName == null) newName = PlatformBridge.getPlatformAdapter().getLocaleString(LocaleKey.ERROR_NAME_NOT_FOUND);
                 block.setBlockedPlayerName(newName);
             }
         }
         blockList.put(uuidToCheck, playerBlocks);
     }
 
-    public static Set<Player> getSpyingPlayers() {
+    public static Set<UUID> getSpyingPlayers() {
         return spyingPlayers;
     }
 }

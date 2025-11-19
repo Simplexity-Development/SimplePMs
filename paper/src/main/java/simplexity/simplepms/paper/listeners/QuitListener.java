@@ -3,7 +3,7 @@ package simplexity.simplepms.paper.listeners;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import simplexity.simplepms.paper.saving.Cache;
+import com.simplexity.simplepms.common.database.Cache;
 
 public class QuitListener implements Listener {
     @EventHandler
