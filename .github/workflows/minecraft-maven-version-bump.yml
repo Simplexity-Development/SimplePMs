@@ -3,10 +3,10 @@
 #####
 # Ensures that maven version is bumped or changed before merging.
 #####
+name: "Version Bump Check"
 on:
   pull_request:
     branches: [ "main" ]
-
 jobs:
   ensure-version-bump:
     if: ${{ github.base_ref == 'main' || github.base_ref == 'master' }}
