@@ -63,8 +63,14 @@ public class Unblock {
         List<PlayerBlock> blockedPlayers = Cache.getBlockList(playerSender.getUniqueId());
         if (blockedPlayers.isEmpty()) return builder.buildFuture();
         for (PlayerBlock block : blockedPlayers) {
-            builder.suggest(block.getBlockedPlayerName(),
-                    MessageComponentSerializer.message().serialize(Component.text(block.getBlockReason())));
+            if (block == null) continue;
+            String blockReason = block.getBlockReason();
+            if (blockReason == null || blockReason.isEmpty()) {
+                builder.suggest(block.getBlockedPlayerName());
+            } else {
+                builder.suggest(block.getBlockedPlayerName(),
+                        MessageComponentSerializer.message().serialize(Component.text(block.getBlockReason())));
+            }
         }
         return builder.buildFuture();
     }
