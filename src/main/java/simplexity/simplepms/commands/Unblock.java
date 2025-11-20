@@ -69,7 +69,7 @@ public class Unblock {
                 builder.suggest(block.getBlockedPlayerName());
             } else {
                 builder.suggest(block.getBlockedPlayerName(),
-                        MessageComponentSerializer.message().serialize(Component.text(block.getBlockReason())));
+                        MessageComponentSerializer.message().serialize(Component.text(blockReason)));
             }
         }
         return builder.buildFuture();
