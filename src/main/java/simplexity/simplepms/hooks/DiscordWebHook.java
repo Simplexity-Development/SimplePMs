@@ -13,6 +13,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class DiscordWebHook {
@@ -47,11 +48,13 @@ public class DiscordWebHook {
                     .POST(HttpRequest.BodyPublishers.ofString(content))
                     .build();
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                //noinspection StringTemplateMigration: String Template is considered preview and may be removed in a future release.
-                SimplePMs.getInstance().getLogger().log(Level.WARNING, "Webhook has failed to send, HTTP Status " + response.statusCode() + " with JSON Body:\n" + response.body());
-            }
+            CompletableFuture<HttpResponse<String>> asyncResponse = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+            asyncResponse.thenAccept(response -> {
+                if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                    //noinspection StringTemplateMigration: String Template is considered preview and may be removed in a future release.
+                    SimplePMs.getInstance().getLogger().log(Level.WARNING, "Webhook has failed to send, HTTP Status " + response.statusCode() + " with JSON Body:\n" + response.body());
+                }
+            });
         }
         catch (Exception e) {
             e.printStackTrace();
