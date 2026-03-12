@@ -14,9 +14,14 @@ import simplexity.simplepms.SimplePMs;
 import simplexity.simplepms.config.ConfigHandler;
 import simplexity.simplepms.config.LocaleMessage;
 
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class MessageUtils {
     private static MessageUtils instance;
     private final MiniMessage miniMessage = SimplePMs.getMiniMessage();
+    private final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{([a-zA-Z0-9_]+)}");
 
     private MessageUtils() {
     }
@@ -85,6 +90,26 @@ public class MessageUtils {
             final Component componentPlaceholder = LegacyComponentSerializer.legacySection().deserialize(parsedPlaceholder);
             return Tag.inserting(componentPlaceholder);
         });
+    }
+
+    public String format(String message, Map<String, String> values) {
+        Matcher matcher = PLACEHOLDER_PATTERN.matcher(message);
+        StringBuilder result = new StringBuilder();
+
+        int lastEnd = 0;
+        while (matcher.find()) {
+            result.append(message, lastEnd, matcher.start());
+
+            String key = matcher.group(1);
+            String value = values.get(key);
+
+            if (value != null) result.append(value);
+            else result.append(matcher.group());
+            lastEnd = matcher.end();
+        }
+        result.append(message, lastEnd, message.length());
+
+        return result.toString();
     }
 
 }

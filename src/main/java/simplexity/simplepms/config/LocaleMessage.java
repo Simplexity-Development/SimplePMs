@@ -37,7 +37,10 @@ public enum LocaleMessage {
                                                                "https://jd.papermc.io/paper/1.21.5/io/papermc/paper/registry/keys/SoundEventKeys.html"),
     LOG_ERROR_USING_DEFAULT_SOUND("console-error.using-default-sound", "Using %default-sound% until a valid sound is provided"),
     LOG_ERROR_FLOAT_OUT_OF_RANGE("console-error.float-out-of-range", "The number %number% is out of range! Volume and pitch values must be a number between 0 and 2!"),
-    LOG_ERROR_USING_DEFAULT_FLOAT("console-error.using-default-float", "Setting to 1.0 until a valid value is provided");
+    LOG_ERROR_USING_DEFAULT_FLOAT("console-error.using-default-float", "Setting to 1.0 until a valid value is provided"),
+    LOG_ERROR_WEBHOOK_URL_BLANK("console-error.webhook.url.blank", "Webhook URL cannot be null or blank. Disabling webhooks."),
+    LOG_ERROR_WEBHOOK_URL_MALFORMED("console-error.webhook.url.malformed", "Webhook URL is malformed and does not meet expected standards. Disabling webhooks."),
+    LOG_ERROR_WEBHOOK_CLIENT_NOT_CREATED("console-error.webhook.client-not-created", "HTTP Client was not created, this should be impossible. Let Simplexity what happened.");
 
 
     private final String path;
