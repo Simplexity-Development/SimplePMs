@@ -40,7 +40,7 @@ public enum LocaleMessage {
     LOG_ERROR_USING_DEFAULT_FLOAT("console-error.using-default-float", "Setting to 1.0 until a valid value is provided"),
     LOG_ERROR_WEBHOOK_URL_BLANK("console-error.webhook.url.blank", "Webhook URL cannot be null or blank. Disabling webhooks."),
     LOG_ERROR_WEBHOOK_URL_MALFORMED("console-error.webhook.url.malformed", "Webhook URL is malformed and does not meet expected standards. Disabling webhooks."),
-    LOG_ERROR_WEBHOOK_CLIENT_NOT_CREATED("console-error.webhook.client-not-created", "HTTP Client was not created, this should be impossible. Let Simplexity what happened.");
+    LOG_ERROR_WEBHOOK_CLIENT_NOT_CREATED("console-error.webhook.client-not-created", "HTTP Client was not created, this should be impossible. Let Simplexity know what happened.");
 
 
     private final String path;
