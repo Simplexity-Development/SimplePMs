@@ -14,8 +14,10 @@ import simplexity.simplepms.commands.Reply;
 import simplexity.simplepms.commands.SocialSpy;
 import simplexity.simplepms.commands.Unblock;
 import simplexity.simplepms.config.ConfigHandler;
+import simplexity.simplepms.hooks.DiscordWebHook;
 import simplexity.simplepms.listeners.JoinListener;
 import simplexity.simplepms.listeners.PreCommandListener;
+import simplexity.simplepms.listeners.PrivateMessageListener;
 import simplexity.simplepms.listeners.QuitListener;
 import simplexity.simplepms.logic.Constants;
 import simplexity.simplepms.saving.SqlHandler;
@@ -47,6 +49,7 @@ public final class SimplePMs extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new QuitListener(), this);
         getServer().getPluginManager().registerEvents(new PreCommandListener(), this);
         getServer().getPluginManager().registerEvents(new JoinListener(), this);
+        getServer().getPluginManager().registerEvents(new PrivateMessageListener(), this);
     }
 
     private void loadConfigStuff() {
@@ -91,6 +94,7 @@ public final class SimplePMs extends JavaPlugin {
     @Override
     public void onDisable() {
         SqlHandler.getInstance().shutdownConnection();
+        DiscordWebHook.removeClient();
     }
 
     public static MiniMessage getMiniMessage() {

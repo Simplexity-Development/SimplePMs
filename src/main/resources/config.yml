@@ -50,3 +50,26 @@ sounds:
     sound: minecraft:entity.item_frame.rotate_item
     pitch: 1.8
     volume: 0.5
+###
+# This adds Webhook Support focused for Discord
+###
+webhook:
+  enabled: false
+  url: ""
+  # This is the JSON Body to send to the webhook.
+  # The default value is modeled after https://docs.discord.com/developers/resources/webhook#execute-webhook
+  # These are the placeholders that can be used:
+  #   <sender>: Sender's Username
+  #   <sender_display_name>: Sender's Display Name (Nickname), Non-players will have the same name as <sender>
+  #   <sender_uuid>: Sender's UUID, formatted as xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx, this is blank for non-players.
+  #   <recipient>: Recipient's Username
+  #   <recipient_display_name>: Recipient's Display Name (Nickname), Non-players will have the same name as <recipient>
+  #   <recipient_uuid>: Recipient's UUID, formatted as xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx, this is blank for non-players.
+  #   <message>: The message sent through SimplePMs.
+  #   <timestamp>: Unix Timestamp (https://www.unixtimestamp.com/)
+  json-body: |
+    {
+      "content": "{message}\n-# {sender_display_name} ({sender}) sent {recipient_display_name} ({recipient}) this on <t:{timestamp}>",
+      "avatar_url": "https://mc-heads.net/avatar/{sender_uuid}",
+      "username": "{sender} > {recipient}"
+    }

@@ -6,10 +6,13 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import simplexity.simplepms.SimplePMs;
+import simplexity.simplepms.hooks.DiscordWebHook;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ConfigHandler {
@@ -22,12 +25,13 @@ public class ConfigHandler {
 
     private final Logger logger = SimplePMs.getInstance().getLogger();
     private boolean mysqlEnabled, playersSendToConsole, playersSendToHiddenPlayers, consoleHasSocialSpy,
-            commandSpyEnabled, consoleHasCommandSpy, receiveSoundEnabled, sendSoundEnabled, spySoundEnabled;
+            commandSpyEnabled, consoleHasCommandSpy, receiveSoundEnabled, sendSoundEnabled, spySoundEnabled, webhookEnabled;
     private NamespacedKey receiveSound = Registry.SOUNDS.getKey(Sound.BLOCK_NOTE_BLOCK_XYLOPHONE);
     private NamespacedKey sendSound = Registry.SOUNDS.getKey(Sound.ENTITY_ALLAY_ITEM_THROWN);
     private NamespacedKey spySound = Registry.SOUNDS.getKey(Sound.ENTITY_ITEM_FRAME_ROTATE_ITEM);
     private float receivePitch, receiveVolume, sendPitch, sendVolume, spyPitch, spyVolume;
-    private String mysqlIp, mysqlName, mysqlUsername, mysqlPassword, normalFormat, socialSpyFormat;
+    private String mysqlIp, mysqlName, mysqlUsername, mysqlPassword, normalFormat, socialSpyFormat, webhookBody;
+    private URI webhookUri;
     private final List<String> validNamesForConsole = new ArrayList<>();
     private final HashSet<String> commandsToSpy = new HashSet<>();
 
@@ -54,9 +58,11 @@ public class ConfigHandler {
         receiveSoundEnabled = config.getBoolean("sounds.received.enabled", false);
         sendSoundEnabled = config.getBoolean("sounds.sent.enabled", false);
         spySoundEnabled = config.getBoolean("sounds.spy.enabled", false);
+        webhookEnabled = config.getBoolean("webhook.enabled", false);
         if (receiveSoundEnabled) loadReceiveSoundInfo(config);
         if (sendSoundEnabled) loadSendSoundInfo(config);
         if (spySoundEnabled) loadSpySoundInfo(config);
+        if (webhookEnabled) loadWebhook(config);
     }
 
     private void updateHashSet(HashSet<String> set, List<String> list) {
@@ -83,6 +89,25 @@ public class ConfigHandler {
         spySound = getValidSound(soundString, Registry.SOUNDS.getKey(Sound.ENTITY_ITEM_FRAME_ROTATE_ITEM));
         spyPitch = getValidFloat(config.getDouble("sounds.spy.pitch", 1.8));
         spyVolume = getValidFloat(config.getDouble("sounds.spy.volume", 0.5));
+    }
+
+    private void loadWebhook(FileConfiguration config) {
+        webhookBody = config.getString("webhook.json-body", null);
+        String uri = config.getString("webhook.url", null);
+        if (uri == null || uri.isBlank()) {
+            logger.warning(LocaleMessage.LOG_ERROR_WEBHOOK_URL_BLANK.getMessage());
+            webhookEnabled = false;
+            return;
+        }
+        try {
+            webhookUri = URI.create(uri);
+        }
+        catch (IllegalArgumentException e) {
+            logger.log(Level.WARNING, LocaleMessage.LOG_ERROR_WEBHOOK_URL_MALFORMED.getMessage(), e);
+            webhookEnabled = false;
+            return;
+        }
+        if (webhookEnabled) DiscordWebHook.createClient();
     }
 
     private NamespacedKey getValidSound(String soundString, NamespacedKey defaultSound) {
@@ -219,4 +244,10 @@ public class ConfigHandler {
     public float getSpyVolume() {
         return spyVolume;
     }
+
+    public boolean isWebhookEnabled() { return webhookEnabled; }
+
+    public URI getWebhookUri() { return webhookUri; }
+
+    public String getWebhookBody() { return webhookBody; }
 }
